@@ -1,126 +1,161 @@
-# AppSuite & Jarvis Orchestrator Workspace
+# 🌌 AppSuite Jarvis v2
 
-Welcome to the unified workspace for **AppSuite** and **Jarvis Orchestrator**. This repository integrates AI-driven 3D asset search/generation, quality validation pipelines, and automated game engine scene assembly, powered by a state-of-the-art orchestration graph.
-
----
-
-## 📂 Workspace Structure
-
-This workspace is composed of two primary directories:
-
-*   **[`AppSuite_JarvisV1`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1)**: The core implementation of the AppSuite asset pipeline and the Jarvis supervisor agent.
-*   **[`langgraph-main`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/langgraph-main)**: The reference framework for low-level orchestration of stateful agents, which inspires the custom `GraphOrchestrator` in Jarvis.
-
----
-
-## 🚀 AppSuite: AI-Powered 3D Content Pipeline
-
-Given a natural-language prompt (e.g., *"Create a medieval village with houses, barrels, trees, and NPCs"*), AppSuite automates:
-1.  **Asset Sourcing**: Searches public asset databases (Kenney, Poly Pizza, OpenGameArt) or generates them using AI providers.
-2.  **Conversion & Material Audit**: Converts glTF/GLB models to Obj/FBX and verifies material and texture coordinates.
-3.  **Headless Blender Assembly**: Places assets in a 3D scene grid, assigns transforms, configures materials, and exports to FBX.
-4.  **Godot Import & Assembly**: Automatically imports the FBX models, configures collisions/lighting, and builds a playable Godot scene.
-5.  **Runtime Headless Verification**: Launches the scene inside a headless Godot runner to verify mesh existence and material/texture survival.
-
-### 🎭 System Architecture
+AI-powered 3D asset generation, quality validation, and Godot scene content pipeline. Using a natural-language prompt, AppSuite Jarvis autonomously searches/generates 3D assets, processes/validates them, builds scene layouts, and compiles a fully playable Godot game scene complete with real collision shapes, cameras, lights, and generated controls.
 
 ```
-User Prompt
-    │
-    ▼
-┌────────────────────────────────────────────────────────┐
-│ Jarvis Planner (Rule-based Templates & Semantic Memory) │
-└───────────────────────────┬────────────────────────────┘
-                            │ (Scene Plan & Strategy)
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ GraphOrchestrator (Stateful Parallel DAG Execution)    │
-└───────────────────────────┬────────────────────────────┘
-                            │
-        ┌───────────────────┼───────────────────┐
-        ▼                   ▼                   ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│  Internet    │    │  Analysis    │    │   Blender    │
-│  Worker      │    │  Worker      │    │   Worker     │
-└───────┬──────┘    └───────┬──────┘    └───────┬──────┘
-        │                   │                   │
-        └───────────────────┼───────────────────┘
-                            ▼
-                    ┌──────────────┐
-                    │    Godot     │
-                    │    Worker    │
-                    └───────┬──────┘
-                            ▼
-                    ┌──────────────┐
-                    │  Validation  │
-                    │  Worker      │
-                    └──────────────┘
+       [Natural Language Prompt]
+                  │
+                  ▼
+         [Jarvis Brain / Plan]
+                  │
+                  ▼
+       [Agent Coordinator DAG]
+     ┌────────────┼────────────┐
+     ▼            ▼            ▼
+[AssetAgent] [CodeAgent]  [BrowserAgent]
+     │            │            │
+     └───────────┬┘            │
+                 ▼             ▼
+          [BlenderAgent]       │
+                 │             │
+                 ▼             ▼
+           [GodotAgent] ◄──────┘
+                  │
+                  ▼
+         [Playable Godot Game]
 ```
 
 ---
 
-## 🛠️ Quick Start
+## 🚀 1. Quick Start
 
-### 1. Requirements & Setup
-Ensure you have **Python 3.12** installed on your system. Run the following setup commands inside `AppSuite_JarvisV1`:
+### Prerequisites
+* **Python**: Python 3.10+ (recommended: Python 3.12/3.13)
+* **Godot**: Godot 4.x (configured in `config/config.json`)
+* **Blender**: Blender 4.x or 5.x (configured in `config/config.json`)
 
+### Installation & Initialization
+Configure Python virtual environment and database:
 ```powershell
-cd AppSuite_JarvisV1
-
-# Install required dependencies
+# Install requirements
 python -m pip install -r requirements.txt
 
-# Initialize the SQLite database
+# Initialize SQLite database
 python scripts/init_db.py
 ```
 
-### 2. Run the API Server
-AppSuite provides a FastAPI backend to schedule and monitor 3D generation jobs.
+### Running the API Server
+Start the FastAPI REST API:
 ```powershell
 python -m appsuite.main
 ```
-*   **API Port**: `http://localhost:8000`
-*   **Interactive Documentation**: `http://localhost:8000/docs`
+* **API Documentation**: Live at `http://localhost:8000/docs`
 
-### 3. Run a Command-Line Job
-You can trigger a full pipeline execution directly from the command line:
+### Executing E2E FPS Game Benchmark
+Validate the orchestrator, providers, and agents under real workloads:
 ```powershell
-python scripts/run_job.py "Create a medieval village with houses, barrels, trees, roads, NPCs and lighting."
+python tests/benchmark_fps.py
 ```
+This runs 3 consecutive FPS game generation jobs, verifies generated scenes/scripts, monitors LLM API costs/token counts, and creates a JSON report `benchmark_report.json`.
 
 ---
 
-## 📊 Component Blueprint
+## 🛠️ 2. Dynamic Graph Orchestrator (`appsuite/graph/`)
 
-| Component | Directory / File | Description |
-| :--- | :--- | :--- |
-| **Jarvis Planner** | [`jarvis_planner.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/core/jarvis_planner.py) | Resolves layout templates and plans required assets from prompt heuristics. |
-| **Graph Orchestrator** | [`graph.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/graph/graph.py) | State-machine orchestrator ensuring checkpointing, parallelism, and recovery. |
-| **Semantic Memory** | [`agent_memory.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/core/semantic_memory/agent_memory.py) | Remembers successful runs and layout templates to minimize generation overhead. |
-| **Internet Worker** | [`internet_worker.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/workers/internet_worker.py) | Searches and pulls models, caching assets under standard GLB formats. |
-| **Analysis Worker** | [`analysis_worker.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/workers/analysis_worker.py) | Performs pre-import GLB audit checks, slots materials, and resolves texture paths. |
-| **Blender Worker** | [`blender_worker.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/workers/blender_worker.py) | Executes headless Blender automation scripts to scale, assemble, and export FBX files. |
-| **Godot Worker** | [`godot_worker.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/workers/godot_worker.py) | Builds Godot scenes (.tscn), configures lights, environments, and collisions. |
-| **Validation Worker** | [`validation_worker.py`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/appsuite/workers/validation_worker.py) | Executes headless Godot validation scripts to test visual and node conformity. |
+AppSuite features a **LangGraph-inspired dynamic execution engine** replacing the legacy linear state machine. It schedules specialized agents and runs tasks in parallel using a dependency-resolved DAG.
+
+```mermaid
+graph TD
+    Start([Start]) --> AssetAgent[AssetAgent: Fetch Assets]
+    Start --> CodeAgent[CodeAgent: Generate GDScript]
+    AssetAgent --> BlenderAgent[BlenderAgent: Optimize Models]
+    BlenderAgent --> GodotAgent[GodotAgent: Compile Game Scene]
+    CodeAgent --> GodotAgent
+    GodotAgent --> End([End Scene/Game])
+```
+
+### State Management (`graph/state.py`)
+State tracking uses `GraphState` wrapping `JobState`, carrying:
+* `job`: Dict containing the prompt and identifiers.
+* `current_node`: String representing the currently executing node.
+* `worker_result`: Node results status (`WorkerResult`).
+* `pipeline_state`: Serialized/deserialized `JobState` instance carrying ground, lights, assets, and paths.
+
+### Crash Recovery & Checkpointing
+If execution fails or is interrupted:
+* Successful nodes are persisted in `<job_id>_dag_checkpoint.json`.
+* The full `pipeline_state` is serialized to the checkpoint using `JobState.as_dict()`.
+* On pipeline retry, completed nodes are skipped, and the state is fully reconstructed back to a `JobState` instance to prevent losing assets or script references.
+* **Infinite loop protection**: Graph nodes are restricted to a maximum of 3 retries before aborting.
 
 ---
 
-## 🛡️ Pipeline Diagnostics & Reliability Testing
+## 🤖 3. Multi-Agent Specialization Layer (`appsuite/agents/`)
 
-AppSuite contains built-in automated validation tools to ensure material pipeline survival and prevent missing textures.
+The pipeline operates on a decentralized multi-agent hierarchy governed by `AgentCoordinator`:
 
-### 1. Reliability Sweep Suite
-Run the suite of 15 pre-selected 3D assets of different formats (GLB, FBX, OBJ) to evaluate import/export fidelity:
+* **Agent Orchestration Contract**: Every agent receives a unified `AgentTask` schema and returns an `AgentResult` object.
+* **Agent Types**:
+  * **AssetAgent**: Searches online asset registries, downloads zip archives, verifies file sizes, and parses models.
+  * **CodeAgent**: Prompts the LLM provider to write character controls and game loop scripts in GDScript.
+  * **BlenderAgent**: Headless optimization, mesh scaling, material assignment, and scene layout assembly.
+  * **GodotAgent**: Imports models, spawns environment nodes, compiles `.tscn` files, and validates them.
+  * **BrowserAgent**: Crawls online documentation (e.g., DuckDuckGo scraping) to resolve script compilation errors.
+
+### Universal Self-Correction Loops
+When `CodeAgent` generates scripts (e.g. `player.gd`), it compiles them headlessly using the local Godot binary:
 ```powershell
-python scripts/test_pipeline_reliability.py
+godot --headless --path <project_dir> --check-only
 ```
-This script evaluates the success rate and outputs a full diagnostic report: [`reliability_report.md`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/reliability_report.md).
+If errors are returned (non-zero exit code), the agent enters a self-correction loop, sending the error tracebacks and failing code blocks back to the LLM to patch the script. If the retry threshold is reached, it falls back to a rules-based pre-validated playable FPS template script.
 
-### 2. Headless Godot Editor Verification
-Evaluate if scenes render properly in Godot and take screenshots automatically:
-```powershell
-python scripts/run_visual_validation.py
+---
+
+## 🔌 4. Provider Manager & Token Banker (`core/`)
+
+LLM queries and text/code generation are handled via a unified provider gateway:
+* **Multiple Adapters**: Supported out-of-the-box: OpenAI, Gemini, Claude, and Local Model Adapters.
+* **Automatic Failover**: If a provider fails due to a rate limit or API timeout, `ProviderManager` falls back to the next configured API provider.
+* **Cost & Token Tracking**: Keeps granular statistics on input tokens, output tokens, pricing rates, and call frequency.
+* **Fail-Safe Fallback**: If all configured APIs are unreachable, a local rules-based template generator constructs working FPS controller scripts to prevent pipeline failures.
+
+---
+
+## 🛡️ 5. Production Reliability Hardening (Recent Fixes)
+
+To guarantee that AppSuite works autonomously without human intervention under real workloads, the pipeline includes several hardening layers:
+
+> [!IMPORTANT]
+> **TSCN Format Order Compliance**
+> Godot scene files require all `[ext_resource]` tags to precede `[sub_resource]` tags, which in turn must precede `[node]` tags. Our `GodotWorker` splits generation buffers to enforce this structure, resolving `Parse Error: Unknown tag 'ext_resource'` errors inside Godot.
+
+> [!NOTE]
+> **Windows Path Unicode Encoding**
+> When running Python on Windows under non-UTF-8 local terminals, printing or logging files inside directories with Thai characters (`เอกสาร`) can raise `UnicodeEncodeError`. The entry points `run_jarvis.py` and `benchmark_fps.py` reconfigure `sys.stdout` and `sys.stderr` to UTF-8 on startup to prevent encoding crashes.
+
+> [!TIP]
+> **Soft Resource Watermarks**
+> High RAM usage (>90%) could pause DAG tasks indefinitely. We added a 15-second timeout on resource gate blocks, ensuring heavy Blender/Godot nodes warningly proceed under RAM constraints instead of hanging.
+
+---
+
+## ⚙️ 6. System Configurations (`config/config.json`)
+
+Set up paths to Godot and Blender executable binaries in `config/config.json`:
+```json
+{
+  "workers": {
+    "blender": {
+      "enabled": true,
+      "binary": "C:/Program Files/Blender Foundation/Blender 5.1/blender.exe",
+      "headless": true
+    },
+    "godot": {
+      "enabled": true,
+      "binary": "C:/Users/91629/OneDrive/เอกสาร/Desktop/godot-master/Godot_v4.6.2-stable_win64.exe",
+      "headless": true
+    }
+  }
+}
 ```
-Outputs:
-*   Screenshot: `godot_screenshot.png`
-*   Visual Validation Report: [`godot_visual_validation_report.md`](file:///c:/Users/91629/OneDrive/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3/Desktop/New%20folder%20%283%29/AppSuite_JarvisV1/godot_visual_validation_report.md)
+If `psutil` reports available system memory dropping under 10MB during startup, a health warning is logged, protecting system processes.
