@@ -1,0 +1,1363 @@
+{
+  "ground": {
+    "size": 100,
+    "material": "grass"
+  },
+  "lighting": {
+    "preset": "warm_day",
+    "shadows": true,
+    "ambient": 0.3
+  },
+  "objects": [
+    {
+      "asset_id": "90d743b6-d87e-4aae-8798-5aab88121918",
+      "name": "house_90d743",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\medieval_house_244a5e3e.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "6eae3dab-97ed-47de-8044-9478e1cefc7e",
+      "name": "house_6eae3d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\cottage_43288cf6.obj",
+      "route": "blender_to_godot",
+      "location": [
+        0.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "90d743b6-d87e-4aae-8798-5aab88121918",
+      "name": "house_90d743",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\medieval_house_148fe4b4.obj",
+      "route": "blender_to_godot",
+      "location": [
+        4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "6eae3dab-97ed-47de-8044-9478e1cefc7e",
+      "name": "house_6eae3d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\cottage_72f64366.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "90d743b6-d87e-4aae-8798-5aab88121918",
+      "name": "house_90d743",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\medieval_house_0a5eba19.obj",
+      "route": "blender_to_godot",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "6eae3dab-97ed-47de-8044-9478e1cefc7e",
+      "name": "house_6eae3d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\cottage_758821f8.obj",
+      "route": "blender_to_godot",
+      "location": [
+        4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_cc83635f.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -7.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_54e57ad5.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -1.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_27b062bf.obj",
+      "route": "blender_to_godot",
+      "location": [
+        4.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_166365dd.obj",
+      "route": "blender_to_godot",
+      "location": [
+        10.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_b76338e9.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -7.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_abc18eb5.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -1.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_ef867421.obj",
+      "route": "blender_to_godot",
+      "location": [
+        4.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_27b2fd36.obj",
+      "route": "blender_to_godot",
+      "location": [
+        10.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_1707c6ca.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -7.5,
+        0.0,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\wooden_barrel_f55ecc2e.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -1.5,
+        0.0,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_14bf4b1b.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -13.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_cf3508be.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -5.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_bd6325e1.obj",
+      "route": "blender_to_godot",
+      "location": [
+        3.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_e0e9af0d.obj",
+      "route": "blender_to_godot",
+      "location": [
+        11.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_b773d51f.obj",
+      "route": "blender_to_godot",
+      "location": [
+        19.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_36a76f57.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -13.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_47568433.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -5.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_259a8783.obj",
+      "route": "blender_to_godot",
+      "location": [
+        3.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_f4af1fd6.obj",
+      "route": "blender_to_godot",
+      "location": [
+        11.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_8bea7052.obj",
+      "route": "blender_to_godot",
+      "location": [
+        19.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_fc0f2b17.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -13.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_3b0388e6.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -5.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_ad71656a.obj",
+      "route": "blender_to_godot",
+      "location": [
+        3.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_d828d94e.obj",
+      "route": "blender_to_godot",
+      "location": [
+        11.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_082500de.obj",
+      "route": "blender_to_godot",
+      "location": [
+        19.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_fdc4f174.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -13.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_e392f584.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -5.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_e2fe273b.obj",
+      "route": "blender_to_godot",
+      "location": [
+        3.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\tree_cc8cddfd.obj",
+      "route": "blender_to_godot",
+      "location": [
+        11.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\pine_tree_2935e098.obj",
+      "route": "blender_to_godot",
+      "location": [
+        19.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "0588d8b9-46f2-4118-a46f-ae4fd3d7e2d2",
+      "name": "road_0588d8",
+      "role": "road",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\cobblestone_road_5a9fccb1.obj",
+      "route": "blender_to_godot",
+      "location": [
+        4.5,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "road",
+        "base_color": [
+          0.4,
+          0.4,
+          0.42
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\villager_03532cd5.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -6.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\peasant_character_2c0e4bf6.obj",
+      "route": "blender_to_godot",
+      "location": [
+        6.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\villager_3d7915f4.obj",
+      "route": "blender_to_godot",
+      "location": [
+        18.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\peasant_character_bff12e4f.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -6.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\villager_9f8a2f5e.obj",
+      "route": "blender_to_godot",
+      "location": [
+        6.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\peasant_character_c0f5af18.obj",
+      "route": "blender_to_godot",
+      "location": [
+        18.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\villager_a5bb6e80.obj",
+      "route": "blender_to_godot",
+      "location": [
+        -6.0,
+        0.0,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\Downloads\\AppSuite_JarvisV1\\data\\assets\\peasant_character_160ff67d.obj",
+      "route": "blender_to_godot",
+      "location": [
+        6.0,
+        0.0,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    }
+  ]
+}

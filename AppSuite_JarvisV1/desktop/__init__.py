@@ -1,0 +1,1 @@
+"""AppSuite Desktop package."""

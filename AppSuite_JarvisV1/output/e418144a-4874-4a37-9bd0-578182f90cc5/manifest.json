@@ -1,0 +1,127 @@
+{
+  "template": "medieval_village",
+  "asset_count": 45,
+  "fbx_path": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\output\\e418144a-4874-4a37-9bd0-578182f90cc5\\scene.fbx",
+  "godot_project": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\output\\e418144a-4874-4a37-9bd0-578182f90cc5\\godot_project",
+  "main_scene": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\output\\e418144a-4874-4a37-9bd0-578182f90cc5\\godot_project\\main.tscn",
+  "validation": {
+    "checks": [
+      {
+        "name": "assets_present",
+        "passed": true,
+        "detail": "45 assets"
+      },
+      {
+        "name": "all_asset_files_exist",
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "name": "scene_has_objects",
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "name": "scene_has_lighting",
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "name": "fbx_exported",
+        "passed": true,
+        "detail": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\output\\e418144a-4874-4a37-9bd0-578182f90cc5\\scene.fbx"
+      },
+      {
+        "name": "godot_project_exists",
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "name": "godot_main_scene_exists",
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "name": "godot_project_file_exists",
+        "passed": true,
+        "detail": ""
+      }
+    ],
+    "passed": 8,
+    "total": 8
+  },
+  "stages": {
+    "asset_search": {
+      "assets_fetched": 45,
+      "cache_hits": 37
+    },
+    "asset_processing": {
+      "analysed": 45,
+      "rejected": 0,
+      "min_quality": 0.4
+    },
+    "blender_import": {
+      "objects": 45,
+      "fbx": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\output\\e418144a-4874-4a37-9bd0-578182f90cc5\\scene.fbx",
+      "blender_binary_used": false
+    },
+    "godot_import": {
+      "project": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\output\\e418144a-4874-4a37-9bd0-578182f90cc5\\godot_project",
+      "main_scene": "main.tscn",
+      "prefabs": [
+        "prefabs\\road.tscn",
+        "prefabs\\npc.tscn",
+        "prefabs\\tree.tscn",
+        "prefabs\\house.tscn",
+        "prefabs\\barrel.tscn"
+      ],
+      "godot_binary_used": false
+    },
+    "output_validation": {
+      "passed": 8,
+      "total": 8,
+      "checks": [
+        {
+          "name": "assets_present",
+          "passed": true,
+          "detail": "45 assets"
+        },
+        {
+          "name": "all_asset_files_exist",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "name": "scene_has_objects",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "name": "scene_has_lighting",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "name": "fbx_exported",
+          "passed": true,
+          "detail": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\output\\e418144a-4874-4a37-9bd0-578182f90cc5\\scene.fbx"
+        },
+        {
+          "name": "godot_project_exists",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "name": "godot_main_scene_exists",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "name": "godot_project_file_exists",
+          "passed": true,
+          "detail": ""
+        }
+      ]
+    }
+  }
+}

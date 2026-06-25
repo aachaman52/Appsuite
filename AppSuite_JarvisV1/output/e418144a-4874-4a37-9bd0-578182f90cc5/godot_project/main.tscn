@@ -1,0 +1,295 @@
+[gd_scene load_steps=2 format=3]
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 1
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.3
+
+[node name="Main" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7, 0.7, 0, -0.7, 0.7, 0, 40, 40)
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="GroundMesh" type="CSGBox3D" parent="Ground"]
+size = Vector3(100, 0.2, 100)
+use_collision = true
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.86, 0, -0.86, 0.5, 0, 50, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="house_90d743" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -4.0, 0.0, -4.0)
+
+[node name="Mesh" type="CSGBox3D" parent="house_90d743"]
+use_collision = true
+
+[node name="house_6eae3d" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 0.0, 0.0, -4.0)
+
+[node name="Mesh" type="CSGBox3D" parent="house_6eae3d"]
+use_collision = true
+
+[node name="house_90d743" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 4.0, 0.0, -4.0)
+
+[node name="Mesh" type="CSGBox3D" parent="house_90d743"]
+use_collision = true
+
+[node name="house_6eae3d" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -4.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="house_6eae3d"]
+use_collision = true
+
+[node name="house_90d743" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="house_90d743"]
+use_collision = true
+
+[node name="house_6eae3d" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 4.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="house_6eae3d"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -7.5, 0.0, -9.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -1.5, 0.0, -9.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 4.5, 0.0, -9.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 10.5, 0.0, -9.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -7.5, 0.0, -3.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -1.5, 0.0, -3.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 4.5, 0.0, -3.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 10.5, 0.0, -3.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -7.5, 0.0, 3.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="barrel_c4babf" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -1.5, 0.0, 3.0)
+
+[node name="Mesh" type="CSGBox3D" parent="barrel_c4babf"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -13.0, 0.0, -16.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -5.0, 0.0, -16.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 3.0, 0.0, -16.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 11.0, 0.0, -16.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 19.0, 0.0, -16.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -13.0, 0.0, -8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -5.0, 0.0, -8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 3.0, 0.0, -8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 11.0, 0.0, -8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 19.0, 0.0, -8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -13.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -5.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 3.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 11.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 19.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -13.0, 0.0, 8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -5.0, 0.0, 8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 3.0, 0.0, 8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="tree_58ecca" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 11.0, 0.0, 8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_58ecca"]
+use_collision = true
+
+[node name="tree_7b6806" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 19.0, 0.0, 8.0)
+
+[node name="Mesh" type="CSGBox3D" parent="tree_7b6806"]
+use_collision = true
+
+[node name="road_0588d8" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 4.5, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="road_0588d8"]
+use_collision = true
+
+[node name="npc_75349b" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -6.0, 0.0, -12.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_75349b"]
+use_collision = true
+
+[node name="npc_246a54" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 6.0, 0.0, -12.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_246a54"]
+use_collision = true
+
+[node name="npc_75349b" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 18.0, 0.0, -12.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_75349b"]
+use_collision = true
+
+[node name="npc_246a54" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -6.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_246a54"]
+use_collision = true
+
+[node name="npc_75349b" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 6.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_75349b"]
+use_collision = true
+
+[node name="npc_246a54" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 18.0, 0.0, 0.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_246a54"]
+use_collision = true
+
+[node name="npc_75349b" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, -6.0, 0.0, 12.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_75349b"]
+use_collision = true
+
+[node name="npc_246a54" type="StaticBody3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 6.0, 0.0, 12.0)
+
+[node name="Mesh" type="CSGBox3D" parent="npc_246a54"]
+use_collision = true
+

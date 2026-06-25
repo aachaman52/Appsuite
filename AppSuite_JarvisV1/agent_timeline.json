@@ -1,0 +1,248 @@
+[
+  {
+    "time": 1782300889.6928537,
+    "event": "task_started",
+    "data": {
+      "task_id": "code_1",
+      "agent": "CodeAgent"
+    }
+  },
+  {
+    "time": 1782300901.1996055,
+    "event": "task_completed",
+    "data": {
+      "task_id": "code_1",
+      "agent": "CodeAgent",
+      "status": "success"
+    }
+  },
+  {
+    "time": 1782300904.8706727,
+    "event": "task_started",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent"
+    }
+  },
+  {
+    "time": 1782300905.1959116,
+    "event": "task_completed",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent",
+      "status": "success"
+    }
+  },
+  {
+    "time": 1782300905.3322673,
+    "event": "task_started",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent"
+    }
+  },
+  {
+    "time": 1782300989.9958065,
+    "event": "task_failed",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent",
+      "error": "godot_import failed: ASSET_IMPORT_FAILURE"
+    }
+  },
+  {
+    "time": 1782300992.3227522,
+    "event": "task_started",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent"
+    }
+  },
+  {
+    "time": 1782300992.3257782,
+    "event": "task_failed",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent",
+      "error": "godot_import failed: 'objects'"
+    }
+  },
+  {
+    "time": 1782300997.372481,
+    "event": "task_started",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent"
+    }
+  },
+  {
+    "time": 1782300997.4344127,
+    "event": "task_failed",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent",
+      "error": "godot_import failed: 'objects'"
+    }
+  },
+  {
+    "time": 1782301000.6805024,
+    "event": "task_started",
+    "data": {
+      "task_id": "asset_1",
+      "agent": "AssetAgent"
+    }
+  },
+  {
+    "time": 1782301001.1423516,
+    "event": "task_started",
+    "data": {
+      "task_id": "code_1",
+      "agent": "CodeAgent"
+    }
+  },
+  {
+    "time": 1782301009.3037415,
+    "event": "task_completed",
+    "data": {
+      "task_id": "asset_1",
+      "agent": "AssetAgent",
+      "status": "success"
+    }
+  },
+  {
+    "time": 1782301009.4611037,
+    "event": "task_started",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent"
+    }
+  },
+  {
+    "time": 1782301009.463478,
+    "event": "task_completed",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent",
+      "status": "success"
+    }
+  },
+  {
+    "time": 1782301011.444729,
+    "event": "task_completed",
+    "data": {
+      "task_id": "code_1",
+      "agent": "CodeAgent",
+      "status": "success"
+    }
+  },
+  {
+    "time": 1782301011.5557444,
+    "event": "task_started",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent"
+    }
+  },
+  {
+    "time": 1782301044.3557632,
+    "event": "task_failed",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent",
+      "error": "godot_import failed: PROJECT_OPEN_FAILURE: Command '['powershell', '-Command', '(New-Object -ComObject WScript.Shell).AppActivate(\"Godot\")']' timed out after 5 seconds"
+    }
+  },
+  {
+    "time": 1782301046.872178,
+    "event": "task_started",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent"
+    }
+  },
+  {
+    "time": 1782301047.0934603,
+    "event": "task_failed",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent",
+      "error": "godot_import failed: 'objects'"
+    }
+  },
+  {
+    "time": 1782301051.8937507,
+    "event": "task_started",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent"
+    }
+  },
+  {
+    "time": 1782301052.1185915,
+    "event": "task_failed",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent",
+      "error": "godot_import failed: 'objects'"
+    }
+  },
+  {
+    "time": 1782301053.0454602,
+    "event": "task_started",
+    "data": {
+      "task_id": "asset_1",
+      "agent": "AssetAgent"
+    }
+  },
+  {
+    "time": 1782301053.2018087,
+    "event": "task_started",
+    "data": {
+      "task_id": "code_1",
+      "agent": "CodeAgent"
+    }
+  },
+  {
+    "time": 1782301063.2744546,
+    "event": "task_completed",
+    "data": {
+      "task_id": "code_1",
+      "agent": "CodeAgent",
+      "status": "success"
+    }
+  },
+  {
+    "time": 1782301067.3314166,
+    "event": "task_completed",
+    "data": {
+      "task_id": "asset_1",
+      "agent": "AssetAgent",
+      "status": "success"
+    }
+  },
+  {
+    "time": 1782301082.7249544,
+    "event": "task_started",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent"
+    }
+  },
+  {
+    "time": 1782301083.005542,
+    "event": "task_started",
+    "data": {
+      "task_id": "godot_1",
+      "agent": "GodotAgent"
+    }
+  },
+  {
+    "time": 1782301083.0108101,
+    "event": "task_completed",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent",
+      "status": "success"
+    }
+  }
+]

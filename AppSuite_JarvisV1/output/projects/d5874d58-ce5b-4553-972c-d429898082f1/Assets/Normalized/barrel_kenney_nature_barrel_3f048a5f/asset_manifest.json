@@ -1,0 +1,45 @@
+{
+  "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+  "job_id": "d5874d58-ce5b-4553-972c-d429898082f1",
+  "role": "barrel",
+  "source": "kenney",
+  "source_prompt": "An FPS map with crates and barrels",
+  "package_dir": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\output\\projects\\d5874d58-ce5b-4553-972c-d429898082f1\\Assets\\Normalized\\barrel_kenney_nature_barrel_3f048a5f",
+  "manifest_path": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\output\\projects\\d5874d58-ce5b-4553-972c-d429898082f1\\Assets\\Normalized\\barrel_kenney_nature_barrel_3f048a5f\\asset_manifest.json",
+  "primary_model": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\output\\projects\\d5874d58-ce5b-4553-972c-d429898082f1\\Assets\\Normalized\\barrel_kenney_nature_barrel_3f048a5f\\character_f5ec.glb",
+  "original_file_path": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_771590\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+  "files": {
+    "models": [
+      "character.glb",
+      "character_1971.glb",
+      "character_6280.glb",
+      "character_6411.glb",
+      "character_69d3.glb",
+      "character_8b1e.glb",
+      "character_a66b.glb",
+      "character_b9b4.glb",
+      "character_e13e.glb",
+      "character_f5ec.glb"
+    ],
+    "materials": [],
+    "textures": [
+      "colormap.png",
+      "colormap_1861.png",
+      "colormap_4734.png",
+      "colormap_6d1d.png",
+      "colormap_873.png",
+      "colormap_8f70.png",
+      "colormap_cc51.png",
+      "colormap_face.png",
+      "colormap_fbe.png",
+      "colormap_fc00.png"
+    ],
+    "buffers": []
+  },
+  "warnings": [],
+  "metadata": {
+    "original_name": "kenney_nature_barrel",
+    "format": "glb",
+    "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip"
+  }
+}

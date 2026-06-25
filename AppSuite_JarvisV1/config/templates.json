@@ -1,0 +1,37 @@
+{
+  "templates": [
+    {
+      "id": "medieval_village",
+      "name": "Medieval Village",
+      "keywords": ["medieval", "village", "house", "barrel", "tree", "road", "npc"],
+      "asset_slots": [
+        { "role": "house", "count": 6, "search_terms": ["medieval house", "cottage"] },
+        { "role": "barrel", "count": 10, "search_terms": ["wooden barrel"] },
+        { "role": "tree", "count": 20, "search_terms": ["tree", "pine tree"] },
+        { "role": "road", "count": 1, "search_terms": ["cobblestone road", "dirt path"] },
+        { "role": "npc", "count": 8, "search_terms": ["villager", "peasant character"] }
+      ],
+      "lighting": { "preset": "warm_day", "shadows": true, "ambient": 0.3 },
+      "ground": { "size": 100, "material": "grass" }
+    },
+    {
+      "id": "integration_test",
+      "name": "Integration Test",
+      "keywords": ["integration", "test"],
+      "asset_slots": [
+        { "role": "house", "count": 1, "search_terms": ["house"] },
+        { "role": "npc", "count": 1, "search_terms": ["npc"] }
+      ],
+      "lighting": { "preset": "neutral_day", "shadows": true, "ambient": 0.4 },
+      "ground": { "size": 50, "material": "default" }
+    },
+    {
+      "id": "generic_scene",
+      "name": "Generic Scene",
+      "keywords": [],
+      "asset_slots": [{ "role": "prop", "count": 8, "search_terms": ["prop"] }],
+      "lighting": { "preset": "neutral_day", "shadows": true, "ambient": 0.4 },
+      "ground": { "size": 50, "material": "default" }
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "ground": {
+    "size": 50,
+    "material": "default"
+  },
+  "lighting": {
+    "preset": "neutral_day",
+    "shadows": true,
+    "ambient": 0.4
+  },
+  "objects": [
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        -4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    },
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b_225b79\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        0.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    },
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b_9cfb49\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    },
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b_e349c6\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        -4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    },
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b_5aa9c4\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    },
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b_6cc8be\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    },
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b_f8cd59\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        -4.0,
+        0.0,
+        4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    },
+    {
+      "asset_id": "40cc6802-8219-4c34-9895-80a2fdc7e85b",
+      "name": "prop_40cc68",
+      "role": "prop",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\cache\\a65450f4ffc34b1b_88df42\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "location": [
+        0.0,
+        0.0,
+        4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "prop",
+        "base_color": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+  "job_id": "dba9bc11-f149-449a-b7cb-6604549c8576",
+  "role": "npc",
+  "source": "kenney",
+  "source_prompt": "test scene",
+  "package_dir": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\output\\projects\\dba9bc11-f149-449a-b7cb-6604549c8576\\Assets\\Normalized\\npc_kenney_platformer_npc_3f048a5f",
+  "manifest_path": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\output\\projects\\dba9bc11-f149-449a-b7cb-6604549c8576\\Assets\\Normalized\\npc_kenney_platformer_npc_3f048a5f\\asset_manifest.json",
+  "primary_model": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\output\\projects\\dba9bc11-f149-449a-b7cb-6604549c8576\\Assets\\Normalized\\npc_kenney_platformer_npc_3f048a5f\\character_7ff0.glb",
+  "original_file_path": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\New folder (3)\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_a1e15c\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+  "files": {
+    "models": [
+      "character.glb",
+      "character_7ff0.glb"
+    ],
+    "materials": [],
+    "textures": [
+      "colormap.png",
+      "colormap_1d56.png"
+    ],
+    "buffers": []
+  },
+  "warnings": [],
+  "metadata": {
+    "original_name": "kenney_platformer_npc",
+    "format": "glb",
+    "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip"
+  }
+}

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b2eln78np2xej"
+path="res://.godot/imported/medieval_house_a454709c.obj-45a26fd89db2a0eae4e4ec3b10420c9b.mesh"
+
+[deps]
+
+files=["res://.godot/imported/medieval_house_a454709c.obj-45a26fd89db2a0eae4e4ec3b10420c9b.mesh"]
+
+source_file="res://Assets/medieval_house_a454709c.obj"
+dest_files=["res://.godot/imported/medieval_house_a454709c.obj-45a26fd89db2a0eae4e4ec3b10420c9b.mesh", "res://.godot/imported/medieval_house_a454709c.obj-45a26fd89db2a0eae4e4ec3b10420c9b.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

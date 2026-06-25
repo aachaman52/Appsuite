@@ -1,0 +1,12 @@
+{
+  "ground": {
+    "size": 50,
+    "material": "default"
+  },
+  "lighting": {
+    "preset": "neutral_day",
+    "shadows": true,
+    "ambient": 0.4
+  },
+  "objects": []
+}

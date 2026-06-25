@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c6vggocqt1ko4"
+path="res://.godot/imported/peasant_character_f9d50116.obj-457e9feb1771c0229536d28a15e5bbed.mesh"
+
+[deps]
+
+files=["res://.godot/imported/peasant_character_f9d50116.obj-457e9feb1771c0229536d28a15e5bbed.mesh"]
+
+source_file="res://Assets/peasant_character_f9d50116.obj"
+dest_files=["res://.godot/imported/peasant_character_f9d50116.obj-457e9feb1771c0229536d28a15e5bbed.mesh", "res://.godot/imported/peasant_character_f9d50116.obj-457e9feb1771c0229536d28a15e5bbed.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

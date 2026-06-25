@@ -1,0 +1,30 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.6")
+
+[editor_plugins]
+
+enabled=PackedStringArray()
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[pyflare]
+
+ai/gemini_api_key="AIzaSyCC-NqQv8k6yfApO2EwPj2icoMb8HicJVw"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"

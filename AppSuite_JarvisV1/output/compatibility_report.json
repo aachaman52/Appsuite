@@ -1,0 +1,151 @@
+{
+  "success_percentage": 0.0,
+  "total_assets": 8,
+  "passed_assets": 0,
+  "results": [
+    {
+      "source": "Kenney",
+      "name": "Starter Kit 3D Platformer",
+      "url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+      "status": "FAIL",
+      "failure_reason": "BLENDER_IMPORT_FAILURE",
+      "metrics": {
+        "download_time": 3.363,
+        "extraction_time": 0.242,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 15,
+        "material_count": 1,
+        "texture_count": 8
+      }
+    },
+    {
+      "source": "Kenney",
+      "name": "Starter Kit City Builder",
+      "url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+      "status": "FAIL",
+      "failure_reason": "BLENDER_IMPORT_FAILURE",
+      "metrics": {
+        "download_time": 3.222,
+        "extraction_time": 0.249,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 15,
+        "material_count": 1,
+        "texture_count": 7
+      }
+    },
+    {
+      "source": "Poly Pizza",
+      "name": "Modular Scifi Pack",
+      "url": "https://github.com/J-Ponzo/gltf-universal-animation-library/archive/refs/heads/main.zip",
+      "status": "FAIL",
+      "failure_reason": "BLENDER_IMPORT_FAILURE",
+      "metrics": {
+        "download_time": 4.447,
+        "extraction_time": 0.072,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 1,
+        "material_count": 1,
+        "texture_count": 1
+      }
+    },
+    {
+      "source": "Poly Pizza",
+      "name": "Ultimate Spaceships Pack",
+      "url": "https://github.com/V-Sekai-fire/TEST_fbx_quaternius/archive/refs/heads/main.zip",
+      "status": "FAIL",
+      "failure_reason": "BLENDER_IMPORT_FAILURE",
+      "metrics": {
+        "download_time": 21.974,
+        "extraction_time": 0.903,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 54,
+        "material_count": 1,
+        "texture_count": 0
+      }
+    },
+    {
+      "source": "OpenGameArt",
+      "name": "OpenGL Object Library human.obj",
+      "url": "https://github.com/cdgramos/OpenGL-Object-Importer-Library/archive/refs/heads/master.zip",
+      "status": "FAIL",
+      "failure_reason": "TEXTURE_MISSING",
+      "metrics": {
+        "download_time": 1.925,
+        "extraction_time": 0.028,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 1,
+        "material_count": 1,
+        "texture_count": 1
+      }
+    },
+    {
+      "source": "OpenGameArt",
+      "name": "Recast Navigation dungeon.obj",
+      "url": "https://github.com/recastnavigation/recastnavigation/archive/refs/heads/master.zip",
+      "status": "FAIL",
+      "failure_reason": "BLENDER_IMPORT_FAILURE",
+      "metrics": {
+        "download_time": 2.67,
+        "extraction_time": 0.493,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 3,
+        "material_count": 0,
+        "texture_count": 2
+      }
+    },
+    {
+      "source": "Sketchfab",
+      "name": "Simple Meshes gltf",
+      "url": "https://github.com/javagl/gltfTutorialModels/archive/refs/heads/master.zip",
+      "status": "FAIL",
+      "failure_reason": "BLENDER_IMPORT_FAILURE",
+      "metrics": {
+        "download_time": 2.251,
+        "extraction_time": 0.224,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 20,
+        "material_count": 1,
+        "texture_count": 24
+      }
+    },
+    {
+      "source": "Sketchfab",
+      "name": "Low Poly Medieval Assets Pack",
+      "url": "https://github.com/passpartout42/LowPolyMedievalAssetsPack/archive/refs/heads/master.zip",
+      "status": "FAIL",
+      "failure_reason": "BLENDER_IMPORT_FAILURE",
+      "metrics": {
+        "download_time": 11.164,
+        "extraction_time": 0.608,
+        "blender_import_time": 0.0,
+        "fbx_export_time": 0.0,
+        "godot_import_time": 0.0,
+        "total_pipeline_time": 0.0,
+        "mesh_count": 24,
+        "material_count": 1,
+        "texture_count": 4
+      }
+    }
+  ]
+}

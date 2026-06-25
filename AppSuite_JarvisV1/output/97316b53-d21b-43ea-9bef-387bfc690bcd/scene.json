@@ -1,0 +1,1318 @@
+{
+  "ground": {
+    "size": 100,
+    "material": "grass"
+  },
+  "lighting": {
+    "preset": "warm_day",
+    "shadows": true,
+    "ambient": 0.3
+  },
+  "objects": [
+    {
+      "asset_id": "90d743b6-d87e-4aae-8798-5aab88121918",
+      "name": "house_90d743",
+      "role": "house",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\medieval_house_67e094a5.obj",
+      "location": [
+        -4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "6eae3dab-97ed-47de-8044-9478e1cefc7e",
+      "name": "house_6eae3d",
+      "role": "house",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\cottage_fc8ec624.obj",
+      "location": [
+        0.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "90d743b6-d87e-4aae-8798-5aab88121918",
+      "name": "house_90d743",
+      "role": "house",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\medieval_house_fe8a4742.obj",
+      "location": [
+        4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "6eae3dab-97ed-47de-8044-9478e1cefc7e",
+      "name": "house_6eae3d",
+      "role": "house",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\cottage_da888044.obj",
+      "location": [
+        -4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "90d743b6-d87e-4aae-8798-5aab88121918",
+      "name": "house_90d743",
+      "role": "house",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\medieval_house_bd6a9997.obj",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "6eae3dab-97ed-47de-8044-9478e1cefc7e",
+      "name": "house_6eae3d",
+      "role": "house",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\cottage_dc40328e.obj",
+      "location": [
+        4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_4c19be3c.obj",
+      "location": [
+        -7.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_60d7c264.obj",
+      "location": [
+        -1.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_788be6c8.obj",
+      "location": [
+        4.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_1fba9f23.obj",
+      "location": [
+        10.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_5ff3ad0d.obj",
+      "location": [
+        -7.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_47f5a0af.obj",
+      "location": [
+        -1.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_187b2e88.obj",
+      "location": [
+        4.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_22246808.obj",
+      "location": [
+        10.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_0b1a34c1.obj",
+      "location": [
+        -7.5,
+        0.0,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "c4babf3e-4643-4454-9a18-3877405771e9",
+      "name": "barrel_c4babf",
+      "role": "barrel",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\wooden_barrel_c4013cdb.obj",
+      "location": [
+        -1.5,
+        0.0,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_26ee3cab.obj",
+      "location": [
+        -13.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_f345567e.obj",
+      "location": [
+        -5.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_b90f7672.obj",
+      "location": [
+        3.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_9073ad60.obj",
+      "location": [
+        11.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_fb1ee7fb.obj",
+      "location": [
+        19.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_f77b5d9a.obj",
+      "location": [
+        -13.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_74427f83.obj",
+      "location": [
+        -5.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_f222fd6b.obj",
+      "location": [
+        3.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_fd3ec940.obj",
+      "location": [
+        11.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_eab56f1d.obj",
+      "location": [
+        19.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_0992c8a5.obj",
+      "location": [
+        -13.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_c0bcc61d.obj",
+      "location": [
+        -5.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_868c6e81.obj",
+      "location": [
+        3.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_1ff1b995.obj",
+      "location": [
+        11.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_f0ccc1b0.obj",
+      "location": [
+        19.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_0accc4a8.obj",
+      "location": [
+        -13.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_b65132cd.obj",
+      "location": [
+        -5.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_7905808d.obj",
+      "location": [
+        3.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "58ecca7e-b70b-49a5-ae04-00d48fb91074",
+      "name": "tree_58ecca",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\tree_c43f4780.obj",
+      "location": [
+        11.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "7b68069d-f653-4170-a797-38018b0763e8",
+      "name": "tree_7b6806",
+      "role": "tree",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\pine_tree_8bb45564.obj",
+      "location": [
+        19.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "0588d8b9-46f2-4118-a46f-ae4fd3d7e2d2",
+      "name": "road_0588d8",
+      "role": "road",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\cobblestone_road_63049f06.obj",
+      "location": [
+        4.5,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "road",
+        "base_color": [
+          0.4,
+          0.4,
+          0.42
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\villager_c4807c6e.obj",
+      "location": [
+        -6.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\peasant_character_e17a8529.obj",
+      "location": [
+        6.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\villager_d31955bf.obj",
+      "location": [
+        18.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\peasant_character_ae5839a2.obj",
+      "location": [
+        -6.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\villager_49bf7bdb.obj",
+      "location": [
+        6.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\peasant_character_f06d3871.obj",
+      "location": [
+        18.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "75349b85-f76d-49c4-8cd9-aab5f3be9217",
+      "name": "npc_75349b",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\villager_41dbc925.obj",
+      "location": [
+        -6.0,
+        0.0,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "246a5412-159c-488e-8147-eb627e59d090",
+      "name": "npc_246a54",
+      "role": "npc",
+      "source_file": "C:\\Users\\91629\\Downloads\\artisan-ai-main\\artisan-ai-main\\appsuite\\data\\assets\\peasant_character_e4968ab8.obj",
+      "location": [
+        6.0,
+        0.0,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    }
+  ]
+}

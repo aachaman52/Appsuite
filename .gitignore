@@ -1,0 +1,72 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE and Editor Files
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userossc
+*.sln
+*.docstates
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environments
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*
+env/
+venv/
+ENV/
+.venv/
+.venvs/
+env.bak/
+venv.bak/
+
+# Project caches and logs
+*.log
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# AppSuite specific temporary files, caches, and checkpoints
+*download_cache/
+*dag_checkpoint.json
+benchmark_report.json
+pipeline_reliability_v3.json
+
+# Godot-specific files
+.godot/
+.import/
+export_presets.cfg
+*.translation
+
+# Build and distribution
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST

@@ -1,0 +1,10 @@
+; AppSuite generated Godot project
+config_version=5
+
+[application]
+config/name="AppSuite_benchmar"
+run/main_scene="res://Scenes/main.tscn"
+config/features=PackedStringArray("4.6")
+
+[rendering]
+lights_and_shadows/use_physical_light_units=false

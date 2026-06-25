@@ -1,0 +1,124 @@
+# AppSuite
+
+AI-powered 3D asset generation, quality validation, and Godot scene content pipeline. Given a natural-language prompt, AppSuite dynamically searches or generates 3D assets, processes and validates them, assembles a scene layout in Blender, exports FBX files, imports them into Godot, and compiles a playable Godot scene.
+
+```
+Prompt
+  -> Asset Search / Generation (InternetWorker)
+  -> Asset Quality & Metadata Inspection (AnalysisWorker)
+  -> Blender Scene Assembly & Validation (BlenderWorker)
+  -> FBX Export & Material Survival Checks (BlenderWorker)
+  -> Godot Import & Resource Verification (GodotWorker)
+  -> Headless Scene Verification (Runtime Validator)
+  -> Playable Scene Generation & Launch
+```
+
+---
+
+## 1. Quick Start
+
+### Installation & Database Initialization
+Ensure you are using Python 3.12 (standard workspace path: `C:\Users\Aachman_the_great\AppData\Local\Programs\Python\Python312\python.exe`):
+```powershell
+# Install dependencies
+C:\Users\Aachman_the_great\AppData\Local\Programs\Python\Python312\python.exe -m pip install -r requirements.txt
+
+# Initialize SQLite database
+C:\Users\Aachman_the_great\AppData\Local\Programs\Python\Python312\python.exe scripts/init_db.py
+```
+
+### Running the API Server
+Start the FastAPI REST API (listening on port 8000; API documentation at `/docs`):
+```powershell
+C:\Users\Aachman_the_great\AppData\Local\Programs\Python\Python312\python.exe -m appsuite.main
+```
+
+### End-to-End Command Line Run
+Execute a full asset search, conversion, and scene generation run:
+```powershell
+C:\Users\Aachman_the_great\AppData\Local\Programs\Python\Python312\python.exe scripts/run_job.py "Create a medieval village with houses, barrels, trees, roads, NPCs and lighting."
+```
+
+Generated outputs are placed in:
+* Godot Project: `data/reliability_runs/<job_id>/<job_id>/godot_project/`
+* Blender Scene manifests & FBX files: `data/reliability_runs/<job_id>/<job_id>/`
+
+---
+
+## 2. Architecture
+
+| Component | Responsibility |
+| :--- | :--- |
+| **Jarvis Core** (`core/jarvis.py`) | Monitored system metrics (CPU, RAM, GPU, Disk, Network) to gate scheduling. |
+| **Supervisor** (`core/supervisor.py`) | Manages job lifecycle orchestration, pipeline retries, and worker failure recovery. |
+| **Provider Manager** (`core/provider_manager.py`) | Orchestrates AI/asset generator credentials, rate-limiting, and automatic failovers. |
+| **Asset Registry** (`core/asset_registry.py`) | Caches and tracks asset metadata, file hashes, source URLs, and local dependencies. |
+| **Memory System** (`core/memory.py`) | Records outcomes of previous prompts and generated layouts to optimize future runs. |
+| **Template Engine** (`core/templates.py`) | Translates a user's prompt into a structural scene template with asset slots. |
+| **Plugin Manager** (`core/plugin_manager.py`) | Exposes lifecycle hooks for third-party extensions. |
+| **Internet Worker** | Handles asset query searches, web downloads, cache lookups, and archive extraction. |
+| **Analysis Worker** | Parses glTF/GLB structure, maps material slots, and audits texture dependencies. |
+| **Blender Worker** | Headless scene import, object transform adjustment, material slot configuration, and FBX export. |
+| **Godot Worker** | Instantiates FBX, configures collisions, configures lighting parameters, and packs Godot scenes. |
+
+---
+
+## 3. High-Fidelity Texture Validation Pipeline
+
+A key pipeline focus is guaranteeing that imported models render correctly with their materials and textures in Godot. The asset pipeline performs validation checks across three phases:
+
+### Phase A: Pre-Import GLB/GLTF Conversion & Analysis
+* Because Blender 2.79b lacks native modern GLB/GLTF import support, a custom parser (`appsuite/utils/gltf_converter.py`) reads binary GLB structures and decomposes them into standard `.obj` models, `.mtl` material files, and texture image binaries.
+* The `AnalysisWorker` inspects the asset to find external textures and verifies that referenced image files exist on disk before sending the layout to Blender.
+
+### Phase B: Headless Blender Validation
+* During import, the headless Blender script verifies that:
+  1. Every `MESH` object has a material slot assigned (`MATERIAL_NOT_ASSIGNED`).
+  2. Every material has texture coordinates or image nodes assigned (`TEXTURE_NOT_ASSIGNED`).
+  3. Every referenced texture file resolves to a valid path on disk (`TEXTURE_NOT_FOUND`).
+* If verification fails, Blender halts export and registers errors in `blender_validation_errors.json`.
+* Script syntax is optimized for the Python 3.5 runtime packaged with Blender 2.79b (no f-strings).
+* After export, the worker scans the exported FBX binary files for the `Kaydara FBX Binary` signature and verifies that material names survived export.
+
+### Phase C: Godot Import & Runtime Verification
+* The `GodotWorker` verifies that every imported texture has a corresponding `.import` file generated by Godot's importer.
+* A GDScript runtime inspector (`scripts/validate_project_assets.gd`) instantiates the scene inside a headless Godot process, traverses the scene tree, and asserts:
+  * At least one `MeshInstance3D` node is instantiated.
+  * Every mesh slot has a valid material assigned.
+  * The materials resolve their texture parameters to valid active resources.
+* Real-time issues are captured in a structured validation JSON report.
+
+---
+
+## 4. Pipeline Diagnostics & Testing Tools
+
+### Reliability Sweep Suite (`scripts/test_pipeline_reliability.py`)
+AppSuite contains a comprehensive verification test suite that executes 15 real-world 3D assets across various formats:
+* **Kenney Assets (5)**: Modern GLB files with external textures.
+* **Poly Pizza Assets (5)**: Heavy FBX characters and props.
+* **OpenGameArt Assets (5)**: Legacy OBJ files.
+
+Run the reliability suite with:
+```powershell
+C:\Users\Aachman_the_great\AppData\Local\Programs\Python\Python312\python.exe scripts/test_pipeline_reliability.py
+```
+This runs the full pipeline end-to-end (Download -> Validate -> Blender Import -> FBX Export -> Godot Import -> Scene Generation -> Godot Editor Verification) and generates a detailed report: `reliability_report.md`.
+
+*Current Pipeline Score*: **80.0%** Success Rate (12 passed, 3 failed due to untextured source OBJ models lacking `.mtl` references, which correctly triggers expected pipeline failures).
+
+### Visual Godot Validation (`scripts/run_visual_validation.py`)
+This tool runs the Godot Editor on the generated project, waits for the viewport to render, takes a high-resolution screenshot, and runs a diagnostic report on the loaded scene:
+```powershell
+C:\Users\Aachman_the_great\AppData\Local\Programs\Python\Python312\python.exe scripts/run_visual_validation.py
+```
+Outputs:
+* **Screenshot**: `godot_screenshot.png`
+* **Visual Validation Report**: `godot_visual_validation_report.md` (Mesh count, material counts, texture status, and console import warnings/errors).
+
+---
+
+## 5. Configuration & Platform Tuning
+
+* **System Paths**: Set absolute paths to local Blender and Godot binaries inside `config/config.json`.
+* **Windows Support**: Binary availability checks verify absolute system paths via `Path(binary).exists()`, ensuring custom tool paths run properly without environment variable pollution.
+* **Database**: SQLite data store at `data/appsuite.db` tracking jobs, logs, and metadata.

@@ -1,0 +1,36 @@
+{
+  "app_name": "AppSuite",
+  "version": "1.0.0",
+  "host": "0.0.0.0",
+  "port": 8000,
+  "database_path": "data/appsuite.db",
+  "log_dir": "data/logs",
+  "log_level": "INFO",
+  "cache_dir": "data/cache",
+  "output_dir": "output",
+  "assets_dir": "data/assets",
+  "scheduler": {
+    "poll_interval_seconds": 2.0,
+    "max_concurrent_jobs": 1,
+    "cpu_high_watermark": 85.0,
+    "ram_high_watermark": 85.0,
+    "disk_low_watermark_gb": 1.0
+  },
+  "retries": {
+    "max_attempts": 3,
+    "backoff_seconds": 2.0,
+    "backoff_multiplier": 2.0
+  },
+  "download_cache_enabled": true,
+  "workers": {
+    "internet": { "enabled": true, "download_timeout": 120 },
+    "analysis": { "enabled": true, "min_quality_score": 0.4 },
+    "blender": { "enabled": true, "binary": "C:/Program Files/Blender Foundation/Blender 5.1/blender.exe", "headless": true },
+    "godot": { "enabled": true, "binary": "C:/Users/91629/OneDrive/เอกสาร/Desktop/godot-master/Godot_v4.6.2-stable_win64.exe", "headless": true },
+    "validation": { "enabled": true }
+  },
+  "plugins": {
+    "enabled": true,
+    "directory": "plugins"
+  }
+}
