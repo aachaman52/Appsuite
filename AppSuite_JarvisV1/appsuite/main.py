@@ -30,6 +30,7 @@ from .workers.deploy_worker import DeployWorker
 from .workers.godot_worker import GodotWorker
 from .workers.internet_worker import InternetWorker
 from .workers.validation_worker import ValidationWorker
+from .workers.code_worker import CodeWorker
 
 
 class AppContext:
@@ -71,6 +72,9 @@ class AppContext:
             "deploy": DeployWorker(
                 wcfg.get("deploy", {}), retries, worker_ctx,
                 output_dir=config.abs_path("output_dir")),
+            "code": CodeWorker(
+                wcfg.get("code", {}), retries, worker_ctx,
+                provider_manager=self.provider_manager),
         }
 
         from .config import PROJECT_ROOT

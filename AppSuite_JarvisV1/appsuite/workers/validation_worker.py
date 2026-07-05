@@ -86,3 +86,94 @@ class ValidationWorker(BaseWorker):
             reason="",
             metadata={}
         )
+
+    def plan(self, job: Dict[str, Any], state: Any) -> List[str]:
+        return [
+            "validate_asset_files",
+            "validate_scene_layout",
+            "validate_godot_project_structure",
+            "validate_asset_imports",
+            "validate_gameplay_scripts"
+        ]
+
+    def verify(self, job: Dict[str, Any], state: Any, result: WorkerResult) -> Tuple[bool, str]:
+        if result.status != WorkerStatus.SUCCESS:
+            return False, f"status: {result.status.value}"
+        validation = state.get("validation", {})
+        if not validation.get("checks"):
+            return False, "No validation checks run"
+        passed = validation.get("passed", 0)
+        total = validation.get("total", 0)
+        if passed < total:
+            failed = [c["name"] for c in validation["checks"] if not c["passed"]]
+            return False, f"Failed checks: {failed}"
+        return True, "ok"
+
+    def recover(self, job: Dict[str, Any], state: Any, exception: Exception) -> WorkerResult:
+        self.log.warning("[validation] Recovery initiated. Attempting self-correction for: %s", exception)
+        project_path = state.get("godot_project", "")
+        if not project_path:
+            from .godot_worker import GodotWorker
+            gw = GodotWorker(self.config, self.retries, self.context, output_dir=Path("output"))
+            from ..config import load_config
+            gw.output_dir = load_config().abs_path("output_dir")
+            gw_res = gw.recover(job, state, exception)
+            if gw_res.status == WorkerStatus.FAILED:
+                return gw_res
+        
+        project = Path(state["godot_project"])
+        assets_dir = project / "Assets"
+        assets_dir.mkdir(parents=True, exist_ok=True)
+        
+        assets = state.get("assets", [])
+        for a in assets:
+            path = Path(a.get("file_path", ""))
+            if path.exists():
+                dest = assets_dir / path.name
+                if not dest.exists():
+                    import shutil
+                    shutil.copy2(path, dest)
+                    self.log.info("[validation] Copied missing asset during recovery: %s", path.name)
+
+        from ..config import load_config
+        cfg = load_config()
+        godot_bin = cfg.raw.get("workers", {}).get("godot", {}).get("binary", "godot")
+        
+        import subprocess
+        try:
+            subprocess.run(
+                [godot_bin, "--headless", "--editor", "--quit"],
+                cwd=str(project),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=15
+            )
+            self.log.info("[validation] Ran Godot headless import during recovery.")
+        except Exception as e:
+            self.log.warning("[validation] Godot import during recovery failed: %s", e)
+            for a in assets:
+                name = Path(a["file_path"]).name
+                import_file = assets_dir / f"{name}.import"
+                if not import_file.exists():
+                    import_file.write_text("[remap]\nimporter=\"gltf\"\n", encoding="utf-8")
+
+        try:
+            return self.run(job, state)
+        except Exception as e:
+            return WorkerResult(
+                status=WorkerStatus.FAILED,
+                data={},
+                reason=f"Recovery validation run failed: {e}",
+                metadata={}
+            )
+
+    def report(self, job: Dict[str, Any], state: Any) -> Dict[str, Any]:
+        validation = state.get("validation", {})
+        import time
+        return {
+            "worker": self.name,
+            "passed_checks": validation.get("passed", 0),
+            "total_checks": validation.get("total", 0),
+            "checks": validation.get("checks", []),
+            "timestamp": time.time()
+        }

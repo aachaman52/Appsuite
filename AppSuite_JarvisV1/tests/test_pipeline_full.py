@@ -83,6 +83,8 @@ class TestPipelineFull(unittest.TestCase):
         )
         self.pipeline.supervisor = self.supervisor
         
+        for p in Path(".").glob("*_checkpoint.json"):
+            p.unlink(missing_ok=True)
         # Disable true health checks for mocking
         from appsuite.core.health import WorkerHealthMonitor
         WorkerHealthMonitor.preflight_check = MagicMock(return_value=(True, "OK"))
@@ -91,6 +93,8 @@ class TestPipelineFull(unittest.TestCase):
         import shutil
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
+        for p in Path(".").glob("*_checkpoint.json"):
+            p.unlink(missing_ok=True)
 
     def test_normal_success(self):
         job = {"id": "job1", "prompt": "test"}

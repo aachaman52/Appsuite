@@ -1,0 +1,1963 @@
+{
+  "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+  "completed": [
+    "code_1",
+    "asset_1"
+  ],
+  "pending": [
+    "godot_1",
+    "blender_1"
+  ],
+  "state": {
+    "job": {},
+    "current_node": "start",
+    "worker_result": null,
+    "history": [],
+    "metadata": {},
+    "pipeline_state": {
+      "template": {
+        "id": "medieval_village",
+        "name": "Medieval Village",
+        "keywords": [
+          "medieval",
+          "village",
+          "house",
+          "barrel",
+          "tree",
+          "road",
+          "npc"
+        ],
+        "asset_slots": [
+          {
+            "role": "house",
+            "count": 6,
+            "search_terms": [
+              "medieval house",
+              "cottage"
+            ]
+          },
+          {
+            "role": "barrel",
+            "count": 10,
+            "search_terms": [
+              "wooden barrel"
+            ]
+          },
+          {
+            "role": "tree",
+            "count": 20,
+            "search_terms": [
+              "tree",
+              "pine tree"
+            ]
+          },
+          {
+            "role": "road",
+            "count": 1,
+            "search_terms": [
+              "cobblestone road",
+              "dirt path"
+            ]
+          },
+          {
+            "role": "npc",
+            "count": 8,
+            "search_terms": [
+              "villager",
+              "peasant character"
+            ]
+          }
+        ],
+        "lighting": {
+          "preset": "warm_day",
+          "shadows": true,
+          "ambient": 0.3
+        },
+        "ground": {
+          "size": 100,
+          "material": "grass"
+        }
+      },
+      "assets": [
+        {
+          "id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "house",
+          "name": "kenney_city_house",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+          "file_hash": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f",
+          "file_size": 70088,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "city",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "house",
+          "name": "kenney_city_house",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_a22cbf\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+          "file_hash": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f",
+          "file_size": 70088,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "city",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "house",
+          "name": "kenney_city_house",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_a12696\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+          "file_hash": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f",
+          "file_size": 70088,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "city",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "house",
+          "name": "kenney_city_house",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_f333c4\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+          "file_hash": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f",
+          "file_size": 70088,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "city",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "house",
+          "name": "kenney_city_house",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_0734e1\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+          "file_hash": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f",
+          "file_size": 70088,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "city",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "house",
+          "name": "kenney_city_house",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_4851da\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+          "file_hash": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f",
+          "file_size": 70088,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "city",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_0b0b06\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_984f3f\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_f3dbdb\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_7667f2\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_be5eec\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_b8551a\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_5d946c\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_10affb\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_6dc6a6\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "barrel",
+          "name": "kenney_nature_barrel",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_826dd5\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_f1f528\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_e8688a\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_27fdaf\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_d08aa1\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_fb0eca\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_748521\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_27070d\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_f8b3ab\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_a032a7\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_6d1611\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_070bbd\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_ea2f00\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_2f797f\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_08c3d7\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_b7f3e3\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_688234\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_34746d\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_052307\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_80d682\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "tree",
+          "name": "kenney_nature_tree",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_ca35c4\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "nature",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "road",
+          "name": "kenney_city_road",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-City-Builder/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_6cb641\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+          "file_hash": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f",
+          "file_size": 70088,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "city",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_459af3\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_46931a\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_d96c68\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_905a9d\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_ba6f8a\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_9bd51e\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_3e7465\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        },
+        {
+          "id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+          "job_id": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+          "role": "npc",
+          "name": "kenney_platformer_npc",
+          "source": "kenney",
+          "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip",
+          "file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_d492ed\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+          "file_hash": "7112f6a08400914f9da546f3e6029e947cc9eab2b4a6da5eb99776111289efb1",
+          "file_size": 87624,
+          "format": "glb",
+          "quality_score": 0.8,
+          "metadata": {
+            "pack": "platformer",
+            "validation": {
+              "valid": true,
+              "reason": "ok (glb)",
+              "vertices": 0,
+              "faces": 0
+            },
+            "textures_expected": [
+              "colormap.png"
+            ],
+            "textures_external": [
+              "colormap.png"
+            ],
+            "materials_expected": [
+              "colormap"
+            ],
+            "material_to_texture": {
+              "colormap": "colormap"
+            },
+            "has_textures": true,
+            "vertices": 0,
+            "faces": 0,
+            "format": "glb"
+          },
+          "dependencies": [],
+          "cache_hit": true,
+          "dependencies_ok": true
+        }
+      ],
+      "normalized_assets": [],
+      "project_name": "29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+      "project_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\29cb2310-ac6e-4e1f-b8a1-bf8385989268",
+      "assets_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\29cb2310-ac6e-4e1f-b8a1-bf8385989268\\Assets",
+      "scenes_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\29cb2310-ac6e-4e1f-b8a1-bf8385989268\\Scenes",
+      "outputs_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\29cb2310-ac6e-4e1f-b8a1-bf8385989268\\Outputs",
+      "jobs_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\29cb2310-ac6e-4e1f-b8a1-bf8385989268\\Jobs",
+      "cache_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\29cb2310-ac6e-4e1f-b8a1-bf8385989268\\Cache",
+      "history_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\29cb2310-ac6e-4e1f-b8a1-bf8385989268\\History",
+      "fbx_path": null,
+      "godot_project": null,
+      "main_scene": null,
+      "validation": {},
+      "deployment_url": null,
+      "generated_scripts": [],
+      "stages": {
+        "CodeAgent": {
+          "ok": true,
+          "status": "success",
+          "execution_time": 0.014523029327392578
+        },
+        "AssetAgent": {
+          "ok": true,
+          "status": "success",
+          "execution_time": 17.428150177001953
+        }
+      },
+      "metadata": {}
+    },
+    "execution_history": [],
+    "metrics": {},
+    "checkpoints": [],
+    "failures": []
+  },
+  "timestamp": 1782647544.3887382
+}

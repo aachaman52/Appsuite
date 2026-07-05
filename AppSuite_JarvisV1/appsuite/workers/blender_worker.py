@@ -110,6 +110,41 @@ for obj in layout["objects"]:
     for o in imported:
         o.location = obj["location"]
         o.scale = obj["scale"]
+        
+        # Geometry repair / optimization
+        if o.type == 'MESH':
+            # Name normalization
+            clean_name = "".join(c if c.isalnum() else "_" for c in o.name).lower()
+            o.name = obj["role"] + "_" + clean_name
+            
+            # Select object to make it active for operations
+            bpy.ops.object.select_all(action='DESELECT')
+            o.select_set(True)
+            bpy.context.view_layer.objects.active = o
+            
+            # Edit mode geometry cleanups: remove doubles, fix normals
+            try:
+                bpy.ops.object.mode_set(mode='EDIT')
+                bpy.ops.mesh.remove_doubles()
+                bpy.ops.mesh.normals_make_consistent(inside=False)
+                # Auto UV unwrapping if missing
+                if not o.data.uv_layers:
+                    bpy.ops.uv.smart_project()
+                bpy.ops.object.mode_set(mode='OBJECT')
+            except Exception as e:
+                print("Repair failed on " + o.name + ": " + str(e))
+                try:
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                except Exception:
+                    pass
+
+            # Decimate / polygon reduction (e.g. reduction ratio of 0.8)
+            try:
+                decimate_mod = o.modifiers.new(name="Jarvis_Decimate", type='DECIMATE')
+                decimate_mod.ratio = 0.8
+                bpy.ops.object.modifier_apply(modifier="Jarvis_Decimate")
+            except Exception as e:
+                print("Decimation failed on " + o.name + ": " + str(e))
 
 # ─── FALLBACK MATERIAL CREATION ───────────────────────────────────────
 # If a mesh was imported without materials, automatically create and assign Jarvis_Fallback_Mat
@@ -251,12 +286,16 @@ bpy.ops.export_scene.fbx(filepath=fbx_path, path_mode='COPY', embed_textures=Tru
                  "; ----------------------------------------------------",
                  "FBXHeaderExtension:  {", "  FBXVersion: 7400", "}",
                  "Objects:  {"]
-        for o in layout["objects"]:
-            lines.append(f'  Model: "Model::{o["name"]}", "Mesh" {{')
-            lines.append(f'    Location: {o["location"]}')
-            lines.append(f'    Scale: {o["scale"]}')
+        for o in layout.get("objects", []):
+            name = o.get("name", o.get("role", "mesh"))
+            location = o.get("location", [0, 0, 0])
+            scale = o.get("scale", [1, 1, 1])
+            lines.append(f'  Model: "Model::{name}", "Mesh" {{')
+            lines.append(f'    Location: {location}')
+            lines.append(f'    Scale: {scale}')
             lines.append("  }")
         lines.append("}")
+        fbx_path.parent.mkdir(parents=True, exist_ok=True)
         fbx_path.write_text("\n".join(lines), encoding="utf-8")
 
     def run(self, job: Dict[str, Any], state: Any) -> 'WorkerResult':
@@ -373,6 +412,63 @@ bpy.ops.export_scene.fbx(filepath=fbx_path, path_mode='COPY', embed_textures=Tru
             reason="",
             metadata={}
         )
+
+    def plan(self, job: Dict[str, Any], state: Any) -> List[str]:
+        plan_tasks = []
+        if any(a.get("route") == "blender_to_godot" for a in state.get("assets", [])):
+            plan_tasks.append("optimize_assets_in_blender")
+            plan_tasks.append("export_fbx_scene")
+        else:
+            plan_tasks.append("skip_blender_route_directly")
+        return plan_tasks
+
+    def verify(self, job: Dict[str, Any], state: Any, result: WorkerResult) -> Tuple[bool, str]:
+        if result.status != WorkerStatus.SUCCESS:
+            return False, f"status: {result.status.value}"
+        blender_required = any(a.get("route") == "blender_to_godot" for a in state.get("assets", []))
+        if blender_required:
+            fbx_path_str = state.get("fbx_path", "")
+            if not fbx_path_str:
+                return False, "Blender was required but fbx_path is empty"
+            fbx_path = Path(fbx_path_str)
+            if not fbx_path.exists() or fbx_path.stat().st_size == 0:
+                return False, f"FBX file does not exist or is empty: {fbx_path_str}"
+        return True, "ok"
+
+    def recover(self, job: Dict[str, Any], state: Any, exception: Exception) -> WorkerResult:
+        self.log.warning("[blender] Recovery initiated. Falling back to ASCII FBX stub due to error: %s", exception)
+        project_path = state.get("project_path")
+        if project_path:
+            assets_dir = Path(state["assets_path"])
+        else:
+            assets_dir = self.output_dir / job["id"] / "assets"
+        assets_dir.mkdir(parents=True, exist_ok=True)
+        fbx_path = assets_dir / "scene.fbx"
+        layout = state.get("scene_layout", {})
+        self._write_fbx_stub(layout, fbx_path)
+        state["fbx_path"] = str(fbx_path)
+        return WorkerResult(
+            status=WorkerStatus.SUCCESS,
+            data={
+                "objects": len(layout.get("objects", [])),
+                "fbx": str(fbx_path),
+                "blender_binary_used": False,
+                "skipped_blender": False,
+                "recovered": True
+            },
+            reason="Recovered via ASCII FBX stub.",
+            metadata={"recovered": True}
+        )
+
+    def report(self, job: Dict[str, Any], state: Any) -> Dict[str, Any]:
+        fbx_path_str = state.get("fbx_path", "")
+        fbx_size = Path(fbx_path_str).stat().st_size if fbx_path_str and Path(fbx_path_str).exists() else 0
+        return {
+            "worker": self.name,
+            "fbx_path": fbx_path_str,
+            "fbx_size_bytes": fbx_size,
+            "timestamp": time.time()
+        }
 
 
 def _role_color(role: str) -> List[float]:

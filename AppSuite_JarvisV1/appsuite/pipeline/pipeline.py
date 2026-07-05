@@ -15,7 +15,8 @@ from ..logging_setup import get_logger
 from ..core.project import Project
 from ..core.asset_router import AssetRouter
 from ..core.asset_normalizer import AssetNormalizer
-from ..core.state import JobState, WorkerStatus, WorkerResult
+from ..core.state import WorkerStatus, WorkerResult
+from ..engine.job_state import UnifiedJobState as JobState
 
 log = get_logger("pipeline")
 
@@ -44,21 +45,127 @@ class Pipeline:
         
         self.orchestrator = None
         if self.orchestrator_mode == "graph":
-            from ..graph.graph import GraphOrchestrator
-            from ..graph.nodes import BaseNode, ParallelInternetNode
+            from ..engine.orchestrator import GraphOrchestrator
+            
+            # Local legacy wrappers for backward compatibility with orchestrator.run()
+            class LegacyNode:
+                def __init__(self, name: str, worker: Any):
+                    self.name = name
+                    self.worker = worker
+                def process(self, state: Any) -> Any:
+                    from ..core.health import WorkerHealthMonitor
+                    worker_type = self.name.split('_')[0]
+                    is_healthy, h_reason = WorkerHealthMonitor.preflight_check(worker_type)
+                    if not is_healthy:
+                        result = WorkerResult(status=WorkerStatus.FAILED, reason=h_reason)
+                    else:
+                        if hasattr(self.worker, "process"):
+                            result = self.worker.process(state.job, state.pipeline_state)
+                        else:
+                            result = self.worker.run(state.job, state.pipeline_state)
+                    state.worker_result = result
+                    state.current_node = self.name
+                    state.history.append(self.name)
+                    return state
+
+            class LegacyParallelInternetNode(LegacyNode):
+                def process(self, state: Any) -> Any:
+                    import time
+                    from concurrent.futures import ThreadPoolExecutor, as_completed
+                    from pathlib import Path
+                    
+                    t0 = time.time()
+                    try:
+                        template = state.pipeline_state.get("template", {})
+                        job_id = state.job["id"]
+                        tasks = []
+                        seen_tasks = set()
+                        for slot in template.get("asset_slots", []):
+                            role = slot["role"]
+                            terms = slot.get("search_terms", [role])
+                            count = slot.get("count", 1)
+                            for i in range(count):
+                                term = terms[i % len(terms)]
+                                if (role, term) not in seen_tasks:
+                                    seen_tasks.add((role, term))
+                                    tasks.append((role, term))
+                                
+                        assets = []
+                        cache_hits = 0
+                        real_downloads = 0
+                        
+                        def fetch_with_retry(job_id, role, term):
+                            last_err = None
+                            for attempt in range(3):
+                                try:
+                                    asset = self.worker.search_and_fetch(job_id, role, term)
+                                    if "file_path" in asset and asset["file_path"]:
+                                        fpath = Path(asset["file_path"])
+                                        if fpath.exists():
+                                            if fpath.stat().st_size == 0:
+                                                fpath.unlink()
+                                                raise ValueError(f"Corrupted 0-byte file downloaded for {role}")
+                                    return asset
+                                except Exception as e:
+                                    last_err = e
+                                    time.sleep(1)
+                            raise last_err
+                        
+                        max_workers = getattr(self.worker, 'config', {}).get('max_concurrent_downloads', 5)
+                        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                            future_to_task = {
+                                executor.submit(fetch_with_retry, job_id, role, term): (role, term)
+                                for role, term in tasks
+                            }
+                            for future in as_completed(future_to_task):
+                                role, term = future_to_task[future]
+                                try:
+                                    asset = future.result()
+                                    assets.append(asset)
+                                    if asset.get("cache_hit"):
+                                        cache_hits += 1
+                                    if asset.get("source") in ("kenney", "poly_pizza"):
+                                        real_downloads += 1
+                                except Exception as e:
+                                    raise e
+                        
+                        state.pipeline_state["assets"] = assets
+                        result = WorkerResult(
+                            status=WorkerStatus.SUCCESS,
+                            data={
+                                "assets_fetched": len(assets),
+                                "cache_hits": cache_hits,
+                                "real_downloads": real_downloads
+                            },
+                            reason="",
+                            metadata={"assets_created": len(assets)}
+                        )
+                    except Exception as e:
+                        result = WorkerResult(
+                            status=WorkerStatus.FAILED,
+                            reason=str(e),
+                            metadata={"error_type": type(e).__name__}
+                        )
+                    
+                    result.metadata["execution_time"] = time.time() - t0
+                    state.worker_result = result
+                    state.current_node = self.name
+                    state.history.append(self.name)
+                    return state
+
             self.orchestrator = GraphOrchestrator(self.db)
             if "internet" in self.workers:
-                self.orchestrator.add_node("asset_search", ParallelInternetNode("asset_search", self.workers["internet"]))
+                self.orchestrator.add_node("asset_search", LegacyParallelInternetNode("asset_search", self.workers["internet"]))
             if "analysis" in self.workers:
-                self.orchestrator.add_node("asset_processing", BaseNode("asset_processing", self.workers["analysis"]))
+                self.orchestrator.add_node("asset_processing", LegacyNode("asset_processing", self.workers["analysis"]))
             if "blender" in self.workers:
-                self.orchestrator.add_node("blender_import", BaseNode("blender_import", self.workers["blender"]))
+                self.orchestrator.add_node("blender_import", LegacyNode("blender_import", self.workers["blender"]))
             if "godot" in self.workers:
-                self.orchestrator.add_node("godot_import", BaseNode("godot_import", self.workers["godot"]))
+                self.orchestrator.add_node("godot_import", LegacyNode("godot_import", self.workers["godot"]))
             if "validation" in self.workers:
-                self.orchestrator.add_node("output_validation", BaseNode("output_validation", self.workers["validation"]))
+                self.orchestrator.add_node("output_validation", LegacyNode("output_validation", self.workers["validation"]))
             if "deploy" in self.workers:
-                self.orchestrator.add_node("cloud_deploy", BaseNode("cloud_deploy", self.workers["deploy"]))
+                self.orchestrator.add_node("cloud_deploy", LegacyNode("cloud_deploy", self.workers["deploy"]))
 
     def _try_reuse_prior_assets(
         self, job_id: str, prompt: str, state: Dict[str, Any]
@@ -114,7 +221,7 @@ class Pipeline:
         project = Project(job_id, self.output_dir / "projects")
         project.setup_directories()
 
-        state = JobState(template=template)
+        state = JobState(template=template, job=job)
         state.update(project.get_state_dict())
         state.project = project
 
@@ -138,7 +245,38 @@ class Pipeline:
         results: Dict[str, Any] = {}
         
         if self.orchestrator_mode == "graph":
-            from ..graph.router import DecisionNode
+            from ..core.supervisor import SupervisorAction
+            
+            class DecisionNode:
+                def __init__(self, supervisor):
+                    self.supervisor = supervisor
+                def route(self, state) -> str:
+                    if not state.worker_result:
+                        return "END"
+                    job_id = state.job["id"]
+                    stage_name = state.current_node
+                    action = self.supervisor.handle_result(job_id, stage_name, state.worker_result)
+                    if action == SupervisorAction.ABORT:
+                        return "ABORT"
+                    if state.worker_result and state.worker_result.status.name == "NEED_ASSET":
+                        return "asset_search"
+                    if action in (SupervisorAction.RETRY, SupervisorAction.CHANGE_PROVIDER):
+                        return stage_name
+                    elif action == SupervisorAction.PROCEED:
+                        if stage_name == "asset_search":
+                            return "asset_processing"
+                        elif stage_name == "asset_processing":
+                            return "blender_import"
+                        elif stage_name == "blender_import":
+                            return "godot_import"
+                        elif stage_name == "godot_import":
+                            return "output_validation"
+                        elif stage_name == "output_validation":
+                            return "cloud_deploy"
+                        elif stage_name == "cloud_deploy":
+                            return "END"
+                    return "END"
+            
             graph = self.orchestrator
             
             # Setup router

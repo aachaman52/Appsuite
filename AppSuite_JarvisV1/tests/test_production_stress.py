@@ -11,9 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from appsuite.pipeline.pipeline import Pipeline
 from appsuite.core.supervisor import Supervisor
 from appsuite.core.state import WorkerResult, WorkerStatus
-from appsuite.graph.graph import GraphOrchestrator
-from appsuite.graph.nodes import BaseNode, ParallelInternetNode
-from appsuite.graph.router import DecisionNode
+from appsuite.engine.orchestrator import GraphOrchestrator
 
 class MockWorker:
     def __init__(self, key):
@@ -118,8 +116,8 @@ class TestProductionStress(unittest.TestCase):
             "asset_slots": [{"role": "mock", "count": 1, "search_terms": ["mock"]}]
         }
         # Force a checkpoint creation where internet completed successfully
-        from appsuite.graph.state import GraphState
-        state = GraphState(job={"id": "job_resume"}, pipeline_state={"template": self.templates.resolve.return_value}, current_node="blender_import")
+        from appsuite.engine.job_state import UnifiedJobState
+        state = UnifiedJobState(job={"id": "job_resume"}, template=self.templates.resolve.return_value, current_node="blender_import")
         with open("job_resume_checkpoint.json", "w") as f:
             json.dump(state.to_dict(), f)
             

@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from .jarvis_brain import ExecutionPlan
+from .world_model import WorldModel
 
 from ..db import Database
 from ..logging_setup import get_logger
@@ -193,12 +194,15 @@ class JarvisCore:
         exec_plan = self._brain.plan_execution(prompt, template_id)
         
         # Resolve template just for logging/reporting backwards compatibility
-        scene_plan = {"needed_assets": [{"role": "mock", "count": 1, "search_terms": ["mock"]}]}
         template = self._templates.resolve(prompt, template_id) if self._templates else {"id": "generic_scene"}
+        resolved_template_id = exec_plan.template_id or template.get("id", "generic_scene")
+        scene_plan = exec_plan.metadata.get("scene_plan") or exec_plan.metadata.get("needed_assets") or template.get("scene_plan") or {"needed_assets": []}
+        if isinstance(scene_plan, list):
+            scene_plan = {"needed_assets": scene_plan}
         
         return JarvisPlan(
             prompt=prompt,
-            template_id=template["id"],
+            template_id=resolved_template_id,
             scene_plan=scene_plan,
             use_cached_assets=exec_plan.reused_assets,
             cached_job_id=exec_plan.metadata.get("matched_job"),
@@ -241,92 +245,206 @@ class JarvisCore:
         job["template_id"]  = plan.template_id
         job["_jarvis_plan"] = plan
 
-        last_exc = None
-        for attempt in range(1, max_attempts + 1):
-            try:
-                log.info("[Jarvis] Executing pipeline attempt %d/%d for job %s",
-                         attempt, max_attempts, job["id"][:8])
-                         
-                # Phase 6.5: Agent Execution Route
-                if plan.agent_tasks:
-                    log.info("[Jarvis] Using AgentCoordinator for dynamic task routing.")
-                    from ..agents.coordinator import AgentCoordinator
-                    from ..agents.message_bus import MessageBus
-                    if not self._coordinator:
-                        mb = MessageBus()
-                        # Extract the graph orchestrator if pipeline is using graph mode
-                        graph_orchestrator = getattr(self._pipeline, 'orchestrator', None)
-                        self._coordinator = AgentCoordinator(mb, memory=self._memory, orchestrator=graph_orchestrator, hardware=self._hardware, brain=self._brain)
-                    
-                    # We need a job state payload for the agents
-                    from ..core.state import JobState
-                    from ..core.project import Project
-                    
-                    template = self._templates.resolve(job["prompt"], plan.template_id) if self._templates else {"id": "generic_scene"}
-                    
-                    # Setup Project workspace
-                    project = Project(job["id"], self._pipeline.output_dir)
-                    project.setup_directories()
-                    
-                    pipeline_state = JobState(template=template)
-                    pipeline_state.update(project.get_state_dict())
-                    pipeline_state.project = project
-                    pipeline_state["template"] = template
-                    
-                    # If reusing assets, load them from cache/registry
-                    cached_assets = []
-                    if plan.use_cached_assets and plan.cached_job_id:
-                        prior_assets = self._registry.for_job(plan.cached_job_id) if self._registry else []
-                        for a in prior_assets:
-                            fp = Path(a.get("file_path", ""))
-                            if fp.exists() and fp.stat().st_size > 0:
-                                cached_assets.append(dict(a))
-                                
-                    pipeline_state["assets"] = cached_assets
-                    pipeline_state["normalized_assets"] = []
-                    pipeline_state["scene_layout"] = {}
-                    
-                    job_state_dict = {
-                        "job": job,
-                        "pipeline_state": pipeline_state
-                    }
-                    agent_results = self._coordinator.execute_plan(plan.agent_tasks, job_state_dict)
-                    
-                    # Log results
-                    for res in agent_results:
-                        log.info("Agent %s finished: %s", res.agent_name, res.status)
-                    
-                    # Check if any agent failed and propagate error
-                    for res in agent_results:
-                        if res.status == "failed":
-                            raise RuntimeError(f"Agent {res.agent_name} failed: {res.output.get('error', 'Unknown error')}")
-                    
-                    pstate = job_state_dict.get("pipeline_state", {})
-                    
-                    # For compatibility, return a summary structure
-                    return {
+        if plan.agent_tasks:
+            log.info("[Jarvis] Using Native StateGraph (LangGraph pattern) for dynamic execution, reflection, and replanning.")
+            from ..engine.langgraph_agent import StateGraph
+            from ..core.project import Project
+            from ..engine.job_state import UnifiedJobState
+            from ..agents.coordinator import AgentCoordinator
+            from ..agents.message_bus import MessageBus
+
+            graph = StateGraph()
+
+            # Define graph nodes
+            def initialize_node(state):
+                template = self._templates.resolve(state["job"]["prompt"], state["plan"].template_id) if self._templates else {"id": "generic_scene"}
+                project = Project(state["job"]["id"], self._pipeline.output_dir)
+                project.setup_directories()
+
+                pipeline_state = UnifiedJobState(template=template)
+                pipeline_state.update(project.get_state_dict())
+                pipeline_state.project = project
+                pipeline_state["template"] = template
+                pipeline_state.world_model = WorldModel(state["job"]["id"], self._db) if self._db else None
+
+                # Load cached assets if requested
+                cached_assets = []
+                if state["plan"].use_cached_assets and state["plan"].cached_job_id:
+                    prior_assets = self._registry.for_job(state["plan"].cached_job_id) if self._registry else []
+                    for a in prior_assets:
+                        fp = Path(a.get("file_path", ""))
+                        if fp.exists() and fp.stat().st_size > 0:
+                            cached_assets.append(dict(a))
+
+                pipeline_state["assets"] = cached_assets
+                pipeline_state["normalized_assets"] = []
+                pipeline_state["scene_layout"] = {}
+
+                state["pipeline_state"] = pipeline_state
+                return state
+
+            def execute_node(state):
+                log.info("[Jarvis StateGraph] Executing Node: execute (Attempt %d/%d)", state["attempt"], state["max_attempts"])
+                if not self._coordinator:
+                    mb = MessageBus()
+                    graph_orchestrator = getattr(self._pipeline, 'orchestrator', None)
+                    self._coordinator = AgentCoordinator(
+                        mb, memory=self._memory, orchestrator=graph_orchestrator,
+                        hardware=self._hardware, brain=self._brain, workers=self._workers
+                    )
+
+                job_state_dict = {
+                    "job": state["job"],
+                    "pipeline_state": state["pipeline_state"]
+                }
+
+                agent_results = self._coordinator.execute_plan(state["agent_tasks"], job_state_dict)
+                state["agent_results"] = agent_results
+                state["pipeline_state"] = job_state_dict["pipeline_state"]
+                return state
+
+            def reflect_node(state):
+                log.info("[Jarvis StateGraph] Executing Node: reflect")
+                failed_tasks = [r for r in state["agent_results"] if r.status == "failed"]
+
+                # Human Override / Diagnostic Hook
+                if hasattr(self, "on_reasoning_step") and self.on_reasoning_step:
+                    try:
+                        self.on_reasoning_step({
+                            "node": "reflect",
+                            "attempt": state["attempt"],
+                            "failed_tasks": [t.task_id for t in failed_tasks],
+                            "results": [r.__dict__ for r in state["agent_results"]]
+                        })
+                    except Exception:
+                        pass
+
+                if not failed_tasks:
+                    state["outcome"] = "success"
+                    pstate = state["pipeline_state"]
+                    state["result"] = {
                         "status": "success",
                         "godot_project": pstate.get("godot_project"),
                         "main_scene": pstate.get("main_scene"),
                         "deployment_url": pstate.get("deployment_url"),
                         "asset_count": len(pstate.get("assets", [])),
                         "stages": pstate.get("stages", {}),
-                        "agent_results": [r.__dict__ for r in agent_results]
+                        "agent_results": [r.__dict__ for r in state["agent_results"]]
                     }
                 else:
-                    # Legacy execution
+                    # Log failures to failure memory (Long-Term Memory Integration)
+                    for f in failed_tasks:
+                        err_msg = f.output.get("error", "Unknown error")
+                        log.warning("[Jarvis StateGraph] Task %s (%s) failed: %s", f.task_id, f.agent_name, err_msg)
+                        if hasattr(self._memory, "failure") and hasattr(self._memory.failure, "log_failure"):
+                            self._memory.failure.log_failure(
+                                state["job"]["prompt"],
+                                err_msg,
+                                {"task_id": f.task_id, "agent_type": f.agent_name}
+                            )
+
+                    # Check if retry or replan is possible
+                    if state["attempt"] < state["max_attempts"]:
+                        state["outcome"] = "replan"
+                    else:
+                        state["outcome"] = "failed"
+                        first_err = failed_tasks[0].output.get("error", "Unknown agent error")
+                        state["error"] = f"Agent {failed_tasks[0].agent_name} failed: {first_err}"
+                return state
+
+            def replan_node(state):
+                log.info("[Jarvis StateGraph] Executing Node: replan")
+                state["attempt"] += 1
+
+                # Gather details of the failures to send back to the planner
+                failed_details = []
+                for r in state["agent_results"]:
+                    if r.status == "failed":
+                        failed_details.append(f"Task {r.task_id} ({r.agent_name}) failed with error: {r.output.get('error')}")
+
+                # Call Brain to replan using failure history context
+                try:
+                    replan_prompt = (
+                        f"Prior execution attempt for goal '{state['job']['prompt']}' failed.\n"
+                        f"Failures encountered:\n" + "\n".join(failed_details) + "\n"
+                        "Generate a corrected execution plan/DAG to fix the failures."
+                    )
+                    new_exec_plan = self._brain.plan_execution(replan_prompt, getattr(state["plan"], "template_id", None))
+                    if new_exec_plan and new_exec_plan.agent_tasks:
+                        state["agent_tasks"] = new_exec_plan.agent_tasks
+                        state["plan"] = new_exec_plan
+                except Exception as e:
+                    log.warning("[Jarvis StateGraph] LLM replanning failed: %s. Proceeding with standard retry.", e)
+
+                # Linear backoff before executing again
+                wait = backoff * (state["attempt"] - 1)
+                log.info("[Jarvis StateGraph] Retrying tasks in %.1fs ...", wait)
+                time.sleep(wait)
+                return state
+
+            def routing_fn(state):
+                return state["outcome"]
+
+            # Wire the graph
+            graph.add_node("initialize", initialize_node)
+            graph.add_node("execute", execute_node)
+            graph.add_node("reflect", reflect_node)
+            graph.add_node("replan", replan_node)
+
+            graph.set_entry_point("initialize")
+            graph.add_edge("initialize", "execute")
+            graph.add_edge("execute", "reflect")
+            graph.add_conditional_edges(
+                "reflect",
+                routing_fn,
+                {
+                    "success": "__end__",
+                    "failed": "__end__",
+                    "replan": "replan"
+                }
+            )
+            graph.add_edge("replan", "execute")
+
+            compiled_graph = graph.compile()
+            initial_state = {
+                "job": job,
+                "plan": plan,
+                "attempt": 1,
+                "max_attempts": max_attempts,
+                "agent_tasks": list(plan.agent_tasks),
+                "pipeline_state": None,
+                "agent_results": [],
+                "outcome": None,
+                "result": None,
+                "error": None,
+                "reasons": list(plan.reasons)
+            }
+
+            final_state = compiled_graph.invoke(initial_state)
+
+            if final_state["outcome"] == "success":
+                return final_state["result"]
+            else:
+                raise RuntimeError(final_state.get("error", "Graph execution failed"))
+        else:
+            # Legacy non-graph execution (runs the legacy Pipeline directly)
+            last_exc = None
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    log.info("[Jarvis] Executing legacy pipeline attempt %d/%d for job %s",
+                             attempt, max_attempts, job["id"][:8])
                     summary = self._pipeline.execute(job)
                     return summary
-            except Exception as exc:
-                last_exc = exc
-                log.warning("[Jarvis] Pipeline attempt %d failed: %s", attempt, exc)
-                if not self._should_retry(exc, attempt, max_attempts):
-                    break
-                wait = backoff * attempt
-                log.info("[Jarvis] Retrying in %.1fs ...", wait)
-                time.sleep(wait)
+                except Exception as exc:
+                    last_exc = exc
+                    log.warning("[Jarvis] Legacy pipeline attempt %d failed: %s", attempt, exc)
+                    if not self._should_retry(exc, attempt, max_attempts):
+                        break
+                    wait = backoff * attempt
+                    log.info("[Jarvis] Retrying in %.1fs ...", wait)
+                    time.sleep(wait)
+            raise last_exc
 
-        raise last_exc  # propagate after all retries exhausted
 
     # ── Memory integration ────────────────────────────────────────────────────
 

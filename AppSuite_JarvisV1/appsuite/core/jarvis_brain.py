@@ -8,6 +8,7 @@ from .hardware_manager import HardwareManager
 from .provider_manager import ProviderManager
 from .semantic_memory import SemanticMemory
 from .token_banker import TokenBanker
+from .worker_scorer import WorkerScoreRegistry
 
 
 @dataclass
@@ -16,14 +17,18 @@ class ExecutionPlan:
     reasoning: str
     reused_assets: bool = False
     metadata: Dict[str, Any] = field(default_factory=dict)
-    agent_tasks: List[Any] = field(default_factory=list) # List of AgentTask
-    
+    agent_tasks: List[Any] = field(default_factory=list)  # List of AgentTask
+    # Carries the resolved template_id so that replan_node can read it even
+    # after state["plan"] is replaced from JarvisPlan → ExecutionPlan.
+    template_id: Optional[str] = None
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "stages": self.stages,
             "reasoning": self.reasoning,
             "reused_assets": self.reused_assets,
             "metadata": self.metadata,
+            "template_id": self.template_id,
             "agent_tasks": [t.__dict__ for t in self.agent_tasks] if self.agent_tasks else []
         }
 
@@ -47,37 +52,173 @@ class JarvisBrain:
 
     def plan_execution(self, prompt: str, template_id: Optional[str] = None) -> ExecutionPlan:
         """Analyze the job and generate an optimal execution plan."""
-        
-        # 1. Check Semantic Memory for previous successes
-        similar_job = self.memory.recall_similar(prompt, threshold=0.7)
-        
+        import json
         from ..agents.base_agent import AgentTask
+
+        # 1. Retrieve failure history context from Semantic Memory (Long-Term Memory)
+        past_failures = []
+        if hasattr(self.memory, "failure") and hasattr(self.memory.failure, "get_failures_for_prompt"):
+            past_failures = self.memory.failure.get_failures_for_prompt(prompt)
         
-        # Phase 6.5: Generate Dependency Graph of AgentTask
+        failure_hints = ""
+        if past_failures:
+            failure_hints = "\nAvoid the following past errors/failures:\n" + "\n".join(
+                [f"- Node/Error: {f.get('error')} in context: {f.get('context')}" for f in past_failures]
+            )
+
+        system_instruction = (
+            "You are Jarvis, the Autonomous Game Engineer Planner.\n"
+            "Given a user description of a game scene, design a structured execution plan.\n"
+            "Respond ONLY with a valid JSON object matching this schema:\n"
+            "{\n"
+            "  \"template_id\": \"generic_scene\" or \"medieval_village\" or appropriate,\n"
+            "  \"reasoning\": \"Detailed reasoning for your decisions\",\n"
+            "  \"needed_assets\": [\n"
+            "    {\"role\": \"asset_role_name\", \"count\": 1, \"search_terms\": [\"term1\", \"term2\"], \"required\": true}\n"
+            "  ],\n"
+            "  \"agent_tasks\": [\n"
+            "    {\n"
+            "      \"task_id\": \"task_unique_id\",\n"
+            "      \"agent_type\": \"AssetAgent\" | \"BlenderAgent\" | \"CodeAgent\" | \"GodotAgent\" | \"BrowserAgent\",\n"
+            "      \"objective\": \"Clear objective for the agent\",\n"
+            "      \"dependencies\": [\"other_task_id\"],\n"
+            "      \"priority\": 1\n"
+            "    }\n"
+            "  ]\n"
+            "}\n"
+            f"{failure_hints}"
+        )
+
+        # 2. Try LLM Planning
+        json_plan = None
+        has_llm = False
+        try:
+            # Check if any live LLM providers are enabled
+            has_llm = any(p.get("enabled") and p.get("type") == "llm" for p in self.providers._providers)
+        except Exception:
+            pass
+
+        if has_llm:
+            attempt = 0
+            current_prompt = f"Goal: {prompt}"
+            while attempt < 2 and json_plan is None:
+                attempt += 1
+                try:
+                    response_text = self.providers.generate_text(
+                        prompt=current_prompt,
+                        task_type="plan",
+                        system_instruction=system_instruction,
+                        timeout=15.0
+                    )
+                    
+                    if response_text:
+                        clean_response = response_text.strip()
+                        if clean_response.startswith("```json"):
+                            clean_response = clean_response[7:]
+                        if clean_response.endswith("```"):
+                            clean_response = clean_response[:-3]
+                        clean_response = clean_response.strip()
+                        
+                        parsed = json.loads(clean_response)
+                        if isinstance(parsed, dict) and "template_id" in parsed and "agent_tasks" in parsed:
+                            json_plan = parsed
+                            break
+                except Exception as parse_err:
+                    current_prompt = f"Goal: {prompt}\nYour previous response was invalid JSON: {parse_err}. Please output valid JSON only."
+
+        # 3. If LLM planning succeeded, return the plan
+        if json_plan:
+            duration_defaults = {
+                "AssetAgent": 15.0,
+                "BlenderAgent": 120.0,
+                "GodotAgent": 90.0,
+                "CodeAgent": 10.0,
+                "BrowserAgent": 5.0,
+            }
+            score_registry = WorkerScoreRegistry(self.memory)
+            worker_scores = score_registry.score_workers()
+            agent_tasks = []
+            for task_data in json_plan.get("agent_tasks", []):
+                agent_type = task_data.get("agent_type", "AssetAgent")
+                agent_tasks.append(
+                    AgentTask(
+                        task_id=task_data.get("task_id", "task_id"),
+                        agent_type=agent_type,
+                        objective=task_data.get("objective", ""),
+                        dependencies=task_data.get("dependencies", []),
+                        priority=task_data.get("priority", 1),
+                        estimated_duration_seconds=float(task_data.get("estimated_duration_seconds", duration_defaults.get(agent_type, 10.0))),
+                        metadata={
+                            "preferred_worker_config": task_data.get("preferred_worker_config", {}),
+                            "worker_score": worker_scores.get(agent_type, 0.0)
+                        }
+                    )
+                )
+
+            # Map agent types to pipeline stages
+            stages = ["output_validation"]
+            agent_types = {t.agent_type for t in agent_tasks}
+            if "AssetAgent" in agent_types:
+                stages.insert(0, "asset_search")
+                stages.insert(1, "asset_processing")
+            if "BlenderAgent" in agent_types:
+                stages.append("blender_import")
+            if "GodotAgent" in agent_types:
+                stages.append("godot_import")
+            if "BrowserAgent" in agent_types:
+                stages.insert(0, "browser")
+            stages.append("cloud_deploy")
+
+            # Store in strategy memory (Long-Term Memory)
+            if hasattr(self.memory, "strategy") and hasattr(self.memory.strategy, "add_strategy"):
+                self.memory.strategy.add_strategy(prompt, json_plan, "success")
+
+            metadata = {
+                "llm_planned": True,
+                "needed_assets": json_plan.get("needed_assets", []),
+                "scene_plan": json_plan.get("scene_plan", {"needed_assets": json_plan.get("needed_assets", [])}),
+            }
+
+            return ExecutionPlan(
+                stages=stages,
+                agent_tasks=agent_tasks,
+                reasoning=json_plan.get("reasoning", "LLM-generated plan"),
+                reused_assets=bool(json_plan.get("reused_assets", False)),
+                metadata=metadata,
+                template_id=json_plan.get("template_id", template_id),
+            )
+
+        # 4. Fallback to Rules-based Planner
+        similar_job = None
+        if hasattr(self.memory, "strategy") and hasattr(self.memory.strategy, "get_similar_strategies"):
+            similar_strategies = self.memory.strategy.get_similar_strategies(prompt, limit=3, threshold=0.35)
+            if similar_strategies:
+                similar_job = similar_strategies[0]
+        if not similar_job:
+            similar_job = self.memory.recall_similar(prompt, threshold=0.7)
         agent_tasks = []
         
         if similar_job and similar_job.get("outcome") == "success":
-            # Reusing assets means no AssetAgent needed
             t1 = AgentTask(task_id="blender_1", agent_type="BlenderAgent", objective="Optimize cached models", priority=1)
             t2 = AgentTask(task_id="code_1", agent_type="CodeAgent", objective="Generate scripts", priority=2)
             t3 = AgentTask(task_id="godot_1", agent_type="GodotAgent", objective="Build scene", dependencies=["blender_1", "code_1"], priority=1)
             agent_tasks.extend([t1, t2, t3])
             
+            matched_job_id = similar_job.get("job_id") or (similar_job.get("strategy") or {}).get("job_id")
             return ExecutionPlan(
                 stages=["asset_processing", "blender_import", "godot_import", "output_validation", "cloud_deploy"],
                 agent_tasks=agent_tasks,
-                reasoning=f"Found high-confidence semantic match (score {similar_job.get('similarity_score', 0):.2f}) from job {similar_job.get('job_id')}. Reusing assets and bypassing search.",
+                reasoning=f"Found high-confidence semantic match (score {similar_job.get('similarity_score', 0):.2f}) from job {matched_job_id or 'unknown'}. Reusing assets and bypassing search.",
                 reused_assets=True,
-                metadata={"matched_job": similar_job.get("job_id")}
+                metadata={"matched_job": matched_job_id},
+                template_id=template_id,
             )
             
-        # 2. Hardware Resource Check
         res = self.hardware.resources()
         if res.get("ram_percent", 0) > 90.0:
-            # We will still schedule the job, but the pipeline/hardware manager might pause workers
             reasoning = "Standard pipeline scheduled, but RAM is critically high. Heavy workers may be delayed."
         else:
-            reasoning = "Standard pipeline scheduled. Full asset acquisition planned."
+            reasoning = "Standard pipeline scheduled. Full asset acquisition planned. (Fallback)"
             
         t1 = AgentTask(task_id="asset_1", agent_type="AssetAgent", objective="Find and process assets", priority=1)
         t2 = AgentTask(task_id="blender_1", agent_type="BlenderAgent", objective="Optimize models", dependencies=["asset_1"], priority=2)
@@ -89,5 +230,6 @@ class JarvisBrain:
             stages=["asset_search", "asset_processing", "blender_import", "godot_import", "output_validation", "cloud_deploy"],
             agent_tasks=agent_tasks,
             reasoning=reasoning,
-            reused_assets=False
+            reused_assets=False,
+            template_id=template_id,
         )

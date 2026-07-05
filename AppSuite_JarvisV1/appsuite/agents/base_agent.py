@@ -5,7 +5,7 @@ import time
 import traceback
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional, List, Union
 
 from ..logging_setup import get_logger
 
@@ -20,7 +20,24 @@ class AgentTask:
     dependencies: List[str] = field(default_factory=list)
     priority: int = 1
     expected_output: str = ""
+    estimated_duration_seconds: float = 0.0
+    metadata: Dict[str, Any] = field(default_factory=dict)
     status: str = "PENDING"
+
+@dataclass
+class AgentPlan:
+    task_id: str
+    objective: str
+    subtasks: List[str] = field(default_factory=list)
+    priorities: Dict[str, int] = field(default_factory=dict)
+    conditions: List[str] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+@dataclass
+class ReflectionResult:
+    success: bool
+    gaps: List[str] = field(default_factory=list)
+    repair_actions: List[str] = field(default_factory=list)
 
 @dataclass
 class AgentResult:
@@ -33,12 +50,14 @@ class AgentResult:
 
 
 class BaseAgent(ABC):
-    def __init__(self, name: str, message_bus=None, memory=None, orchestrator=None, providers=None):
+    def __init__(self, name: str, message_bus=None, memory=None, orchestrator=None, providers=None, workers=None, event_bus=None):
         self.name = name
         self.message_bus = message_bus
         self.memory = memory
         self.orchestrator = orchestrator  # Can be GraphOrchestrator to run nodes
         self.providers = providers
+        self.workers = workers or {}
+        self.event_bus = event_bus
 
     def receive_task(self, task: AgentTask):
         """Called when a task is first received."""
@@ -73,9 +92,26 @@ class BaseAgent(ABC):
                 self.message_bus.send("task_started", {"task_id": task.task_id, "agent": self.name})
             
             plan = self.plan(task)
-            output = self.execute_tools(plan)
+            agent_plan = self._normalize_plan(task, plan)
+            output = self.execute_tools(self._unpack_plan(agent_plan))
             status = "success"
             confidence = 1.0
+
+            reflection = self.reflect(task, AgentResult(self.name, task.objective, status, output, confidence, 0.0))
+            if not reflection.success:
+                attempts = 0
+                while attempts < 2 and not reflection.success:
+                    attempts += 1
+                    repair_plan = self.repair(task, reflection)
+                    if not repair_plan:
+                        break
+                    agent_plan = self._normalize_plan(task, repair_plan)
+                    output = self.execute_tools(self._unpack_plan(agent_plan))
+                    status = "success"
+                    confidence = 1.0
+                    reflection = self.reflect(task, AgentResult(self.name, task.objective, status, output, confidence, 0.0))
+                    if reflection.success:
+                        break
             
             if self.message_bus:
                 self.message_bus.send("task_completed", {"task_id": task.task_id, "agent": self.name, "status": "success"})
@@ -102,3 +138,33 @@ class BaseAgent(ABC):
         log.info("[%s] Finished task: %s (status=%s, time=%.2fs)", 
                  self.name, task.objective, status, execution_time)
         return result
+
+    def _normalize_plan(self, task: AgentTask, plan: Any) -> AgentPlan:
+        if isinstance(plan, AgentPlan):
+            return plan
+        if isinstance(plan, list):
+            return AgentPlan(task_id=task.task_id, objective=task.objective, subtasks=plan)
+        if isinstance(plan, str):
+            return AgentPlan(task_id=task.task_id, objective=task.objective, subtasks=[plan])
+        if isinstance(plan, dict):
+            return AgentPlan(task_id=task.task_id, objective=task.objective, metadata=plan)
+        return AgentPlan(task_id=task.task_id, objective=task.objective)
+
+    def _unpack_plan(self, plan: AgentPlan) -> Any:
+        if plan.subtasks:
+            return plan.subtasks
+        if plan.metadata:
+            return plan.metadata
+        return []
+
+    def reflect(self, task: AgentTask, result: AgentResult) -> ReflectionResult:
+        success = result.status == "success"
+        gaps = []
+        if not success:
+            gaps.append("Agent execution did not complete successfully.")
+        return ReflectionResult(success=success, gaps=gaps, repair_actions=["retry" ] if not success else [])
+
+    def repair(self, task: AgentTask, reflection: ReflectionResult) -> Optional[AgentPlan]:
+        if reflection.repair_actions:
+            return AgentPlan(task_id=task.task_id, objective=task.objective, subtasks=["retry"])
+        return None

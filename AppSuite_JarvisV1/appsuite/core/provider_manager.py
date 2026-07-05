@@ -42,6 +42,7 @@ class ProviderManager:
         "claude-3-5-sonnet-20240620": {"input": 3.0 / 1e6, "output": 15.0 / 1e6},
         "claude-3-haiku-20240307": {"input": 0.25 / 1e6, "output": 1.25 / 1e6},
         "llama3": {"input": 0.0, "output": 0.0},
+        "meta/llama-3.1-70b-instruct": {"input": 0.075 / 1e6, "output": 0.30 / 1e6},
     }
 
     def __init__(self, providers: List[Dict[str, Any]], token_banker: Optional[TokenBanker] = None):
@@ -185,7 +186,7 @@ class ProviderManager:
         base_url = provider.get("base_url", "")
         api_key = os.environ.get(provider.get("api_key_env", "")) or ""
         
-        if provider_id == "openai":
+        if provider_id == "openai" or provider_id == "nvidia-nim":
             url = f"{base_url}/chat/completions"
             headers = {
                 "Authorization": f"Bearer {api_key}",
@@ -197,7 +198,7 @@ class ProviderManager:
             messages.append({"role": "user", "content": prompt})
             
             payload = {
-                "model": model or "gpt-4o-mini",
+                "model": model or ("meta/llama-3.1-70b-instruct" if provider_id == "nvidia-nim" else "gpt-4o-mini"),
                 "messages": messages,
                 **kwargs
             }

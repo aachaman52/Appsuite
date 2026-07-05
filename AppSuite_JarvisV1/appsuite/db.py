@@ -60,6 +60,31 @@ CREATE TABLE IF NOT EXISTS memory (
     created_at REAL NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS failure_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    prompt TEXT,
+    error TEXT,
+    context_json TEXT,
+    created_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS strategy_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    prompt TEXT,
+    strategy_json TEXT,
+    outcome TEXT,
+    created_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS world_model (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id TEXT NOT NULL,
+    key TEXT NOT NULL,
+    value_json TEXT,
+    updated_at REAL NOT NULL,
+    UNIQUE(job_id, key)
+);
+
 CREATE INDEX IF NOT EXISTS idx_assets_job ON assets(job_id);
 CREATE INDEX IF NOT EXISTS idx_events_job ON job_events(job_id);
 CREATE INDEX IF NOT EXISTS idx_assets_hash ON assets(file_hash);
@@ -74,7 +99,7 @@ class Database:
         self._lock = threading.RLock()
         
         # Init schema and database in WAL mode using a temporary connection
-        conn = sqlite3.connect(self.path, check_same_thread=False)
+        conn = sqlite3.connect(self.path, timeout=30.0, check_same_thread=False)
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.executescript(SCHEMA)
         conn.commit()
@@ -86,7 +111,7 @@ class Database:
             if self._closed:
                 raise RuntimeError("Database connection is closed.")
             if not hasattr(self._local, "conn"):
-                conn = sqlite3.connect(self.path, check_same_thread=False)
+                conn = sqlite3.connect(self.path, timeout=30.0, check_same_thread=False)
                 conn.row_factory = sqlite3.Row
                 conn.execute("PRAGMA journal_mode=WAL;")
                 self._local.conn = conn
@@ -221,6 +246,65 @@ class Database:
             (prompt,),
         )
 
+    # --- failure/strategy memory ---------------------------------------------
+    def add_failure_memory(self, prompt: str, error: str, context: Dict[str, Any]) -> None:
+        self.execute(
+            "INSERT INTO failure_memory (prompt, error, context_json, created_at) VALUES (?,?,?,?)",
+            (prompt, error, json.dumps(context), time.time())
+        )
+
+    def get_failure_memories(self, prompt: str, limit: int = 10) -> List[Dict[str, Any]]:
+        rows = self.query(
+            "SELECT * FROM failure_memory WHERE prompt = ? ORDER BY created_at DESC LIMIT ?",
+            (prompt, limit)
+        )
+        for r in rows:
+            if r.get("context_json"):
+                try:
+                    r["context"] = json.loads(r["context_json"])
+                except Exception:
+                    r["context"] = {}
+        return rows
+
+    def add_strategy_memory(self, prompt: str, strategy: Dict[str, Any], outcome: str) -> None:
+        self.execute(
+            "INSERT INTO strategy_memory (prompt, strategy_json, outcome, created_at) VALUES (?,?,?,?)",
+            (prompt, json.dumps(strategy), outcome, time.time())
+        )
+
+    def get_strategy_memories(self, prompt: str, limit: int = 10) -> List[Dict[str, Any]]:
+        rows = self.query(
+            "SELECT * FROM strategy_memory WHERE prompt = ? ORDER BY created_at DESC LIMIT ?",
+            (prompt, limit)
+        )
+        for r in rows:
+            if r.get("strategy_json"):
+                try:
+                    r["strategy"] = json.loads(r["strategy_json"])
+                except Exception:
+                    r["strategy"] = {}
+        return rows
+
+    def add_world_model_entry(self, job_id: str, key: str, value: Any) -> None:
+        self.execute(
+            "INSERT INTO world_model (job_id, key, value_json, updated_at) VALUES (?, ?, ?, ?) "
+            "ON CONFLICT(job_id, key) DO UPDATE SET value_json=excluded.value_json, updated_at=excluded.updated_at",
+            (job_id, key, json.dumps(value), time.time()),
+        )
+
+    def get_world_model_entries(self, job_id: str) -> List[Dict[str, Any]]:
+        rows = self.query(
+            "SELECT * FROM world_model WHERE job_id = ? ORDER BY updated_at ASC",
+            (job_id,),
+        )
+        for r in rows:
+            if r.get("value_json"):
+                try:
+                    r["value"] = json.loads(r["value_json"])
+                except Exception:
+                    r["value"] = None
+        return rows
+
     def close(self) -> None:
         with self._lock:
             if not self._closed:
@@ -231,3 +315,4 @@ class Database:
                     except Exception:
                         pass
                 self._connections.clear()
+

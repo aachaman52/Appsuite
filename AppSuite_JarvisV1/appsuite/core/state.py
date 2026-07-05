@@ -57,6 +57,9 @@ class JobState:
     generated_scripts: List[Dict[str, Any]] = field(default_factory=list)
     stages: Dict[str, Any] = field(default_factory=dict)
     
+    # Attached runtime/world model state for this job
+    world_model: Any = None
+    
     # For future extensions
     metadata: Dict[str, Any] = field(default_factory=dict)
 
@@ -91,6 +94,15 @@ class JobState:
 
     def as_dict(self) -> Dict[str, Any]:
         """Convert state back to a plain dictionary for serialization if needed."""
+        world_model_state = None
+        if hasattr(self.world_model, "to_dict"):
+            try:
+                world_model_state = self.world_model.to_dict()
+            except Exception:
+                world_model_state = None
+        elif isinstance(self.world_model, dict):
+            world_model_state = self.world_model
+
         return {
             "template": self.template,
             "assets": self.assets,
@@ -110,5 +122,6 @@ class JobState:
             "deployment_url": self.deployment_url,
             "generated_scripts": self.generated_scripts,
             "stages": self.stages,
+            "world_model_state": world_model_state,
             "metadata": self.metadata,
         }

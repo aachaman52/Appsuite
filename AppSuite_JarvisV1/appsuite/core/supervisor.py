@@ -158,6 +158,8 @@ class Supervisor:
             time.sleep(self.poll)
 
     def _tick(self) -> None:
+        if self._stop.is_set():
+            return
         with self._lock:
             if len(self._active) >= self.max_concurrent:
                 return
@@ -170,7 +172,12 @@ class Supervisor:
         with self._lock:
             self._active[job["id"]] = time.time()
         self.db.update_job(job["id"], status="running", stage="dispatch")
-        self._pool.submit(self._run_job, job)
+        try:
+            self._pool.submit(self._run_job, job)
+        except RuntimeError:
+            self.db.update_job(job["id"], status="queued", stage=None)
+            with self._lock:
+                self._active.pop(job["id"], None)
 
     def _run_job(self, job: Dict[str, Any]) -> None:
         job_id = job["id"]

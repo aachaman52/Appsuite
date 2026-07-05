@@ -21,6 +21,17 @@
       "priority": 5
     },
     {
+      "id": "nvidia-nim",
+      "name": "NVIDIA NIM Generation",
+      "type": "llm",
+      "base_url": "https://integrate.api.nvidia.com/v1",
+      "api_key_env": "NVIDIA_API_KEY",
+      "enabled": true,
+      "rate_limit_per_minute": 60,
+      "priority": 0,
+      "model": "meta/llama-3.1-70b-instruct"
+    },
+    {
       "id": "openai",
       "name": "OpenAI Generation",
       "type": "llm",

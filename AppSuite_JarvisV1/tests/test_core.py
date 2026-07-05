@@ -607,7 +607,9 @@ class TestSupervisorRaceCondition(unittest.TestCase):
         class MockPipeline:
             def __init__(self):
                 self.executed = False
+                self.started = False
             def execute(self, job):
+                self.started = True
                 # Simulate a job taking some time
                 time.sleep(0.5)
                 self.executed = True
@@ -630,8 +632,11 @@ class TestSupervisorRaceCondition(unittest.TestCase):
         supervisor.submit("A quick medieval house")
         supervisor.start()
         
-        # Wait a small fraction so supervisor tick runs the job
-        time.sleep(0.1)
+        # Wait until the pipeline actually starts executing
+        for _ in range(40):
+            if pipeline.started:
+                break
+            time.sleep(0.05)
         
         # Now trigger immediate shutdown.
         # Supervisor.stop() must block until thread finishes (wait=True)

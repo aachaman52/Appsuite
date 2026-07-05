@@ -41,9 +41,9 @@ class GodotWorker(BaseWorker):
         return shutil.which(binary) is not None
 
     def _node(self, obj: Dict[str, Any], hide_mesh: bool = False) -> str:
-        loc = obj["location"]
-        scale = obj["scale"]
-        name = obj["name"]
+        loc = obj.get("location", [0, 0, 0])
+        scale = obj.get("scale", [1, 1, 1])
+        name = obj.get("name", obj.get("role", "mesh"))
         
         visible_str = "visible = false\n" if hide_mesh else ""
         
@@ -90,10 +90,10 @@ class GodotWorker(BaseWorker):
             ext_parts.append('[ext_resource type="PackedScene" path="res://Assets/scene.fbx" id="1_scene"]\n\n')
         
         # Map each unique GLB/GLTF/FBX asset to an ext_resource ID
-        for obj in layout["objects"]:
+        for obj in layout.get("objects", []):
             route = obj.get("route", "direct_godot")
             if route == "direct_godot" or not use_blender_scene:
-                src_name = Path(obj["source_file"]).name
+                src_name = Path(obj.get("source_file", "")).name
                 asset_path = project_dir / "Assets" / src_name
                 if asset_path.exists():
                     rel_res_path = f"res://Assets/{src_name}"
@@ -160,16 +160,17 @@ class GodotWorker(BaseWorker):
             node_parts.append('[node name="BlenderScene" parent="." instance=ExtResource("1_scene")]\n\n')
             
         # Objects
-        for obj in layout["objects"]:
+        objects = layout.get("objects", [])
+        for obj in objects:
             route = obj.get("route", "direct_godot")
-            src_name = Path(obj["source_file"]).name
+            src_name = Path(obj.get("source_file", "")).name
             rel_res_path = f"res://Assets/{src_name}"
             
             if (route == "direct_godot" or not use_blender_scene) and rel_res_path in ext_resources:
                 rid = ext_resources[rel_res_path]
-                loc = obj["location"]
-                scale = obj["scale"]
-                name = obj["name"]
+                loc = obj.get("location", [0, 0, 0])
+                scale = obj.get("scale", [1, 1, 1])
+                name = obj.get("name", obj.get("role", "object"))
                 node_parts.append(
                     f'[node name="{name}" parent="." instance=ExtResource("{rid}_scene")]\n'
                     f'transform = Transform3D({scale[0]}, 0, 0, 0, {scale[1]}, 0, 0, 0, {scale[2]}, '
@@ -181,6 +182,7 @@ class GodotWorker(BaseWorker):
         parts = ['[gd_scene format=3]\n\n'] + ext_parts + sub_parts + node_parts
             
         scene = project_dir / "Scenes" / "main.tscn"
+        scene.parent.mkdir(parents=True, exist_ok=True)
         scene_content = "".join(parts)
         self.validate_scene_content(scene_content)
         scene.write_text(scene_content, encoding="utf-8")
@@ -193,7 +195,7 @@ class GodotWorker(BaseWorker):
     def generate_prefabs(self, layout: Dict[str, Any], project_dir: Path) -> List[str]:
         prefab_dir = project_dir / "Scenes" / "prefabs"
         prefab_dir.mkdir(parents=True, exist_ok=True)
-        roles = {o["role"] for o in layout["objects"]}
+        roles = {o.get("role", "unknown") for o in layout.get("objects", [])}
         made = []
         for role in roles:
             content = (
@@ -376,3 +378,76 @@ class GodotWorker(BaseWorker):
             reason="",
             metadata={}
         )
+
+    def plan(self, job: Dict[str, Any], state: Any) -> List[str]:
+        return [
+            "initialize_godot_project",
+            "generate_main_scene",
+            "import_assets_headless",
+            "verify_scene_loadability"
+        ]
+
+    def verify(self, job: Dict[str, Any], state: Any, result: WorkerResult) -> Tuple[bool, str]:
+        if result.status != WorkerStatus.SUCCESS:
+            return False, f"status: {result.status.value}"
+        proj_path = state.get("godot_project", "")
+        if not proj_path or not Path(proj_path).exists():
+            return False, "Godot project path does not exist"
+        main_scene = state.get("main_scene", "")
+        if not main_scene or not Path(main_scene).exists():
+            return False, "Godot main scene does not exist"
+        try:
+            content = Path(main_scene).read_text(encoding="utf-8")
+            if not content.startswith("[gd_scene"):
+                return False, "Main scene file is missing the [gd_scene] tag"
+        except Exception as exc:
+            return False, f"Failed to read main scene file: {exc}"
+        return True, "ok"
+
+    def recover(self, job: Dict[str, Any], state: Any, exception: Exception) -> WorkerResult:
+        self.log.warning("[godot] Recovery initiated. Creating basic procedural scene due to: %s", exception)
+        project_dir = self.output_dir / job["id"] / "godot_project"
+        project_dir.mkdir(parents=True, exist_ok=True)
+        (project_dir / "Scenes").mkdir(parents=True, exist_ok=True)
+        (project_dir / "Assets").mkdir(parents=True, exist_ok=True)
+        
+        (project_dir / "project.godot").write_text(
+            _PROJECT_GODOT.format(name=f"AppSuite_{job['id'][:8]}"), encoding="utf-8")
+        
+        fallback_scene = (
+            '[gd_scene format=3]\n\n'
+            '[node name="Main" type="Node3D"]\n\n'
+            '[node name="Ground" type="StaticBody3D" parent="."]\n\n'
+            '[node name="GroundMesh" type="CSGBox3D" parent="Ground"]\n'
+            'size = Vector3(100, 0.2, 100)\n'
+            'use_collision = true\n\n'
+            '[node name="Sun" type="DirectionalLight3D" parent="."]\n'
+            'transform = Transform3D(1, 0, 0, 0, 0.5, 0.86, 0, -0.86, 0.5, 0, 50, 0)\n'
+        )
+        (project_dir / "Scenes" / "main.tscn").write_text(fallback_scene, encoding="utf-8")
+        
+        state["godot_project"] = str(project_dir)
+        state["main_scene"] = str(project_dir / "Scenes" / "main.tscn")
+        
+        return WorkerResult(
+            status=WorkerStatus.SUCCESS,
+            data={
+                "project": str(project_dir),
+                "main_scene": "Scenes/main.tscn",
+                "recovered": True
+            },
+            reason="Re-generated basic procedural project as fallback.",
+            metadata={"recovered": True}
+        )
+
+    def report(self, job: Dict[str, Any], state: Any) -> Dict[str, Any]:
+        proj_path = state.get("godot_project", "")
+        scene_path = state.get("main_scene", "")
+        scene_size = Path(scene_path).stat().st_size if scene_path and Path(scene_path).exists() else 0
+        return {
+            "worker": self.name,
+            "project_path": proj_path,
+            "main_scene_path": scene_path,
+            "main_scene_size_bytes": scene_size,
+            "timestamp": time.time()
+        }

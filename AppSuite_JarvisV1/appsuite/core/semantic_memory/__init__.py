@@ -12,8 +12,8 @@ class SemanticMemory:
     def __init__(self, db: Database):
         self.worker = WorkerMemory(db)
         self.agent = AgentMemory()
-        self.failure = FailureMemory()
-        self.strategy = StrategyMemory()
+        self.failure = FailureMemory(db)
+        self.strategy = StrategyMemory(db)
 
     # Delegate existing interface to maintain backward compatibility
     def remember(self, *args, **kwargs):

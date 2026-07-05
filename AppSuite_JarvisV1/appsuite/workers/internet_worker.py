@@ -18,6 +18,7 @@ import zipfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import os
+import time
 
 from .base import BaseWorker, WorkerError
 from ..core.state import WorkerStatus, WorkerResult
@@ -582,6 +583,55 @@ class InternetWorker(BaseWorker):
         return extracted_paths
 
     # --------------------------------------------------------------------- run
+    def plan(self, job: Dict[str, Any], state: Any) -> List[str]:
+        template = state.get("template", {})
+        slots = template.get("asset_slots", [])
+        return [f"resolve_asset:{slot['role']}" for slot in slots]
+
+    def verify(self, job: Dict[str, Any], state: Any, result: WorkerResult) -> Tuple[bool, str]:
+        if result.status != WorkerStatus.SUCCESS:
+            return False, f"Worker returned status {result.status.name}"
+        assets = state.get("assets", [])
+        if not assets:
+            return False, "No assets resolved/fetched"
+        for a in assets:
+            path = Path(a.get("file_path", ""))
+            if not path.exists():
+                return False, f"Asset path {path} does not exist"
+            if path.stat().st_size == 0:
+                return False, f"Asset path {path} is empty"
+        return True, "ok"
+
+    def recover(self, job: Dict[str, Any], state: Any, exception: Exception) -> WorkerResult:
+        self.log.warning("[internet] Recovery initiated. Fallback to procedural local assets due to: %s", exception)
+        template = state.get("template", {})
+        assets = []
+        for slot in template.get("asset_slots", []):
+            role = slot["role"]
+            count = slot.get("count", 1)
+            for i in range(count):
+                asset = self._make_asset(job["id"], role, role, role, source="local_library")
+                assets.append(asset)
+        state["assets"] = assets
+        return WorkerResult(
+            status=WorkerStatus.SUCCESS,
+            data={"assets_fetched": len(assets), "recovered": True},
+            reason="Recovered using local procedural fallback assets.",
+            metadata={"recovered": True}
+        )
+
+    def report(self, job: Dict[str, Any], state: Any) -> Dict[str, Any]:
+        assets = state.get("assets", [])
+        cache_hits = sum(1 for a in assets if a.get("cache_hit"))
+        total_size = sum(Path(a["file_path"]).stat().st_size for a in assets if Path(a.get("file_path", "")).exists())
+        return {
+            "worker": self.name,
+            "assets_fetched_count": len(assets),
+            "cache_hits": cache_hits,
+            "total_size_bytes": total_size,
+            "timestamp": time.time()
+        }
+
     def run(self, job: Dict[str, Any], state: Any) -> 'WorkerResult':
         template = state["template"]
         assets: List[Dict[str, Any]] = []
@@ -594,7 +644,13 @@ class InternetWorker(BaseWorker):
             count = slot.get("count", 1)
             for i in range(count):
                 term = terms[i % len(terms)]
-                asset = self.search_and_fetch(job["id"], role, term)
+                try:
+                    # Attempt search_and_fetch
+                    asset = self.search_and_fetch(job["id"], role, term)
+                except Exception as exc:
+                    self.log.warning("[internet] search_and_fetch failed for role=%s, term=%s: %s. Trying direct procedural fallback.", role, term, exc)
+                    asset = self._make_asset(job["id"], role, term, term, source="local_library")
+                
                 if asset.get("cache_hit"):
                     cache_hits += 1
                 if asset.get("source") in ("kenney", "poly_pizza"):

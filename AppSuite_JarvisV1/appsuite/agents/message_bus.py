@@ -1,17 +1,10 @@
-"""Message Bus for inter-agent communication."""
-from __future__ import annotations
-
 import queue
 import threading
-from typing import Any, Dict, List
+import uuid
+from typing import Dict, List, Any
 
 class MessageBus:
-    VALID_EVENTS = {
-        "task_created", "task_started", "task_completed", "task_failed",
-        "resource_warning", "replanning_required", "broadcast",
-        "asset_status", "blender_status", "godot_status", "code_status"
-    }
-
+    """Thread-safe Pub-Sub Message Bus for agents."""
     def __init__(self):
         self._subscribers: Dict[str, List[queue.Queue]] = {}
         self._lock = threading.Lock()
@@ -24,21 +17,39 @@ class MessageBus:
             self._subscribers[topic].append(q)
         return q
 
-    def unsubscribe(self, topic: str, q: queue.Queue):
+    def send(self, topic: str, message: Any) -> None:
         with self._lock:
-            if topic in self._subscribers and q in self._subscribers[topic]:
-                self._subscribers[topic].remove(q)
+            # Send to specific topic subscribers
+            if topic in self._subscribers:
+                for q in self._subscribers[topic]:
+                    q.put(message)
+            # Send to broadcast topic subscribers if any
+            if topic != "broadcast" and "broadcast" in self._subscribers:
+                for q in self._subscribers["broadcast"]:
+                    q.put({"topic": topic, "message": message})
 
-    def send(self, topic: str, message: Any):
-        if topic not in self.VALID_EVENTS:
-            import logging
-            logging.warning(f"MessageBus: Unregistered topic used: {topic}")
-            
+    def unsubscribe(self, topic: str, queue_obj: queue.Queue) -> None:
         with self._lock:
-            subs = self._subscribers.get(topic, []).copy()
-        for q in subs:
-            q.put(message)
+            subscribers = self._subscribers.get(topic)
+            if not subscribers:
+                return
+            if queue_obj in subscribers:
+                subscribers.remove(queue_obj)
+            if not subscribers:
+                self._subscribers.pop(topic, None)
 
-    def broadcast(self, message: Any):
-        """Broadcasts to all subscribed agents via the 'broadcast' topic."""
-        self.send("broadcast", message)
+    def request(self, topic: str, message: Any, timeout: float = 10.0) -> Any:
+        reply_topic = f"__response__{uuid.uuid4().hex}"
+        q = self.subscribe(reply_topic)
+        request_payload = {
+            "payload": message,
+            "reply_to": reply_topic
+        }
+        self.send(topic, request_payload)
+        try:
+            return q.get(timeout=timeout)
+        finally:
+            self.unsubscribe(reply_topic, q)
+
+    def respond(self, reply_to: str, message: Any) -> None:
+        self.send(reply_to, message)

@@ -84,6 +84,8 @@ class TestGraphOrchestrator(unittest.TestCase):
         )
         self.pipeline.supervisor = self.supervisor
         
+        for p in Path(".").glob("*_checkpoint.json"):
+            p.unlink(missing_ok=True)
         # Mock health check to bypass system-level failures
         from appsuite.core.health import WorkerHealthMonitor
         WorkerHealthMonitor.preflight_check = MagicMock(return_value=(True, "OK"))
@@ -92,6 +94,8 @@ class TestGraphOrchestrator(unittest.TestCase):
         import shutil
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
+        for p in Path(".").glob("*_checkpoint.json"):
+            p.unlink(missing_ok=True)
 
     def test_graph_normal_flow(self):
         job = {"id": "graph_job1", "prompt": "test"}

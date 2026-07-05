@@ -19,22 +19,49 @@ class AssetAgent(BaseAgent):
             self.message_bus.send("asset_status", "Executing asset nodes")
         
         exec_results = []
-        if self.orchestrator and hasattr(self, 'current_job_state'):
-            from ..graph.state import GraphState
+        if hasattr(self, 'current_job_state'):
             job_state = self.current_job_state
+            job = job_state["job"]
+            pstate = job_state["pipeline_state"]
+            
+            worker_map = {
+                "asset_search": "internet",
+                "asset_processing": "analysis"
+            }
             
             for node_name in plan:
-                if node_name in self.orchestrator.nodes:
-                    node = self.orchestrator.nodes[node_name]
-                    g_state = GraphState(
-                        job=job_state["job"], 
-                        pipeline_state=job_state.get("pipeline_state", {}), 
-                        current_node=node_name
-                    )
-                    res_state = node.process(g_state)
-                    status_val = res_state.worker_result.status.value
-                    exec_results.append({node_name: status_val})
-                    if status_val == "failed":
-                        raise RuntimeError(f"{node_name} failed: {res_state.worker_result.reason}")
-                        
+                worker_key = worker_map.get(node_name)
+                if worker_key and worker_key in self.workers:
+                    worker = self.workers[worker_key]
+                    if hasattr(worker, "health_check"):
+                        res = worker.process(job, pstate)
+                        status_val = res.status.value
+                        exec_results.append({node_name: status_val})
+                        if status_val == "failed":
+                            if "Health check failed" in res.reason:
+                                h_reason = res.reason.replace("Health check failed: ", "").replace("Health check & Recovery failed: ", "")
+                                raise RuntimeError(f"Health check failed for {worker_key}: {h_reason}")
+                            raise RuntimeError(f"{node_name} failed: {res.reason}")
+                    else:
+                        from ..core.health import WorkerHealthMonitor
+                        is_healthy, h_reason = WorkerHealthMonitor.preflight_check(worker_key)
+                        if not is_healthy:
+                            raise RuntimeError(f"Health check failed for {worker_key}: {h_reason}")
+                        res = worker.process(job, pstate)
+                        status_val = res.status.value
+                        exec_results.append({node_name: status_val})
+                        if status_val == "failed":
+                            raise RuntimeError(f"{node_name} failed: {res.reason}")
+                else:
+                    if self.orchestrator and node_name in self.orchestrator.nodes:
+                        node = self.orchestrator.nodes[node_name]
+                        # Use legacy GraphState/process if worker not in self.workers
+                        from ..graph.state import GraphState
+                        g_state = GraphState(job=job, pipeline_state=pstate, current_node=node_name)
+                        res_state = node.process(g_state)
+                        status_val = res_state.worker_result.status.value
+                        exec_results.append({node_name: status_val})
+                        if status_val == "failed":
+                            raise RuntimeError(f"{node_name} failed: {res_state.worker_result.reason}")
+                            
         return {"execution_results": exec_results}

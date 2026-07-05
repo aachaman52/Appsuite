@@ -1,6 +1,6 @@
 [
   {
-    "time": 1782300889.6928537,
+    "time": 1782647544.4536073,
     "event": "task_started",
     "data": {
       "task_id": "code_1",
@@ -8,7 +8,7 @@
     }
   },
   {
-    "time": 1782300901.1996055,
+    "time": 1782647544.454404,
     "event": "task_completed",
     "data": {
       "task_id": "code_1",
@@ -17,75 +17,7 @@
     }
   },
   {
-    "time": 1782300904.8706727,
-    "event": "task_started",
-    "data": {
-      "task_id": "blender_1",
-      "agent": "BlenderAgent"
-    }
-  },
-  {
-    "time": 1782300905.1959116,
-    "event": "task_completed",
-    "data": {
-      "task_id": "blender_1",
-      "agent": "BlenderAgent",
-      "status": "success"
-    }
-  },
-  {
-    "time": 1782300905.3322673,
-    "event": "task_started",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent"
-    }
-  },
-  {
-    "time": 1782300989.9958065,
-    "event": "task_failed",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent",
-      "error": "godot_import failed: ASSET_IMPORT_FAILURE"
-    }
-  },
-  {
-    "time": 1782300992.3227522,
-    "event": "task_started",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent"
-    }
-  },
-  {
-    "time": 1782300992.3257782,
-    "event": "task_failed",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent",
-      "error": "godot_import failed: 'objects'"
-    }
-  },
-  {
-    "time": 1782300997.372481,
-    "event": "task_started",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent"
-    }
-  },
-  {
-    "time": 1782300997.4344127,
-    "event": "task_failed",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent",
-      "error": "godot_import failed: 'objects'"
-    }
-  },
-  {
-    "time": 1782301000.6805024,
+    "time": 1782647544.5557115,
     "event": "task_started",
     "data": {
       "task_id": "asset_1",
@@ -93,15 +25,7 @@
     }
   },
   {
-    "time": 1782301001.1423516,
-    "event": "task_started",
-    "data": {
-      "task_id": "code_1",
-      "agent": "CodeAgent"
-    }
-  },
-  {
-    "time": 1782301009.3037415,
+    "time": 1782647561.81251,
     "event": "task_completed",
     "data": {
       "task_id": "asset_1",
@@ -110,7 +34,7 @@
     }
   },
   {
-    "time": 1782301009.4611037,
+    "time": 1782647561.9167557,
     "event": "task_started",
     "data": {
       "task_id": "blender_1",
@@ -118,110 +42,16 @@
     }
   },
   {
-    "time": 1782301009.463478,
-    "event": "task_completed",
+    "time": 1782647561.917684,
+    "event": "task_failed",
     "data": {
       "task_id": "blender_1",
       "agent": "BlenderAgent",
-      "status": "success"
+      "error": "Health check failed for blender: DEPENDENCY_MISSING: BLENDER_NOT_FOUND (Recovery failed: 'objects')"
     }
   },
   {
-    "time": 1782301011.444729,
-    "event": "task_completed",
-    "data": {
-      "task_id": "code_1",
-      "agent": "CodeAgent",
-      "status": "success"
-    }
-  },
-  {
-    "time": 1782301011.5557444,
-    "event": "task_started",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent"
-    }
-  },
-  {
-    "time": 1782301044.3557632,
-    "event": "task_failed",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent",
-      "error": "godot_import failed: PROJECT_OPEN_FAILURE: Command '['powershell', '-Command', '(New-Object -ComObject WScript.Shell).AppActivate(\"Godot\")']' timed out after 5 seconds"
-    }
-  },
-  {
-    "time": 1782301046.872178,
-    "event": "task_started",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent"
-    }
-  },
-  {
-    "time": 1782301047.0934603,
-    "event": "task_failed",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent",
-      "error": "godot_import failed: 'objects'"
-    }
-  },
-  {
-    "time": 1782301051.8937507,
-    "event": "task_started",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent"
-    }
-  },
-  {
-    "time": 1782301052.1185915,
-    "event": "task_failed",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent",
-      "error": "godot_import failed: 'objects'"
-    }
-  },
-  {
-    "time": 1782301053.0454602,
-    "event": "task_started",
-    "data": {
-      "task_id": "asset_1",
-      "agent": "AssetAgent"
-    }
-  },
-  {
-    "time": 1782301053.2018087,
-    "event": "task_started",
-    "data": {
-      "task_id": "code_1",
-      "agent": "CodeAgent"
-    }
-  },
-  {
-    "time": 1782301063.2744546,
-    "event": "task_completed",
-    "data": {
-      "task_id": "code_1",
-      "agent": "CodeAgent",
-      "status": "success"
-    }
-  },
-  {
-    "time": 1782301067.3314166,
-    "event": "task_completed",
-    "data": {
-      "task_id": "asset_1",
-      "agent": "AssetAgent",
-      "status": "success"
-    }
-  },
-  {
-    "time": 1782301082.7249544,
+    "time": 1782647564.106381,
     "event": "task_started",
     "data": {
       "task_id": "blender_1",
@@ -229,20 +59,80 @@
     }
   },
   {
-    "time": 1782301083.005542,
-    "event": "task_started",
-    "data": {
-      "task_id": "godot_1",
-      "agent": "GodotAgent"
-    }
-  },
-  {
-    "time": 1782301083.0108101,
-    "event": "task_completed",
+    "time": 1782647564.1074896,
+    "event": "task_failed",
     "data": {
       "task_id": "blender_1",
       "agent": "BlenderAgent",
-      "status": "success"
+      "error": "Health check failed for blender: DEPENDENCY_MISSING: BLENDER_NOT_FOUND (Recovery failed: 'objects')"
+    }
+  },
+  {
+    "time": 1782647568.2721114,
+    "event": "task_started",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent"
+    }
+  },
+  {
+    "time": 1782647568.2732754,
+    "event": "task_failed",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent",
+      "error": "Health check failed for blender: DEPENDENCY_MISSING: BLENDER_NOT_FOUND (Recovery failed: 'objects')"
+    }
+  },
+  {
+    "time": 1782647574.3347187,
+    "event": "task_started",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent"
+    }
+  },
+  {
+    "time": 1782647574.335942,
+    "event": "task_failed",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent",
+      "error": "Health check failed for blender: DEPENDENCY_MISSING: BLENDER_NOT_FOUND (Recovery failed: 'objects')"
+    }
+  },
+  {
+    "time": 1782647582.4905677,
+    "event": "task_started",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent"
+    }
+  },
+  {
+    "time": 1782647582.4918482,
+    "event": "task_failed",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent",
+      "error": "Health check failed for blender: DEPENDENCY_MISSING: BLENDER_NOT_FOUND (Recovery failed: 'objects')"
+    }
+  },
+  {
+    "time": 1782647592.6011708,
+    "event": "task_started",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent"
+    }
+  },
+  {
+    "time": 1782647592.602624,
+    "event": "task_failed",
+    "data": {
+      "task_id": "blender_1",
+      "agent": "BlenderAgent",
+      "error": "Health check failed for blender: DEPENDENCY_MISSING: BLENDER_NOT_FOUND (Recovery failed: 'objects')"
     }
   }
 ]

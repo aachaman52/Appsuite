@@ -19,21 +19,27 @@ log = get_logger("agents.coordinator")
 class AgentCoordinator:
     """Manages the parallel execution of multiple specialized agents."""
 
-    def __init__(self, message_bus: MessageBus, memory=None, orchestrator=None, hardware=None, brain=None):
+    def __init__(self, message_bus: MessageBus, memory=None, orchestrator=None, hardware=None, brain=None, workers=None):
         self.message_bus = message_bus
         self.memory = memory
         self.orchestrator = orchestrator
         self.hardware = hardware
         self.brain = brain
+        self.workers = workers or {}
+        
+        # event_bus can be retrieved from orchestrator
+        event_bus_instance = getattr(orchestrator, "event_bus", None)
         
         providers_instance = getattr(brain, "providers", getattr(brain, "provider_manager", None)) if brain else None
         self.agent_registry = {
-            "AssetAgent": AssetAgent("AssetAgent", message_bus, memory, orchestrator, providers=providers_instance),
-            "BlenderAgent": BlenderAgent("BlenderAgent", message_bus, memory, orchestrator, providers=providers_instance),
-            "GodotAgent": GodotAgent("GodotAgent", message_bus, memory, orchestrator, providers=providers_instance),
-            "CodeAgent": CodeAgent("CodeAgent", message_bus, memory, orchestrator, providers=providers_instance),
-            "BrowserAgent": BrowserAgent("BrowserAgent", message_bus, memory, orchestrator, providers=providers_instance),
+            "AssetAgent": AssetAgent("AssetAgent", message_bus, memory, orchestrator, providers=providers_instance, workers=self.workers, event_bus=event_bus_instance),
+            "BlenderAgent": BlenderAgent("BlenderAgent", message_bus, memory, orchestrator, providers=providers_instance, workers=self.workers, event_bus=event_bus_instance),
+            "GodotAgent": GodotAgent("GodotAgent", message_bus, memory, orchestrator, providers=providers_instance, workers=self.workers, event_bus=event_bus_instance),
+            "CodeAgent": CodeAgent("CodeAgent", message_bus, memory, orchestrator, providers=providers_instance, workers=self.workers, event_bus=event_bus_instance),
+            "BrowserAgent": BrowserAgent("BrowserAgent", message_bus, memory, orchestrator, providers=providers_instance, workers=self.workers, event_bus=event_bus_instance),
         }
+        for agent in self.agent_registry.values():
+            setattr(agent, "coordinator", self)
         
         # Start timeline logger
         self.timeline_events = []
@@ -84,10 +90,32 @@ class AgentCoordinator:
                 if agent_name not in self.orchestrator.nodes:
                     self.orchestrator.add_node(agent_name, agent)
                     
-            results = self.orchestrator.run_dag(agent_tasks, job_state, self.hardware)
-            return results
+            try:
+                results = self.orchestrator.run_dag(agent_tasks, job_state, self.hardware)
+                return results
+            except RuntimeError as e:
+                if hasattr(e, "results") and any(r.status == "failed" for r in e.results):
+                    err_str = str(e)
+                    if "TASK_TIMEOUT" in err_str or "Deadlock" in err_str or "Health check" in err_str:
+                        raise
+                    return e.results
+                raise
         else:
             log.warning("No GraphOrchestrator provided. Falling back to empty execution.")
             return []
+
+    def delegate(self, from_agent: str, to_agent_type: str, objective: str, timeout: float = 10.0) -> Any:
+        if not self.message_bus:
+            raise RuntimeError("MessageBus is not configured for delegation")
+        topic = f"delegate.{to_agent_type}"
+        request = {
+            "from_agent": from_agent,
+            "objective": objective
+        }
+        try:
+            return self.message_bus.request(topic, request, timeout=timeout)
+        except Exception as exc:
+            log.warning("Agent delegation to %s timed out: %s", to_agent_type, exc)
+            return None
 
 
