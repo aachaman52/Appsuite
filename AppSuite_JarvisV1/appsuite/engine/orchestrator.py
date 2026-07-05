@@ -163,16 +163,21 @@ class GraphOrchestrator:
                     
                     agent_node = self.nodes.get(task.agent_type)
                     if agent_node:
-                        # Set current job state wrapper (containing job and pipeline_state)
-                        agent_node.current_job_state = job_state
-                        agent_node.current_job = job_state
-                        
+                        # === THREAD SAFETY FIX (W5) ===
+                        # Previously we stored job_state on the shared agent instance:
+                        #   agent_node.current_job_state = job_state  ← DATA RACE
+                        # Multiple ThreadPoolExecutor threads mutating the same attribute
+                        # on the same object caused silent state corruption.
+                        #
+                        # Fix: pass job_state as an explicit parameter to agent.run().
+                        # Each thread receives its own isolated reference; no shared
+                        # mutable agent state is modified.
+                        #
                         # Emit TaskStarted
                         self.event_bus.publish(TaskStarted(job_id=job_id, task_id=task.task_id, agent_name=task.agent_type))
-                        
-                        # Submit agent execution
-                        # Ensure Agent runs with isolated task
-                        future = executor.submit(agent_node.run, task)
+
+                        # Submit agent execution with isolated state
+                        future = executor.submit(agent_node.run, task, job_state)
                         future_to_task[future] = task
                         future_start_times[future] = time.time()
                     else:
@@ -266,11 +271,41 @@ class GraphOrchestrator:
 
     def run(self, job_state: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Executes the graph sequentially.
+        Execute the graph **sequentially** (legacy / compatibility path).
+
+        .. deprecated::
+            This sequential execution path is the *legacy* runner used by
+            ``Pipeline.execute()`` in graph-orchestrator mode.  New code should
+            prefer :meth:`run_dag` which runs tasks in parallel under a
+            ``ThreadPoolExecutor`` and supports full DAG semantics.
+
+            Migration target (W1)::
+
+                User Goal
+                  ↓
+                JarvisBrain.plan_execution()   ← produces ExecutionPlan + agent_tasks
+                  ↓
+                StateGraph (initialize → execute → reflect → replan)
+                  ↓
+                GraphOrchestrator.run_dag()    ← parallel DAG, this is the target
+                  ↓
+                Agents → Workers
+
         Accepts the legacy pipeline JobState structure, wrapped into UnifiedJobState.
+        Checkpoint files are managed through :class:`~appsuite.engine.checkpoint.CheckpointManager`
+        to avoid CWD-relative path bugs (W6).
         """
+        import warnings
+        warnings.warn(
+            "GraphOrchestrator.run() is the legacy sequential execution path and will be "
+            "superseded by run_dag() in a future release.  See the W1 consolidation "
+            "roadmap in IMPLEMENTATION_SUMMARY.md.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         job_id = job_state["job"]["id"]
-        
+
         pstate = job_state["pipeline_state"]
         if not isinstance(pstate, UnifiedJobState):
             state = UnifiedJobState.from_dict({
@@ -282,18 +317,19 @@ class GraphOrchestrator:
             state = pstate
             if not getattr(state, "job", None) and "job" in job_state:
                 state.job = job_state["job"]
-            
+
         state.current_node = self._start_node
-        
-        checkpoint_file = f"{job_id}_checkpoint.json"
-        if os.path.exists(checkpoint_file):
+
+        # === W6 FIX: use CheckpointManager instead of raw CWD-relative path ===
+        # Previously: checkpoint_file = f"{job_id}_checkpoint.json"  ← CWD-dependent
+        ckpt_data = self.checkpoint_mgr.load(job_id)
+        if ckpt_data:
             try:
-                with open(checkpoint_file, "r") as f:
-                    ckpt_data = json.load(f)
-                state = UnifiedJobState.from_dict(ckpt_data)
+                state = UnifiedJobState.from_dict(ckpt_data.get("state", ckpt_data))
                 job_state["pipeline_state"] = state
-            except Exception:
-                pass
+                log.info("[orchestrator.run] Resumed from checkpoint for job %s", job_id)
+            except Exception as ckpt_err:
+                log.warning("[orchestrator.run] Failed to restore checkpoint for job %s: %s", job_id, ckpt_err)
 
         while True:
             node_name = state.current_node
@@ -336,20 +372,19 @@ class GraphOrchestrator:
             state.current_node = node_name
             state.history.append(node_name)
             
-            # Save checkpoint
+            # Save checkpoint via CheckpointManager (W6 fix — no more CWD-relative raw file I/O)
             try:
-                with open(checkpoint_file, "w") as f:
-                    json.dump(state.to_dict(), f)
-            except Exception:
-                pass
+                self.checkpoint_mgr.save(job_id, set(state.history), set(), state)
+            except Exception as ckpt_save_err:
+                log.warning("[orchestrator.run] Failed to save checkpoint for job %s: %s", job_id, ckpt_save_err)
                 
             # Route
             next_node = self.router.route(state) if self.router else "END"
-            
+
             if "stages" not in state.metadata:
                 state.metadata["stages"] = {}
             state.metadata["stages"][node_name] = result.status.value
-            
+
             if next_node == "ABORT":
                 raise RuntimeError(f"Job aborted at stage {node_name}: {result.reason}")
             if next_node == "END":
@@ -360,12 +395,8 @@ class GraphOrchestrator:
         job_state["history"] = state.history
         if state.worker_result and state.worker_result.status == WorkerStatus.FAILED:
             job_state["failure_reason"] = state.worker_result.reason
-            
-        # Clean checkpoint
-        if os.path.exists(checkpoint_file):
-            try:
-                os.unlink(checkpoint_file)
-            except Exception:
-                pass
-                
+
+        # Clean checkpoint via CheckpointManager (W6 fix)
+        self.checkpoint_mgr.cleanup(job_id)
+
         return job_state

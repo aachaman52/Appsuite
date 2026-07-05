@@ -61,6 +61,28 @@ class ProviderManager:
             "provider_calls": {}
         }
         self._metrics_lock = threading.Lock()
+        
+        # Latency & quality estimation tracking
+        self.latency_history: Dict[str, List[float]] = {}
+        self.quality_scores: Dict[str, float] = {
+            "gpt-4o": 0.95,
+            "gpt-4o-mini": 0.75,
+            "gemini-1.5-pro": 0.90,
+            "gemini-1.5-flash": 0.70,
+            "claude-3-5-sonnet-20240620": 0.96,
+            "claude-3-haiku-20240307": 0.65,
+            "llama3": 0.50,
+            "meta/llama-3.1-70b-instruct": 0.80
+        }
+
+    def estimate_model_quality(self, model: str) -> float:
+        return self.quality_scores.get(model, 0.60)
+
+    def estimate_model_latency(self, provider_id: str) -> float:
+        history = self.latency_history.get(provider_id, [])
+        if not history:
+            return 2.0  # default estimate
+        return sum(history) / len(history)
 
     def _has_key(self, provider: Dict[str, Any]) -> bool:
         env = provider.get("api_key_env")
@@ -77,7 +99,6 @@ class ProviderManager:
             if p.get("type") != ptype or not self.usable(p):
                 continue
             
-            # Capability check
             if required_capabilities:
                 prov_caps = set(p.get("capabilities", []))
                 if not all(cap in prov_caps for cap in required_capabilities):
@@ -99,7 +120,6 @@ class ProviderManager:
             if self._limiters[p["id"]].allow():
                 return p
                 
-        # Fallback: ignore failure counts if everyone is failing, but still respect budget
         for p in self.providers_for(ptype, required_capabilities):
             if self._token_banker and not self._token_banker.can_execute(p, estimated_tokens):
                 continue
@@ -141,33 +161,45 @@ class ProviderManager:
         """
         Unified text/chat generation interface supporting failover, timeout handling, and cost tracking.
         """
-        # Find candidates for LLM generation
         candidates = self.providers_for("llm")
         
-        # Filter or reorder candidates if task_type indicates preference
-        # e.g., code generation prefers higher reasoning, etc.
+        # Benchmark and sort candidates dynamically based on task type requirements
+        if task_type == "code":
+            candidates = sorted(candidates, key=lambda c: self.estimate_model_quality(c.get("model", "")), reverse=True)
+        elif task_type == "simple":
+            candidates = sorted(candidates, key=lambda c: (self.PRICING.get(c.get("model", ""), {}).get("input", 0.0), self.estimate_model_latency(c["id"])))
+        else:
+            def score_candidate(c):
+                q = self.estimate_model_quality(c.get("model", ""))
+                price = self.PRICING.get(c.get("model", ""), {}).get("input", 0.0) or 0.0001 / 1e6
+                return q / price
+            candidates = sorted(candidates, key=score_candidate, reverse=True)
         
         last_error = None
         for p in candidates:
-            # Skip if cooling down
             if self._failures.get(p["id"], 0) >= 3:
                 continue
                 
-            # Rate limit check
             if not self._limiters[p["id"]].allow():
                 continue
                 
             provider_id = p["id"]
             model = p.get("model", "")
-            base_url = p.get("base_url", "")
-            api_key = os.environ.get(p.get("api_key_env", "")) or ""
             
             log.info("Attempting text generation with provider: %s (%s)", provider_id, model)
             
+            start_time = time.time()
             try:
                 text, in_tok, out_tok = self._call_provider_api(p, prompt, system_instruction, timeout, **kwargs)
+                elapsed = time.time() - start_time
                 
-                # Report success and update metrics
+                # Update latency history
+                if provider_id not in self.latency_history:
+                    self.latency_history[provider_id] = []
+                self.latency_history[provider_id].append(elapsed)
+                if len(self.latency_history[provider_id]) > 5:
+                    self.latency_history[provider_id].pop(0)
+                
                 self.report_success(provider_id)
                 self._update_metrics(provider_id, model, in_tok, out_tok)
                 return text
@@ -176,7 +208,6 @@ class ProviderManager:
                 self.report_failure(provider_id)
                 last_error = e
                 
-        # If all candidates failed (or no candidates available), fall back to local rules-based generator
         log.warning("All LLM providers failed or none configured. Falling back to local rules-based generator.")
         return self._generate_local_fallback(prompt, task_type)
 

@@ -13,13 +13,14 @@ class BrowserAgent(BaseAgent):
     and error investigation using real web searches.
     """
     
-    def receive_task(self, task: AgentTask):
+    def receive_task(self, task: AgentTask, job_state=None) -> None:
+        # BrowserAgent does not use job_state — it performs independent web research.
         print(f"[{self.name}] Researching objective: {task.objective}")
         if self.message_bus:
             self.message_bus.send("browser_status", f"Researching: {task.objective}")
 
-    def plan(self, task: AgentTask) -> Any:
-        # Determine research type based on the task description
+    def plan(self, task: AgentTask, job_state=None) -> Any:
+        # BrowserAgent determines research type from task objective — no job_state needed.
         obj = task.objective.lower()
         if "error" in obj or "fail" in obj or "crash" in obj or "debug" in obj:
             return {"type": "error_investigation", "query": task.objective}
@@ -30,7 +31,7 @@ class BrowserAgent(BaseAgent):
         else:
             return {"type": "technical_research", "query": task.objective}
 
-    def execute_tools(self, plan: Any) -> Any:
+    def execute_tools(self, plan: Any, job_state=None) -> Any:  # job_state unused: BrowserAgent is stateless w.r.t. job
         research_type = plan["type"]
         query = plan["query"]
         

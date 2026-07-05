@@ -48,8 +48,13 @@ class AppContext:
         self.templates = TemplateEngine(config.templates)
         self.token_banker = TokenBanker(config.get("token_banker", {}))
         self.provider_manager = ProviderManager(config.providers, token_banker=self.token_banker)
+        self.memory.provider_manager = self.provider_manager
         self.hardware = HardwareManager(config.scheduler, str(config.abs_path("output_dir")))
         self.brain = JarvisBrain(self.memory, self.provider_manager, self.token_banker, self.hardware, self.templates)
+        
+        from .core.project_manager import ProjectManager
+        self.project_manager = ProjectManager(self.db, self.brain)
+        
         self.jarvis = JarvisCore(config.scheduler, str(config.abs_path("output_dir")))
 
         retries = config.retries
@@ -92,6 +97,36 @@ class AppContext:
             config.scheduler, config.retries, brain=self.brain
         )
 
+        # --- Phase 11 Components Wiring ---
+        from .core.event_bus import EventBus
+        from .core.goal_manager import GoalManager
+        from .core.task_queue import PersistentTaskQueue
+        from .core.knowledge_graph import KnowledgeGraph
+        from .core.benchmark_engine import BenchmarkEngine
+        from .core.project_workspace import ProjectWorkspaceManager
+        from .core.background_scheduler import BackgroundScheduler
+        from .core.bug_hunter import AutonomousBugHunter
+        from .plugins.plugin_manager import PluginManager as Phase11PluginManager
+        from .core.dashboard import DashboardApp
+
+        self.event_bus = EventBus()
+        self.goal_manager = GoalManager(self.db, self.event_bus)
+        self.task_queue = PersistentTaskQueue(self.db, self.event_bus)
+        self.knowledge_graph = KnowledgeGraph(self.db, self.event_bus)
+        self.benchmark_engine = BenchmarkEngine(self.db, self.event_bus)
+        self.project_workspace = ProjectWorkspaceManager(self.db, config.abs_path("output_dir") / "workspaces", self.event_bus)
+        self.background_scheduler = BackgroundScheduler(self.db, self.event_bus)
+        self.bug_hunter = AutonomousBugHunter(self.db, config.abs_path("output_dir"), self.event_bus)
+
+        # Discover dynamic Phase 11 plugins
+        from .config import PROJECT_ROOT
+        phase11_plugins_dir = PROJECT_ROOT / "appsuite" / "plugins"
+        self.phase11_plugins = Phase11PluginManager(phase11_plugins_dir, self.event_bus)
+        self.phase11_plugins.discover_and_load()
+
+        # Expose dashboard backend app
+        self.dashboard = DashboardApp(self)
+
         # Wire Jarvis to all components so jarvis.run() can orchestrate them
         self.jarvis.wire(
             db=self.db,
@@ -107,9 +142,11 @@ class AppContext:
 
     def start(self) -> None:
         self.supervisor.start()
+        self.background_scheduler.start()
         self.log.info("AppSuite %s started", self.version)
 
     def shutdown(self) -> None:
+        self.background_scheduler.stop()
         self.supervisor.stop()
         self.db.close()
 

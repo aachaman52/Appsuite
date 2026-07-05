@@ -1,6 +1,7 @@
 """Jarvis Brain - Intelligent Orchestrator Decision Layer."""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
@@ -9,6 +10,9 @@ from .provider_manager import ProviderManager
 from .semantic_memory import SemanticMemory
 from .token_banker import TokenBanker
 from .worker_scorer import WorkerScoreRegistry
+from ..logging_setup import get_logger
+
+log = get_logger("core.brain")
 
 
 @dataclass
@@ -18,9 +22,13 @@ class ExecutionPlan:
     reused_assets: bool = False
     metadata: Dict[str, Any] = field(default_factory=dict)
     agent_tasks: List[Any] = field(default_factory=list)  # List of AgentTask
-    # Carries the resolved template_id so that replan_node can read it even
-    # after state["plan"] is replaced from JarvisPlan → ExecutionPlan.
     template_id: Optional[str] = None
+    
+    # V2 Advanced Planning fields
+    alternative_stages: List[str] = field(default_factory=list)
+    estimated_cost_usd: float = 0.05
+    estimated_duration_seconds: float = 120.0
+    probabilistic_success_rate: float = 0.95
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -29,7 +37,11 @@ class ExecutionPlan:
             "reused_assets": self.reused_assets,
             "metadata": self.metadata,
             "template_id": self.template_id,
-            "agent_tasks": [t.__dict__ for t in self.agent_tasks] if self.agent_tasks else []
+            "agent_tasks": [t.__dict__ for t in self.agent_tasks] if self.agent_tasks else [],
+            "alternative_stages": self.alternative_stages,
+            "estimated_cost_usd": self.estimated_cost_usd,
+            "estimated_duration_seconds": self.estimated_duration_seconds,
+            "probabilistic_success_rate": self.probabilistic_success_rate,
         }
 
 
@@ -52,7 +64,6 @@ class JarvisBrain:
 
     def plan_execution(self, prompt: str, template_id: Optional[str] = None) -> ExecutionPlan:
         """Analyze the job and generate an optimal execution plan."""
-        import json
         from ..agents.base_agent import AgentTask
 
         # 1. Retrieve failure history context from Semantic Memory (Long-Term Memory)
@@ -65,6 +76,103 @@ class JarvisBrain:
             failure_hints = "\nAvoid the following past errors/failures:\n" + "\n".join(
                 [f"- Node/Error: {f.get('error')} in context: {f.get('context')}" for f in past_failures]
             )
+
+        # 1b. Check for highly similar successful strategy in memory to reuse (similarity >= 0.85)
+        similar_strategy = None
+        if hasattr(self.memory, "strategy") and hasattr(self.memory.strategy, "get_similar_strategies"):
+            try:
+                matches = self.memory.strategy.get_similar_strategies(prompt, limit=3, threshold=0.85)
+                # Filter to only successful strategies
+                success_matches = [m for m in matches if m.get("outcome") == "success"]
+                if success_matches:
+                    similar_strategy = success_matches[0]
+            except Exception as e:
+                log.warning("Failed to retrieve similar strategies: %s", e)
+
+        if similar_strategy:
+            json_plan = similar_strategy.get("strategy")
+            if json_plan and "template_id" in json_plan and "agent_tasks" in json_plan:
+                log.info("Found highly similar successful strategy in memory (score %.2f). Reusing plan directly.",
+                         similar_strategy.get("similarity_score", 1.0))
+                
+                duration_defaults = {
+                    "AssetAgent": 15.0,
+                    "BlenderAgent": 120.0,
+                    "GodotAgent": 90.0,
+                    "CodeAgent": 10.0,
+                    "BrowserAgent": 5.0,
+                }
+                score_registry = WorkerScoreRegistry(self.memory)
+                worker_scores = score_registry.score_workers()
+                agent_tasks = []
+                for task_data in json_plan.get("agent_tasks", []):
+                    agent_type = task_data.get("agent_type", "AssetAgent")
+                    agent_tasks.append(
+                        AgentTask(
+                            task_id=task_data.get("task_id", "task_id"),
+                            agent_type=agent_type,
+                            objective=task_data.get("objective", ""),
+                            dependencies=task_data.get("dependencies", []),
+                            priority=task_data.get("priority", 1),
+                            estimated_duration_seconds=float(task_data.get("estimated_duration_seconds", duration_defaults.get(agent_type, 10.0))),
+                            metadata={
+                                "preferred_worker_config": task_data.get("preferred_worker_config", {}),
+                                "worker_score": worker_scores.get(agent_type, 0.0)
+                            }
+                        )
+                    )
+
+                stages = ["output_validation"]
+                agent_types = {t.agent_type for t in agent_tasks}
+                if "AssetAgent" in agent_types:
+                    stages.insert(0, "asset_search")
+                    stages.insert(1, "asset_processing")
+                if "BlenderAgent" in agent_types:
+                    stages.append("blender_import")
+                if "GodotAgent" in agent_types:
+                    stages.append("godot_import")
+                if "BrowserAgent" in agent_types:
+                    stages.insert(0, "browser")
+                stages.append("cloud_deploy")
+
+                return ExecutionPlan(
+                    stages=stages,
+                    agent_tasks=agent_tasks,
+                    reasoning=f"Found high-confidence semantic match (score {similar_strategy.get('similarity_score', 1.0):.2f}) from strategy memory. Reusing plan directly.",
+                    reused_assets=True,
+                    metadata={"matched_job": similar_strategy.get("id"), "memory_hit": True},
+                    template_id=json_plan.get("template_id", template_id),
+                )
+
+        # 1c. If similarity is intermediate (0.50-0.85), retrieve successful plan for in-context example
+        similar_examples_str = ""
+        if hasattr(self.memory, "strategy") and hasattr(self.memory.strategy, "get_similar_strategies"):
+            try:
+                matches = self.memory.strategy.get_similar_strategies(prompt, limit=3, threshold=0.5)
+                success_matches = [m for m in matches if m.get("outcome") == "success"]
+                if success_matches:
+                    example_strat = success_matches[0]
+                    similar_examples_str = (
+                        "\nHere is a previous successful plan for a similar task as reference/inspiration:\n"
+                        f"Task: {example_strat.get('prompt')}\n"
+                        f"Plan: {json.dumps(example_strat.get('strategy'))}\n"
+                    )
+            except Exception:
+                pass
+
+        # 1d. Retrieve failed strategies to avoid
+        failed_examples_str = ""
+        if hasattr(self.memory, "strategy") and hasattr(self.memory.strategy, "get_similar_strategies"):
+            try:
+                matches = self.memory.strategy.get_similar_strategies(prompt, limit=3, threshold=0.5)
+                fail_matches = [m for m in matches if m.get("outcome") == "failure"]
+                if fail_matches:
+                    failed_examples_str = (
+                        "\nAvoid reproducing the following past plans that FAILED:\n" +
+                        "\n".join([f"- Prompt: {m.get('prompt')}\n  Plan to avoid: {json.dumps(m.get('strategy'))}" for m in fail_matches])
+                    )
+            except Exception:
+                pass
 
         system_instruction = (
             "You are Jarvis, the Autonomous Game Engineer Planner.\n"
@@ -87,6 +195,8 @@ class JarvisBrain:
             "  ]\n"
             "}\n"
             f"{failure_hints}"
+            f"{similar_examples_str}"
+            f"{failed_examples_str}"
         )
 
         # 2. Try LLM Planning
@@ -186,6 +296,10 @@ class JarvisBrain:
                 reused_assets=bool(json_plan.get("reused_assets", False)),
                 metadata=metadata,
                 template_id=json_plan.get("template_id", template_id),
+                alternative_stages=["asset_processing", "code", "godot_import", "output_validation"],
+                estimated_cost_usd=0.08,
+                estimated_duration_seconds=150.0,
+                probabilistic_success_rate=0.92,
             )
 
         # 4. Fallback to Rules-based Planner
@@ -212,6 +326,10 @@ class JarvisBrain:
                 reused_assets=True,
                 metadata={"matched_job": matched_job_id},
                 template_id=template_id,
+                alternative_stages=["asset_processing", "code", "godot_import", "output_validation"],
+                estimated_cost_usd=0.02,
+                estimated_duration_seconds=60.0,
+                probabilistic_success_rate=0.98,
             )
             
         res = self.hardware.resources()
@@ -232,4 +350,8 @@ class JarvisBrain:
             reasoning=reasoning,
             reused_assets=False,
             template_id=template_id,
+            alternative_stages=["asset_processing", "code", "godot_import", "output_validation"],
+            estimated_cost_usd=0.05,
+            estimated_duration_seconds=120.0,
+            probabilistic_success_rate=0.95,
         )

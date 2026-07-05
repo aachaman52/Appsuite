@@ -85,6 +85,36 @@ CREATE TABLE IF NOT EXISTS world_model (
     UNIQUE(job_id, key)
 );
 
+CREATE TABLE IF NOT EXISTS project_hierarchy (
+    id TEXT PRIMARY KEY,
+    project_id TEXT NOT NULL,
+    parent_id TEXT,
+    node_type TEXT NOT NULL,
+    name TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    estimated_duration REAL DEFAULT 0.0,
+    actual_duration REAL DEFAULT 0.0,
+    dependencies_json TEXT,
+    metadata_json TEXT,
+    created_at REAL NOT NULL,
+    updated_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS embeddings_cache (
+    text_hash TEXT PRIMARY KEY,
+    text_content TEXT NOT NULL,
+    embedding_json TEXT NOT NULL,
+    created_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS procedural_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_type TEXT,
+    recipe_json TEXT,
+    outcome TEXT,
+    created_at REAL NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_assets_job ON assets(job_id);
 CREATE INDEX IF NOT EXISTS idx_events_job ON job_events(job_id);
 CREATE INDEX IF NOT EXISTS idx_assets_hash ON assets(file_hash);
@@ -303,6 +333,96 @@ class Database:
                     r["value"] = json.loads(r["value_json"])
                 except Exception:
                     r["value"] = None
+        return rows
+
+    # --- project hierarchy & embeddings cache ---------------------------------
+    def add_hierarchy_node(self, node_id: str, project_id: str, parent_id: Optional[str],
+                           node_type: str, name: str, status: str = 'pending',
+                           estimated_duration: float = 0.0, dependencies: List[str] = None,
+                           metadata: Dict[str, Any] = None) -> None:
+        now = time.time()
+        self.execute(
+            "INSERT OR REPLACE INTO project_hierarchy "
+            "(id, project_id, parent_id, node_type, name, status, estimated_duration, "
+            "actual_duration, dependencies_json, metadata_json, created_at, updated_at) "
+            "VALUES (?,?,?,?,?,?,?,0.0,?,?,?,?)",
+            (
+                node_id, project_id, parent_id, node_type, name, status, estimated_duration,
+                json.dumps(dependencies or []), json.dumps(metadata or {}), now, now
+            )
+        )
+
+    def update_hierarchy_node_status(self, node_id: str, status: str,
+                                     actual_duration: Optional[float] = None) -> None:
+        now = time.time()
+        if actual_duration is not None:
+            self.execute(
+                "UPDATE project_hierarchy SET status = ?, actual_duration = ?, updated_at = ? WHERE id = ?",
+                (status, actual_duration, now, node_id)
+            )
+        else:
+            self.execute(
+                "UPDATE project_hierarchy SET status = ?, updated_at = ? WHERE id = ?",
+                (status, now, node_id)
+            )
+
+    def get_project_hierarchy(self, project_id: str) -> List[Dict[str, Any]]:
+        rows = self.query("SELECT * FROM project_hierarchy WHERE project_id = ? ORDER BY created_at ASC", (project_id,))
+        for r in rows:
+            if r.get("dependencies_json"):
+                try:
+                    r["dependencies"] = json.loads(r["dependencies_json"])
+                except Exception:
+                    r["dependencies"] = []
+            else:
+                r["dependencies"] = []
+            if r.get("metadata_json"):
+                try:
+                    r["metadata"] = json.loads(r["metadata_json"])
+                except Exception:
+                    r["metadata"] = {}
+            else:
+                r["metadata"] = {}
+        return rows
+
+    def get_cached_embedding(self, text: str) -> Optional[List[float]]:
+        import hashlib
+        text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        row = self.query_one("SELECT embedding_json FROM embeddings_cache WHERE text_hash = ?", (text_hash,))
+        if row and row.get("embedding_json"):
+            try:
+                return json.loads(row["embedding_json"])
+            except Exception:
+                pass
+        return None
+
+    def cache_embedding(self, text: str, embedding: List[float]) -> None:
+        import hashlib
+        text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        now = time.time()
+        self.execute(
+            "INSERT OR REPLACE INTO embeddings_cache (text_hash, text_content, embedding_json, created_at) "
+            "VALUES (?,?,?,?)",
+            (text_hash, text, json.dumps(embedding), now)
+        )
+
+    def add_procedural_memory(self, task_type: str, recipe: Dict[str, Any], outcome: str) -> None:
+        self.execute(
+            "INSERT INTO procedural_memory (task_type, recipe_json, outcome, created_at) VALUES (?,?,?,?)",
+            (task_type, json.dumps(recipe), outcome, time.time())
+        )
+
+    def get_procedural_memories(self, task_type: str, limit: int = 20) -> List[Dict[str, Any]]:
+        rows = self.query(
+            "SELECT * FROM procedural_memory WHERE task_type = ? ORDER BY created_at DESC LIMIT ?",
+            (task_type, limit)
+        )
+        for r in rows:
+            if r.get("recipe_json"):
+                try:
+                    r["recipe"] = json.loads(r["recipe_json"])
+                except Exception:
+                    r["recipe"] = {}
         return rows
 
     def close(self) -> None:

@@ -1,51 +1,13 @@
 [
   {
-    "event": "TaskCreated",
-    "timestamp": 1782647224.2677913,
-    "data": {
-      "job_id": "job_scenario_9",
-      "task_id": "task_1",
-      "agent_type": "AssetAgent",
-      "priority": 1
-    }
-  },
-  {
-    "event": "TaskStarted",
-    "timestamp": 1782647224.2679598,
-    "data": {
-      "job_id": "job_scenario_9",
-      "task_id": "task_1",
-      "agent_name": "AssetAgent"
-    }
-  },
-  {
-    "event": "TaskCompleted",
-    "timestamp": 1782647224.2685533,
-    "data": {
-      "job_id": "job_scenario_9",
-      "task_id": "task_1",
-      "duration": 0.01,
-      "status": "success"
-    }
-  },
-  {
-    "event": "CheckpointSaved",
-    "timestamp": 1782647224.2709746,
-    "data": {
-      "job_id": "job_scenario_9",
-      "node_count": 1,
-      "path": "mock_output_battle\\job_scenario_9_checkpoint.json"
-    }
-  },
-  {
     "event": "PipelineFinished",
-    "timestamp": 1782647224.2713583,
+    "timestamp": 1783250741.5582538,
     "data": {
-      "job_id": "job_scenario_9",
-      "total_tasks": 1,
-      "succeeded": 1,
+      "job_id": "dag-no-warn",
+      "total_tasks": 0,
+      "succeeded": 0,
       "failed": 0,
-      "duration": 0.006526947021484375
+      "duration": 0.000316619873046875
     }
   }
 ]

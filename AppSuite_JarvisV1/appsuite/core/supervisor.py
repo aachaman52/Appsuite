@@ -180,32 +180,47 @@ class Supervisor:
                 self._active.pop(job["id"], None)
 
     def _run_job(self, job: Dict[str, Any]) -> None:
+        """
+        Execute a single queued job.
+
+        Retry policy
+        ------------
+        This method does NOT retry.  Retry responsibility is separated by layer:
+
+        * **Worker-level retries** (``BaseWorker.with_retry``) handle transient
+          tool failures (network timeouts, file-IO blips).  Max 3 attempts with
+          exponential back-off, configured per-worker.
+
+        * **StateGraph ``replan`` node** handles intelligent job-level replanning
+          after agent failures.  It calls ``JarvisBrain.plan_execution`` with the
+          failure context and re-routes the DAG.  Max attempts controlled by
+          ``config.scheduler.max_attempts``.
+
+        * **Supervisor (this method)** is a *scheduler only*.  It dispatches the
+          job once, records the outcome, and returns.  Having three independent
+          retry loops (worker + Jarvis + Supervisor) previously caused up to
+          ``3 × 3 × 3 = 27`` attempts per transient failure and created race
+          conditions where both Jarvis and the Supervisor set ``status='failed'``
+          concurrently on the same DB row (W4).
+        """
         job_id = job["id"]
-        max_attempts = int(self.retries_cfg.get("max_attempts", 3))
+        self.db.update_job(job_id, attempts=1)
         try:
-            for attempt in range(1, max_attempts + 1):
-                self.db.update_job(job_id, attempts=attempt)
-                try:
-                    summary = self.pipeline.execute(job)
-                    self.db.update_job(job_id, status="completed", stage="done",
-                                       result_json=json.dumps(summary), error=None)
-                    self.db.add_event(job_id, "Job completed", stage="done")
-                    self.memory.remember(job_id, job["prompt"],
-                                         summary.get("template", ""), "success", summary)
-                    return
-                except Exception as exc:  # noqa: BLE001
-                    tb = traceback.format_exc()
-                    log.error("[%s] attempt %d failed: %s", job_id, attempt, exc)
-                    self.db.add_event(job_id, f"Attempt {attempt} failed: {exc}",
-                                      stage="error", level="error")
-                    if attempt >= max_attempts:
-                        self.db.update_job(job_id, status="failed", stage="error",
-                                           error=str(exc))
-                        self.memory.remember(job_id, job["prompt"], "", "failed",
-                                             {"error": str(exc), "trace": tb[-1000:]})
-                    else:
-                        backoff = float(self.retries_cfg.get("backoff_seconds", 2.0))
-                        time.sleep(backoff * attempt)
+            summary = self.pipeline.execute(job)
+            self.db.update_job(job_id, status="completed", stage="done",
+                               result_json=json.dumps(summary), error=None)
+            self.db.add_event(job_id, "Job completed", stage="done")
+            self.memory.remember(job_id, job["prompt"],
+                                 summary.get("template", ""), "success", summary)
+        except Exception as exc:  # noqa: BLE001
+            tb = traceback.format_exc()
+            log.error("[%s] Job failed: %s", job_id, exc)
+            self.db.add_event(job_id, f"Job failed: {exc}",
+                              stage="error", level="error")
+            self.db.update_job(job_id, status="failed", stage="error",
+                               error=str(exc))
+            self.memory.remember(job_id, job["prompt"], "", "failed",
+                                 {"error": str(exc), "trace": tb[-1000:]})
         finally:
             with self._lock:
                 self._active.pop(job_id, None)

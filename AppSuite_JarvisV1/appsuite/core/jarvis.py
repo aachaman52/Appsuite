@@ -182,6 +182,11 @@ class JarvisCore:
         self._token_banker = token_banker
         self._coordinator = None  # Will be instantiated later
         self._wired     = True
+        
+        # Instantiate ProjectManager
+        from .project_manager import ProjectManager
+        self._project_manager = ProjectManager(db, brain)
+        
         log.info("Jarvis wired: %d workers connected", len(workers))
 
     # ── Planning Layer ────────────────────────────────────────────────────────
@@ -257,15 +262,42 @@ class JarvisCore:
 
             # Define graph nodes
             def initialize_node(state):
+                job_id = state["job"]["id"]
+                checkpoint = None
+                if hasattr(self, "_project_manager") and self._project_manager:
+                    checkpoint = self._project_manager.load_checkpoint(job_id)
+
+                if checkpoint:
+                    log.info("[Jarvis StateGraph] Found active checkpoint. Re-initializing job state from crash/pause recovery!")
+                    template = self._templates.resolve(state["job"]["prompt"], state["plan"].template_id) if self._templates else {"id": "generic_scene"}
+                    project = Project(job_id, self._pipeline.output_dir)
+                    project.setup_directories()
+
+                    pipeline_state = UnifiedJobState(template=template)
+                    pipeline_state.update(checkpoint.get("pipeline_state", {}))
+                    pipeline_state.project = project
+                    pipeline_state.world_model = WorldModel(job_id, self._db) if self._db else None
+                    state["pipeline_state"] = pipeline_state
+                    state["attempt"] = checkpoint.get("attempt", state["attempt"])
+                    state["agent_tasks"] = checkpoint.get("agent_tasks", state["agent_tasks"])
+                    return state
+
                 template = self._templates.resolve(state["job"]["prompt"], state["plan"].template_id) if self._templates else {"id": "generic_scene"}
-                project = Project(state["job"]["id"], self._pipeline.output_dir)
+                project = Project(job_id, self._pipeline.output_dir)
                 project.setup_directories()
 
                 pipeline_state = UnifiedJobState(template=template)
                 pipeline_state.update(project.get_state_dict())
                 pipeline_state.project = project
                 pipeline_state["template"] = template
-                pipeline_state.world_model = WorldModel(state["job"]["id"], self._db) if self._db else None
+                pipeline_state.world_model = WorldModel(job_id, self._db) if self._db else None
+
+                # Generate project hierarchy nodes in database
+                if hasattr(self, "_project_manager") and self._project_manager:
+                    try:
+                        self._project_manager.create_project_plan(job_id, state["job"]["prompt"])
+                    except Exception as e:
+                        log.warning("[Jarvis StateGraph] Failed to generate project hierarchy plan: %s", e)
 
                 # Load cached assets if requested
                 cached_assets = []
@@ -298,14 +330,54 @@ class JarvisCore:
                     "pipeline_state": state["pipeline_state"]
                 }
 
+                # Update statuses in the project hierarchy as we execute tasks
+                job_id = state["job"]["id"]
+                if self._db and hasattr(self._db, "update_hierarchy_node_status"):
+                    try:
+                        nodes = self._db.get_project_hierarchy(job_id)
+                        for n in nodes:
+                            if n["node_type"] == "task" and n["status"] == "pending":
+                                self._db.update_hierarchy_node_status(n["id"], "running")
+                    except Exception as e:
+                        log.warning("[Jarvis StateGraph] Failed to update tasks to running status: %s", e)
+
                 agent_results = self._coordinator.execute_plan(state["agent_tasks"], job_state_dict)
                 state["agent_results"] = agent_results
                 state["pipeline_state"] = job_state_dict["pipeline_state"]
+
+                # Update status after execution
+                if self._db and hasattr(self._db, "update_hierarchy_node_status"):
+                    try:
+                        nodes = self._db.get_project_hierarchy(job_id)
+                        for r in agent_results:
+                            for n in nodes:
+                                if n["node_type"] == "task" and r.agent_name.lower() in n["name"].lower():
+                                    status = "completed" if r.status == "success" else "failed"
+                                    self._db.update_hierarchy_node_status(n["id"], status)
+                    except Exception as e:
+                        log.warning("[Jarvis StateGraph] Failed to update post-execution task status: %s", e)
+
                 return state
 
             def reflect_node(state):
                 log.info("[Jarvis StateGraph] Executing Node: reflect")
                 failed_tasks = [r for r in state["agent_results"] if r.status == "failed"]
+                job_id = state["job"]["id"]
+
+                # Save state checkpoint
+                if hasattr(self, "_project_manager") and self._project_manager and state["pipeline_state"]:
+                    try:
+                        checkpoint_dict = {
+                            "pipeline_state": dict(state["pipeline_state"]),
+                            "attempt": state["attempt"],
+                            "agent_tasks": [t.__dict__ if hasattr(t, "__dict__") else t for t in state["agent_tasks"]]
+                        }
+                        # Drop non-serializable elements
+                        checkpoint_dict["pipeline_state"].pop("project", None)
+                        checkpoint_dict["pipeline_state"].pop("world_model", None)
+                        self._project_manager.save_checkpoint(job_id, checkpoint_dict)
+                    except Exception as err:
+                        log.warning("[Jarvis StateGraph] Failed to save checkpoint in reflect_node: %s", err)
 
                 # Human Override / Diagnostic Hook
                 if hasattr(self, "on_reasoning_step") and self.on_reasoning_step:
@@ -331,6 +403,15 @@ class JarvisCore:
                         "stages": pstate.get("stages", {}),
                         "agent_results": [r.__dict__ for r in state["agent_results"]]
                     }
+                    if self._db and hasattr(self._db, "update_hierarchy_node_status"):
+                        try:
+                            # Mark vision, project, milestone, epic, feature as completed
+                            nodes = self._db.get_project_hierarchy(job_id)
+                            for n in nodes:
+                                if n["node_type"] in ("vision", "project", "milestone", "epic", "feature"):
+                                    self._db.update_hierarchy_node_status(n["id"], "completed")
+                        except Exception as e:
+                            log.warning("[Jarvis StateGraph] Failed to mark project nodes as completed: %s", e)
                 else:
                     # Log failures to failure memory (Long-Term Memory Integration)
                     for f in failed_tasks:
@@ -342,6 +423,25 @@ class JarvisCore:
                                 err_msg,
                                 {"task_id": f.task_id, "agent_type": f.agent_name}
                             )
+
+                    # Dynamic Reschedule in ProjectManager
+                    if hasattr(self, "_project_manager") and self._project_manager:
+                        try:
+                            nodes = self._db.get_project_hierarchy(job_id)
+                            failed_node_id = None
+                            for f in failed_tasks:
+                                for n in nodes:
+                                    if n["node_type"] == "task" and f.agent_name.lower() in n["name"].lower():
+                                        failed_node_id = n["id"]
+                                        self._db.update_hierarchy_node_status(n["id"], "failed")
+                            if failed_node_id:
+                                self._project_manager.dynamic_reschedule(job_id, failed_node_id)
+                                # Detect blockers
+                                blockers = self._project_manager.detect_blockers(job_id)
+                                if blockers:
+                                    log.warning("[Jarvis StateGraph] Blocked nodes detected: %s", blockers)
+                        except Exception as e:
+                            log.warning("[Jarvis StateGraph] Failed dynamic reschedule: %s", e)
 
                     # Check if retry or replan is possible
                     if state["attempt"] < state["max_attempts"]:
@@ -465,6 +565,11 @@ class JarvisCore:
         try:
             self._memory.remember(job_id, prompt, plan.template_id,
                                   outcome, enriched)
+            if self._db is not None:
+                self._db.execute(
+                    "UPDATE strategy_memory SET outcome = ? WHERE prompt = ? AND outcome = 'success'",
+                    (outcome, prompt)
+                )
         except Exception as exc:
             log.warning("[Jarvis] Memory store failed: %s", exc)
 

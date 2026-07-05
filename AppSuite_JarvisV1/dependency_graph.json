@@ -1,18 +1,4 @@
 {
-  "tasks": {
-    "task_1": {
-      "task_id": "task_1",
-      "agent_type": "AssetAgent",
-      "priority": 1,
-      "dependencies": [],
-      "status": "success",
-      "start_time": 1782647224.2679598,
-      "end_time": 1782647224.2685533,
-      "duration": 0.01,
-      "error": null
-    }
-  },
-  "adjacency_list": {
-    "task_1": []
-  }
+  "tasks": {},
+  "adjacency_list": {}
 }

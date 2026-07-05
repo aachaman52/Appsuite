@@ -2,10 +2,12 @@ from __future__ import annotations
 import difflib
 from typing import Any, Dict, List, Optional
 from ...db import Database
+from .embedding_client import EmbeddingClient
 
 class WorkerMemory:
-    def __init__(self, db: Database):
+    def __init__(self, db: Database, client: Optional[EmbeddingClient] = None):
         self.db = db
+        self.client = client or EmbeddingClient(db)
 
     def _compute_similarity(self, a: str, b: str) -> float:
         if not a or not b:
@@ -33,12 +35,24 @@ class WorkerMemory:
         best_match = None
         best_score = 0.0
 
-        for mem in memories:
-            mem_prompt = mem.get("prompt", "")
-            score = self._compute_similarity(prompt, mem_prompt)
-            if score > best_score and score >= threshold:
-                best_score = score
-                best_match = mem
+        # Try semantic embedding similarity first
+        try:
+            query_emb = self.client.get_embedding(prompt)
+            for mem in memories:
+                mem_prompt = mem.get("prompt", "")
+                cand_emb = self.client.get_embedding(mem_prompt)
+                score = EmbeddingClient.cosine_similarity(query_emb, cand_emb)
+                if score > best_score and score >= threshold:
+                    best_score = score
+                    best_match = mem
+        except Exception:
+            # Fallback to difflib edit distance similarity
+            for mem in memories:
+                mem_prompt = mem.get("prompt", "")
+                score = self._compute_similarity(prompt, mem_prompt)
+                if score > best_score and score >= threshold:
+                    best_score = score
+                    best_match = mem
 
         if best_match:
             result = dict(best_match)

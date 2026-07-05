@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import warnings
 from pathlib import Path
 import unittest
 from unittest.mock import MagicMock
@@ -89,6 +90,9 @@ class TestGraphOrchestrator(unittest.TestCase):
         # Mock health check to bypass system-level failures
         from appsuite.core.health import WorkerHealthMonitor
         WorkerHealthMonitor.preflight_check = MagicMock(return_value=(True, "OK"))
+        # The legacy orchestrator.run() path emits a DeprecationWarning by design.
+        # These tests specifically exercise that path, so we suppress the warning.
+        warnings.filterwarnings("ignore", category=DeprecationWarning, module="appsuite.engine.orchestrator")
 
     def tearDown(self):
         import shutil

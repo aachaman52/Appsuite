@@ -108,18 +108,25 @@ class TestProductionStress(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.pipeline.execute(job)
             
-        self.assertTrue(Path("job_blender_crash_checkpoint.json").exists())
+        # Checkpoint files are now managed by CheckpointManager in CWD (Path(".") is default)
+        # The checkpoint path is: <CheckpointManager.directory>/<job_id>_checkpoint.json
+        from appsuite.engine.checkpoint import CheckpointManager
+        ckpt_mgr = CheckpointManager(Path("."))
+        ckpt_path = ckpt_mgr._get_path("job_blender_crash")
+        self.assertTrue(ckpt_path.exists(),
+                        f"Expected checkpoint at {ckpt_path} — CheckpointManager save must have written it")
 
     def test_checkpoint_resume(self):
         self.templates.resolve.return_value = {
             "id": "mock_template",
             "asset_slots": [{"role": "mock", "count": 1, "search_terms": ["mock"]}]
         }
-        # Force a checkpoint creation where internet completed successfully
+        # Write checkpoint in CheckpointManager format so orchestrator.run() can read it back
+        from appsuite.engine.checkpoint import CheckpointManager
         from appsuite.engine.job_state import UnifiedJobState
+        ckpt_mgr = CheckpointManager(Path("."))
         state = UnifiedJobState(job={"id": "job_resume"}, template=self.templates.resolve.return_value, current_node="blender_import")
-        with open("job_resume_checkpoint.json", "w") as f:
-            json.dump(state.to_dict(), f)
+        ckpt_mgr.save("job_resume", set(["asset_search"]), set(["blender_import"]), state)
             
         job = {"id": "job_resume", "prompt": "test"}
         summary = self.pipeline.execute(job)

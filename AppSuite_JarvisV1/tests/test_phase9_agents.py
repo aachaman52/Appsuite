@@ -10,22 +10,22 @@ class ReflectionTestAgent(BaseAgent):
         super().__init__(*args, **kwargs)
         self.attempts = 0
 
-    def receive_task(self, task: AgentTask):
+    def receive_task(self, task: AgentTask, job_state=None):
         pass
 
-    def plan(self, task: AgentTask) -> Any:
+    def plan(self, task: AgentTask, job_state=None) -> Any:
         return ["step"]
 
-    def execute_tools(self, plan: Any) -> Any:
+    def execute_tools(self, plan: Any, job_state=None) -> Any:
         self.attempts += 1
         return {"status": "ok"} if self.attempts > 1 else {"status": "needs_fix"}
 
-    def reflect(self, task: AgentTask, result: AgentResult) -> ReflectionResult:
+    def reflect(self, task: AgentTask, result: AgentResult, job_state=None) -> ReflectionResult:
         if self.attempts == 1:
             return ReflectionResult(success=False, gaps=["first pass incomplete"], repair_actions=["retry"])
         return ReflectionResult(success=True)
 
-    def repair(self, task: AgentTask, reflection: ReflectionResult) -> AgentPlan:
+    def repair(self, task: AgentTask, reflection: ReflectionResult, job_state=None) -> AgentPlan:
         return AgentPlan(task_id=task.task_id, objective=task.objective, subtasks=["step"])
 
 

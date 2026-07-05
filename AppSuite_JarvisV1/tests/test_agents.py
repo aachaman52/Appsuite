@@ -55,7 +55,7 @@ class TestAgents(unittest.TestCase):
 
     def test_agent_failure_recovery(self):
         class FailingAgent(AssetAgent):
-            def execute_tools(self, plan: Any) -> Any:
+            def execute_tools(self, plan: Any, job_state=None) -> Any:
                 raise ValueError("Simulated random crash")
                 
         self.coordinator.agent_registry["AssetAgent"] = FailingAgent("AssetAgent", self.message_bus, self.memory)

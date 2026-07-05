@@ -14,7 +14,7 @@ class DummyAgent:
     def __init__(self):
         self.executed = []
 
-    def run(self, task: AgentTask) -> AgentResult:
+    def run(self, task: AgentTask, job_state=None) -> AgentResult:
         self.executed.append(task.task_id)
         return AgentResult(
             agent_name=task.agent_type,

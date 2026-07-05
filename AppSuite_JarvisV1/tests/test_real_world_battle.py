@@ -189,7 +189,7 @@ class TestRealWorldBattle(unittest.TestCase):
         self.jarvis._coordinator = AgentCoordinator(MagicMock(), memory=self.memory, orchestrator=orchestrator, hardware=None, brain=self.brain, workers=self.workers)
         
         # Mock slow agent
-        def slow_run(task):
+        def slow_run(task, job_state=None):
             time.sleep(0.5)
             return AgentResult(agent_name="AssetAgent", task="Fetch", status="success", output={}, confidence=1.0, execution_time=0.5)
             
@@ -265,7 +265,7 @@ class TestRealWorldBattle(unittest.TestCase):
         
         order = []
         def make_run(name, task_id):
-            def run(task):
+            def run(task, job_state=None):
                 order.append(task_id)
                 return AgentResult(agent_name=name, task="obj", status="success", output={}, confidence=1.0, execution_time=0.01)
             return run
@@ -386,7 +386,7 @@ class TestRealWorldBattle(unittest.TestCase):
         # Test simultaneous access to agent attributes
         states = []
         def make_thread_run(agent_name):
-            def run(task):
+            def run(task, job_state=None):
                 time.sleep(0.1)
                 # Capture thread-local context/state to make sure they do not override each other
                 states.append((agent_name, task.task_id))
@@ -424,7 +424,7 @@ class TestRealWorldBattle(unittest.TestCase):
             agent_name="AssetAgent", task="obj", status="success", output={}, confidence=1.0, execution_time=0.01
         ))
         
-        def crash_run(task):
+        def crash_run(task, job_state=None):
             raise Exception("Simulated sudden worker crash")
         self.jarvis._coordinator.agent_registry["BlenderAgent"].run = crash_run
         

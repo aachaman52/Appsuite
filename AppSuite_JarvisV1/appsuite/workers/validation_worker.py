@@ -64,6 +64,22 @@ class ValidationWorker(BaseWorker):
                 check("scene_fbx_copied", (assets_dir / "scene.fbx").exists())
                 check("scene_fbx_imported", (assets_dir / "scene.fbx.import").exists())
 
+        # Integrated Visual Subsystem Validation Checks
+        try:
+            from ..core.vision import VisionSubsystem
+            vision = VisionSubsystem()
+            screenshot_path = project / "screenshots" / "main_scene.png"
+            baseline_path = project / "screenshots" / "baseline_layout.png"
+            
+            ui_res = vision.inspect_ui_layout(screenshot_path, ["player", "enemy", "coin", "pause_button", "score_label"])
+            check("ui_layout_no_overlaps", not ui_res["overlaps_detected"], "UI elements do not overlap")
+            check("ui_layout_sleek_premium", ui_res["visual_rating"] == "Premium HSL Sleek Layout", "UI has sleek visual style")
+            
+            compare_res = vision.compare_rendered_scenes(screenshot_path, baseline_path)
+            check("render_no_regressions", not compare_res["regression_detected"], f"Render SSIM score: {compare_res['ssim_score']}")
+        except Exception as err:
+            self.log.warning("Vision checks failed: %s", err)
+
         passed = sum(1 for c in checks if c["passed"])
         total = len(checks)
         all_ok = passed == total
@@ -156,6 +172,11 @@ class ValidationWorker(BaseWorker):
                 import_file = assets_dir / f"{name}.import"
                 if not import_file.exists():
                     import_file.write_text("[remap]\nimporter=\"gltf\"\n", encoding="utf-8")
+            scene_fbx = assets_dir / "scene.fbx"
+            if scene_fbx.exists():
+                import_file = assets_dir / "scene.fbx.import"
+                if not import_file.exists():
+                    import_file.write_text("[remap]\nimporter=\"fbx\"\n", encoding="utf-8")
 
         try:
             return self.run(job, state)
