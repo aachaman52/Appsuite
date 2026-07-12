@@ -50,6 +50,7 @@ class Sidebar(QWidget):
             ("D", "dashboard", "Dashboard"),
             ("W", "workers", "Workers"),
             ("T", "timeline", "Timeline"),
+            ("B", "benchmark", "Benchmark"),
             ("A", "assets", "Assets"),
             ("S", "settings", "Settings")
         ]

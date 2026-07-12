@@ -22,6 +22,9 @@ from .core.plugin_manager import PluginManager
 from .core.provider_manager import ProviderManager
 from .core.supervisor import Supervisor
 from .core.templates import TemplateEngine
+from .core.browser_agent import BrowserSupervisor
+from .core.project_analyzer import ProjectAnalyzer
+from .core.hardening import SessionManager, WatchdogManager
 from .db import Database
 from .logging_setup import get_logger, setup_logging
 from .pipeline.pipeline import Pipeline
@@ -56,6 +59,13 @@ class AppContext:
         
         from .core.project_manager import ProjectManager
         self.project_manager = ProjectManager(self.db, self.brain)
+        
+        self.browser_agent = BrowserSupervisor(self.db)
+        self.project_analyzer = ProjectAnalyzer(self.db)
+        
+        self.session_manager = SessionManager(self.db, str(config.abs_path("output_dir")))
+        self.watchdog = WatchdogManager(timeout_secs=600, memory_limit_mb=8192)
+        self.watchdog.start()
         
         self.jarvis = JarvisCore(config.scheduler, str(config.abs_path("output_dir")))
 
@@ -149,6 +159,8 @@ class AppContext:
         self.log.info("AppSuite %s started", self.version)
 
     def shutdown(self) -> None:
+        if hasattr(self, 'watchdog') and self.watchdog:
+            self.watchdog.stop()
         self.background_scheduler.stop()
         self.supervisor.stop()
         self.db.close()

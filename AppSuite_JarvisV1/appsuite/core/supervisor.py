@@ -42,7 +42,17 @@ class Supervisor:
         self.retries_cfg = retries_cfg
         self.brain = brain
         self.jarvis_memory = jarvis_memory  # Typed Jarvis Memory System
-        
+
+        # V2 Intelligence layer (requires jarvis_memory)
+        self.intelligence = None
+        if jarvis_memory:
+            try:
+                from .supervisor_intelligence import SupervisorIntelligence
+                self.intelligence = SupervisorIntelligence(db, jarvis_memory)
+                log.info("Supervisor V2 Intelligence layer active.")
+            except Exception as exc:
+                log.warning("Could not load SupervisorIntelligence: %s", exc)
+
         self.max_concurrent = int(scheduler_cfg.get("max_concurrent_jobs", 2))
         self.poll = float(scheduler_cfg.get("poll_interval_seconds", 1.0))
         self._pool = ThreadPoolExecutor(max_workers=self.max_concurrent)
@@ -172,16 +182,43 @@ class Supervisor:
         if not job:
             return
         
-        # --- Consult Jarvis Memory before dispatching ---
-        if self.jarvis_memory:
+        # --- V2 Intelligence: build execution plan before dispatch ---
+        if self.intelligence:
             try:
-                mem_ctx = self.jarvis_memory.build_planning_context(job["prompt"])
-                # Attach memory context to the job dict so pipeline can use it
-                job["_memory_context"] = mem_ctx
+                plan = self.intelligence.build_execution_plan(job["prompt"], job["id"])
+                job["_execution_plan"] = {
+                    "template_id":          plan.template_id,
+                    "worker_sequence":       plan.worker_sequence,
+                    "asset_hints":           plan.asset_hints,
+                    "success_probability":   plan.success_probability,
+                    "risk_flags":            plan.risk_flags,
+                    "reasoning":             plan.reasoning,
+                }
+                # Write reasoning to DB timeline so desktop can show it live
+                self.db.add_event(
+                    job["id"],
+                    f"[SUPERVISOR V2] {plan.reasoning}",
+                    stage="planning",
+                    level="info",
+                )
+                self.db.add_event(
+                    job["id"],
+                    f"[RISK] {'  |  '.join(plan.risk_flags[:3]) or 'None predicted'}",
+                    stage="planning",
+                    level="warn" if plan.risk_flags else "info",
+                )
+                log.info("[%s] p=%.2f risks=%s",
+                         job["id"][:8], plan.success_probability, len(plan.risk_flags))
             except Exception as exc:
-                log.warning("Supervisor: memory consultation failed – %s", exc)
+                log.warning("Intelligence planning failed: %s", exc)
+                job["_execution_plan"] = {}
+        elif self.jarvis_memory:
+            # Fallback: basic memory context without full intelligence
+            try:
+                job["_memory_context"] = self.jarvis_memory.build_planning_context(job["prompt"])
+            except Exception:
                 job["_memory_context"] = {}
-        
+
         with self._lock:
             self._active[job["id"]] = time.time()
         self.db.update_job(job["id"], status="running", stage="dispatch")

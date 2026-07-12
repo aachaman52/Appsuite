@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel
 from desktop_ui.pages.dashboard_page import DashboardPage
 from desktop_ui.pages.workers_page import WorkersPage
 from desktop_ui.pages.timeline_page import TimelinePage
+from desktop_ui.pages.benchmark_page import BenchmarkPage
 
 
 class TabManager(QTabWidget):
@@ -40,10 +41,10 @@ class TabManager(QTabWidget):
         self.setup_ui()
 
     def setup_ui(self):
-        # 1. Instantiate pages
         self.dashboard = DashboardPage(self)
         self.workers = WorkersPage(self)
         self.timeline = TimelinePage(self)
+        self.benchmark = BenchmarkPage(self)
 
         # Assets Database mock page
         self.assets = QWidget(self)
@@ -73,32 +74,26 @@ class TabManager(QTabWidget):
         settings_layout.setContentsMargins(24, 24, 24, 24)
         settings_layout.setSpacing(8)
         
-        settings_title = QLabel("Application System Settings", self.settings)
-        settings_title.setStyleSheet("color: #00ff66; font-size: 20px; font-weight: bold;")
-        settings_layout.addWidget(settings_title)
-        
-        settings_desc = QLabel(
-            "Configure AI LLM Providers (OpenAI, Anthropic, Gemini, Local NIM), file paths, and local Godot build settings.", 
-            self.settings
-        )
-        settings_desc.setStyleSheet("color: #8c8c8c; font-size: 13px;")
-        settings_layout.addWidget(settings_desc)
-        settings_layout.addStretch()
+        settings_label = QLabel("Settings Panel (Coming Soon)", self.settings)
+        settings_label.setStyleSheet("color: #8c8c8c; font-size: 16px;")
+        settings_label.setAlignment(Qt.AlignCenter)
+        settings_layout.addWidget(settings_label)
 
-        # 2. Add tabs
+        # 2. Add to TabWidget in exact order corresponding to Sidebar
         self.addTab(self.dashboard, "Dashboard")
         self.addTab(self.workers, "Workers")
-        self.addTab(self.timeline, "Timeline Logs")
-        self.addTab(self.assets, "Asset Browser")
+        self.addTab(self.timeline, "Timeline")
+        self.addTab(self.benchmark, "Benchmark")
+        self.addTab(self.assets, "Assets")
         self.addTab(self.settings, "Settings")
 
     def show_page(self, page_id: str):
-        mapping = {
+        idx = {
             "dashboard": 0,
             "workers": 1,
             "timeline": 2,
-            "assets": 3,
-            "settings": 4
-        }
-        if page_id in mapping:
-            self.setCurrentIndex(mapping[page_id])
+            "benchmark": 3,
+            "assets": 4,
+            "settings": 5
+        }.get(page_id, 0)
+        self.setCurrentIndex(idx)
