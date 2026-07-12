@@ -134,8 +134,23 @@ class GodotWorker(BaseWorker):
             node_parts.append('[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]\n')
             node_parts.append('shape = SubResource("CapsuleShape3D_player")\n\n')
             
+            # Third-person camera follow setup
             node_parts.append('[node name="Camera3D" type="Camera3D" parent="Player"]\n')
-            node_parts.append('transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)\n\n')
+            node_parts.append('transform = Transform3D(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0, 6.0, 8.0)\n\n')
+            
+            # Instance the player visual model if character.glb or any character exists
+            char_res_id = None
+            for rel_res_path, rid in ext_resources.items():
+                if "character.glb" in rel_res_path.lower() or "character.gltf" in rel_res_path.lower():
+                    char_res_id = rid
+                    break
+            if char_res_id:
+                node_parts.append(f'[node name="CharacterMesh" parent="Player" instance=ExtResource("{char_res_id}_scene")]\n')
+                node_parts.append('transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 0, -1.0, 0)\n\n')
+            else:
+                node_parts.append('[node name="CharacterMesh" type="CSGBox3D" parent="Player"]\n')
+                node_parts.append('size = Vector3(0.8, 1.8, 0.8)\n')
+                node_parts.append('transform = Transform3D(1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 0, -0.1, 0)\n\n')
         else:
             # Camera
             node_parts.append('[node name="Camera3D" type="Camera3D" parent="."]\n')
@@ -233,6 +248,7 @@ class GodotWorker(BaseWorker):
         for rel_path in ext_resources:
             abs_path = project_dir / rel_path
             if not abs_path.exists():
+                self.log.error("verify_scene_loads: missing resource path: %s (absolute: %s)", rel_path, abs_path)
                 raise WorkerError("SCENE_LOAD_FAILURE")
 
     def _launch_editor(self, project_dir: Path) -> bool:
@@ -319,7 +335,7 @@ class GodotWorker(BaseWorker):
                             if sibling.resolve() != sib_dest.resolve():
                                 shutil.copy(sibling, sib_dest)
 
-        is_fps = "fps" in str(job.get("prompt", "")).lower() or "shooter" in str(job.get("prompt", "")).lower() or layout.get("fps_mode", False)
+        is_fps = any(k in str(job.get("prompt", "")).lower() for k in ("fps", "shooter", "gta", "playable", "character", "third-person")) or layout.get("fps_mode", False)
         scene = self.generate_main_scene(layout, project_dir, is_fps=is_fps)
         prefabs = self.generate_prefabs(layout, project_dir)
 
@@ -429,12 +445,15 @@ class GodotWorker(BaseWorker):
         state["godot_project"] = str(project_dir)
         state["main_scene"] = str(project_dir / "Scenes" / "main.tscn")
         
+        launched = self._launch_editor(project_dir)
+        
         return WorkerResult(
             status=WorkerStatus.SUCCESS,
             data={
                 "project": str(project_dir),
                 "main_scene": "Scenes/main.tscn",
-                "recovered": True
+                "recovered": True,
+                "editor_launched": launched
             },
             reason="Re-generated basic procedural project as fallback.",
             metadata={"recovered": True}

@@ -1,0 +1,174 @@
+[gd_scene format=3 uid="uid://d1k2ie3hrhxph"]
+
+[ext_resource type="PackedScene" uid="uid://sl07lj7d4k6o" path="res://Assets/building-small-c.glb" id="1_scene"]
+[ext_resource type="PackedScene" uid="uid://cbxle83vxw72x" path="res://Assets/character.glb" id="2_scene"]
+
+[sub_resource type="StandardMaterial3D" id="GroundMaterial"]
+albedo_color = Color(0.2, 0.45, 0.25, 1)
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.384, 0.455, 0.549, 1)
+sky_horizon_color = Color(0.647, 0.655, 0.671, 1)
+
+[sub_resource type="Sky" id="SkyRes"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("SkyRes")
+ambient_light_source = 3
+ambient_light_color = Color(0.6, 0.7, 0.8, 1)
+ambient_light_energy = 0.3
+
+[node name="Main" type="Node3D" unique_id=1101749770]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=964331951]
+transform = Transform3D(1, 0, 0, 0, 0.7, 0.7, 0, -0.7, 0.7, 0, 40, 40)
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=1698284321]
+
+[node name="GroundMesh" type="CSGBox3D" parent="Ground" unique_id=1509132800]
+use_collision = true
+size = Vector3(100, 0.2, 100)
+material = SubResource("GroundMaterial")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=765895667]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.86, 0, -0.86, 0.5, 0, 50, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=150161345]
+environment = SubResource("Env")
+
+[node name="house_b5ac0d" parent="." unique_id=1945527629 instance=ExtResource("1_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -4)
+
+[node name="house_b5ac0d2" parent="." unique_id=1474946229 instance=ExtResource("1_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+
+[node name="house_b5ac0d3" parent="." unique_id=394469249 instance=ExtResource("1_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -4)
+
+[node name="house_b5ac0d4" parent="." unique_id=592184369 instance=ExtResource("1_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+
+[node name="house_b5ac0d5" parent="." unique_id=1738774064 instance=ExtResource("1_scene")]
+
+[node name="house_b5ac0d6" parent="." unique_id=219692622 instance=ExtResource("1_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
+
+[node name="barrel_3f048a" parent="." unique_id=602521079 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, -9)
+
+[node name="barrel_3f048a2" parent="." unique_id=1521930952 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -9)
+
+[node name="barrel_3f048a3" parent="." unique_id=1427606180 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, -9)
+
+[node name="barrel_3f048a4" parent="." unique_id=1264045495 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 0, -9)
+
+[node name="barrel_3f048a5" parent="." unique_id=542135342 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, -3)
+
+[node name="barrel_3f048a6" parent="." unique_id=507263783 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -3)
+
+[node name="barrel_3f048a7" parent="." unique_id=817724258 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, -3)
+
+[node name="barrel_3f048a8" parent="." unique_id=1842618050 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 0, -3)
+
+[node name="barrel_3f048a9" parent="." unique_id=982910966 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, 3)
+
+[node name="barrel_3f048a10" parent="." unique_id=940863040 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 3)
+
+[node name="tree_3f048a" parent="." unique_id=1904792731 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, -16)
+
+[node name="tree_3f048a2" parent="." unique_id=1032690162 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -16)
+
+[node name="tree_3f048a3" parent="." unique_id=215364373 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -16)
+
+[node name="tree_3f048a4" parent="." unique_id=1528658999 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -16)
+
+[node name="tree_3f048a5" parent="." unique_id=1622581657 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0, -16)
+
+[node name="tree_3f048a6" parent="." unique_id=738939983 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, -8)
+
+[node name="tree_3f048a7" parent="." unique_id=1647512249 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -8)
+
+[node name="tree_3f048a8" parent="." unique_id=1338561844 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -8)
+
+[node name="tree_3f048a9" parent="." unique_id=1835522021 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -8)
+
+[node name="tree_3f048a10" parent="." unique_id=1207685773 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0, -8)
+
+[node name="tree_3f048a11" parent="." unique_id=1222826367 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, 0)
+
+[node name="tree_3f048a12" parent="." unique_id=1768105995 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
+
+[node name="tree_3f048a13" parent="." unique_id=1248520115 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0)
+
+[node name="tree_3f048a14" parent="." unique_id=866287308 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 0)
+
+[node name="tree_3f048a15" parent="." unique_id=1020351481 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0, 0)
+
+[node name="tree_3f048a16" parent="." unique_id=1943828923 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, 8)
+
+[node name="tree_3f048a17" parent="." unique_id=979853082 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 8)
+
+[node name="tree_3f048a18" parent="." unique_id=2116224291 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 8)
+
+[node name="tree_3f048a19" parent="." unique_id=1552425828 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 8)
+
+[node name="tree_3f048a20" parent="." unique_id=657786790 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0, 8)
+
+[node name="road_b5ac0d" parent="." unique_id=1890208483 instance=ExtResource("1_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0)
+
+[node name="npc_3f048a" parent="." unique_id=2120327092 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -12)
+
+[node name="npc_3f048a2" parent="." unique_id=632986310 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -12)
+
+[node name="npc_3f048a3" parent="." unique_id=539072814 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, -12)
+
+[node name="npc_3f048a4" parent="." unique_id=1011538268 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
+
+[node name="npc_3f048a5" parent="." unique_id=1214117397 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+
+[node name="npc_3f048a6" parent="." unique_id=1722266474 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
+
+[node name="npc_3f048a7" parent="." unique_id=339334065 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 12)
+
+[node name="npc_3f048a8" parent="." unique_id=421802930 instance=ExtResource("2_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 12)

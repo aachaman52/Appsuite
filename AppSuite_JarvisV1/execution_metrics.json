@@ -1,10 +1,10 @@
 {
-  "total_duration": 0.0006225109100341797,
-  "task_count": 0,
-  "success_count": 0,
+  "total_duration": 20.56413173675537,
+  "task_count": 3,
+  "success_count": 3,
   "failure_count": 0,
-  "ram_usage_peak": 0.0,
-  "cpu_usage_peak": 0.0,
+  "ram_usage_peak": 75.3,
+  "cpu_usage_peak": 56.8,
   "cache_hits": 0,
   "worker_retries": 0
 }

@@ -1,4 +1,42 @@
 {
-  "tasks": {},
-  "adjacency_list": {}
+  "tasks": {
+    "blender_1": {
+      "task_id": "blender_1",
+      "agent_type": "BlenderAgent",
+      "priority": 1,
+      "dependencies": [],
+      "status": "success",
+      "start_time": 1783856198.0755904,
+      "end_time": 1783856198.1764455,
+      "duration": 0.042006492614746094,
+      "error": null
+    },
+    "code_1": {
+      "task_id": "code_1",
+      "agent_type": "CodeAgent",
+      "priority": 2,
+      "dependencies": [],
+      "status": "success",
+      "start_time": 1783856198.0665894,
+      "end_time": 1783856208.1864843,
+      "duration": 10.093340635299683,
+      "error": null
+    },
+    "godot_1": {
+      "task_id": "godot_1",
+      "agent_type": "GodotAgent",
+      "priority": 1,
+      "dependencies": [],
+      "status": "success",
+      "start_time": 1783856208.1975205,
+      "end_time": 1783856218.0788443,
+      "duration": 9.87476110458374,
+      "error": null
+    }
+  },
+  "adjacency_list": {
+    "blender_1": [],
+    "code_1": [],
+    "godot_1": []
+  }
 }

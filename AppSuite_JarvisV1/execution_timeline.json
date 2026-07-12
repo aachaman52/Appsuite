@@ -1,13 +1,147 @@
 [
   {
-    "event": "PipelineFinished",
-    "timestamp": 1783250741.5582538,
+    "event": "TaskCreated",
+    "timestamp": 1783856198.0573187,
     "data": {
-      "job_id": "dag-no-warn",
-      "total_tasks": 0,
-      "succeeded": 0,
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "blender_1",
+      "agent_type": "BlenderAgent",
+      "priority": 1
+    }
+  },
+  {
+    "event": "TaskCreated",
+    "timestamp": 1783856198.057338,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "code_1",
+      "agent_type": "CodeAgent",
+      "priority": 2
+    }
+  },
+  {
+    "event": "TaskCreated",
+    "timestamp": 1783856198.0573494,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "godot_1",
+      "agent_type": "GodotAgent",
+      "priority": 1
+    }
+  },
+  {
+    "event": "TaskStarted",
+    "timestamp": 1783856198.0665894,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "code_1",
+      "agent_name": "CodeAgent"
+    }
+  },
+  {
+    "event": "ResourceWarning",
+    "timestamp": 1783856198.075563,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "resource": "gpu",
+      "level": 0.0,
+      "threshold": 0.0
+    }
+  },
+  {
+    "event": "TaskStarted",
+    "timestamp": 1783856198.0755904,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "blender_1",
+      "agent_name": "BlenderAgent"
+    }
+  },
+  {
+    "event": "TaskCompleted",
+    "timestamp": 1783856198.1764455,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "blender_1",
+      "duration": 0.042006492614746094,
+      "status": "success"
+    }
+  },
+  {
+    "event": "CheckpointSaved",
+    "timestamp": 1783856198.1786706,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "node_count": 1,
+      "path": "67deb4bd-5910-4d35-b3bd-e694044d9aca_checkpoint.json"
+    }
+  },
+  {
+    "event": "TaskCompleted",
+    "timestamp": 1783856208.1864843,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "code_1",
+      "duration": 10.093340635299683,
+      "status": "success"
+    }
+  },
+  {
+    "event": "CheckpointSaved",
+    "timestamp": 1783856208.1883163,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "node_count": 2,
+      "path": "67deb4bd-5910-4d35-b3bd-e694044d9aca_checkpoint.json"
+    }
+  },
+  {
+    "event": "ResourceWarning",
+    "timestamp": 1783856208.1974993,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "resource": "gpu",
+      "level": 0.0,
+      "threshold": 0.0
+    }
+  },
+  {
+    "event": "TaskStarted",
+    "timestamp": 1783856208.1975205,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "godot_1",
+      "agent_name": "GodotAgent"
+    }
+  },
+  {
+    "event": "TaskCompleted",
+    "timestamp": 1783856218.0788443,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "task_id": "godot_1",
+      "duration": 9.87476110458374,
+      "status": "success"
+    }
+  },
+  {
+    "event": "CheckpointSaved",
+    "timestamp": 1783856218.081569,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "node_count": 3,
+      "path": "67deb4bd-5910-4d35-b3bd-e694044d9aca_checkpoint.json"
+    }
+  },
+  {
+    "event": "PipelineFinished",
+    "timestamp": 1783856218.0819016,
+    "data": {
+      "job_id": "67deb4bd-5910-4d35-b3bd-e694044d9aca",
+      "total_tasks": 3,
+      "succeeded": 3,
       "failed": 0,
-      "duration": 0.000316619873046875
+      "duration": 20.56380033493042
     }
   }
 ]

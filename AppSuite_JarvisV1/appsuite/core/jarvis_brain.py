@@ -82,10 +82,24 @@ class JarvisBrain:
         if hasattr(self.memory, "strategy") and hasattr(self.memory.strategy, "get_similar_strategies"):
             try:
                 matches = self.memory.strategy.get_similar_strategies(prompt, limit=3, threshold=0.85)
-                # Filter to only successful strategies
-                success_matches = [m for m in matches if m.get("outcome") == "success"]
-                if success_matches:
-                    similar_strategy = success_matches[0]
+                # Filter to only successful strategies that have valid files on disk
+                for m in matches:
+                    if m.get("outcome") == "success":
+                        json_plan = m.get("strategy", {})
+                        matched_job_id = json_plan.get("job_id") or m.get("job_id")
+                        has_files = False
+                        if matched_job_id and hasattr(self.memory, "db") and self.memory.db:
+                            prior_assets = self.memory.db.get_assets_for_job(matched_job_id)
+                            if prior_assets:
+                                from pathlib import Path
+                                for a in prior_assets:
+                                    fp = Path(a.get("file_path", ""))
+                                    if fp.exists() and fp.stat().st_size > 0:
+                                        has_files = True
+                                        break
+                        if has_files:
+                            similar_strategy = m
+                            break
             except Exception as e:
                 log.warning("Failed to retrieve similar strategies: %s", e)
 
@@ -129,6 +143,8 @@ class JarvisBrain:
                     stages.insert(1, "asset_processing")
                 if "BlenderAgent" in agent_types:
                     stages.append("blender_import")
+                if "CodeAgent" in agent_types:
+                    stages.append("code")
                 if "GodotAgent" in agent_types:
                     stages.append("godot_import")
                 if "BrowserAgent" in agent_types:
@@ -305,22 +321,61 @@ class JarvisBrain:
         # 4. Fallback to Rules-based Planner
         similar_job = None
         if hasattr(self.memory, "strategy") and hasattr(self.memory.strategy, "get_similar_strategies"):
-            similar_strategies = self.memory.strategy.get_similar_strategies(prompt, limit=3, threshold=0.35)
-            if similar_strategies:
-                similar_job = similar_strategies[0]
+            try:
+                similar_strategies = self.memory.strategy.get_similar_strategies(prompt, limit=3, threshold=0.35)
+                for s in similar_strategies:
+                    if s.get("outcome") == "success":
+                        matched_job_id = s.get("job_id") or (s.get("strategy") or {}).get("job_id") or s.get("id")
+                        has_files = False
+                        if matched_job_id and hasattr(self.memory, "db") and self.memory.db:
+                            prior_assets = self.memory.db.get_assets_for_job(matched_job_id)
+                            if prior_assets:
+                                from pathlib import Path
+                                for a in prior_assets:
+                                    fp = Path(a.get("file_path", ""))
+                                    if fp.exists() and fp.stat().st_size > 0:
+                                        has_files = True
+                                        break
+                        if has_files:
+                            similar_job = s
+                            break
+            except Exception as e:
+                log.warning("Failed to verify fallback similar strategies: %s", e)
+
         if not similar_job:
-            similar_job = self.memory.recall_similar(prompt, threshold=0.7)
+            try:
+                candidates = self.memory.recall_similar(prompt, threshold=0.7)
+                if candidates:
+                    cand_list = candidates if isinstance(candidates, list) else [candidates]
+                    for c in cand_list:
+                        if c.get("outcome") == "success":
+                            matched_job_id = c.get("job_id") or (c.get("strategy") or {}).get("job_id") or c.get("id")
+                            has_files = False
+                            if matched_job_id and hasattr(self.memory, "db") and self.memory.db:
+                                prior_assets = self.memory.db.get_assets_for_job(matched_job_id)
+                                if prior_assets:
+                                    from pathlib import Path
+                                    for a in prior_assets:
+                                        fp = Path(a.get("file_path", ""))
+                                        if fp.exists() and fp.stat().st_size > 0:
+                                            has_files = True
+                                            break
+                            if has_files:
+                                similar_job = c
+                                break
+            except Exception as e:
+                log.warning("Failed recall_similar validation: %s", e)
+
         agent_tasks = []
-        
         if similar_job and similar_job.get("outcome") == "success":
             t1 = AgentTask(task_id="blender_1", agent_type="BlenderAgent", objective="Optimize cached models", priority=1)
             t2 = AgentTask(task_id="code_1", agent_type="CodeAgent", objective="Generate scripts", priority=2)
             t3 = AgentTask(task_id="godot_1", agent_type="GodotAgent", objective="Build scene", dependencies=["blender_1", "code_1"], priority=1)
             agent_tasks.extend([t1, t2, t3])
             
-            matched_job_id = similar_job.get("job_id") or (similar_job.get("strategy") or {}).get("job_id")
+            matched_job_id = similar_job.get("job_id") or (similar_job.get("strategy") or {}).get("job_id") or similar_job.get("id")
             return ExecutionPlan(
-                stages=["asset_processing", "blender_import", "godot_import", "output_validation", "cloud_deploy"],
+                stages=["asset_processing", "code", "blender_import", "godot_import", "output_validation", "cloud_deploy"],
                 agent_tasks=agent_tasks,
                 reasoning=f"Found high-confidence semantic match (score {similar_job.get('similarity_score', 0):.2f}) from job {matched_job_id or 'unknown'}. Reusing assets and bypassing search.",
                 reused_assets=True,
