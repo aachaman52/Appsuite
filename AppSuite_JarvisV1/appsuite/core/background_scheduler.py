@@ -119,7 +119,10 @@ class BackgroundScheduler:
     # --- Job implementations --------------------------------------------------
     def _job_memory_consolidation(self) -> None:
         # Decay memory entries slightly
-        self.db.execute("UPDATE memory SET created_at = created_at - 1.0 LIMIT 10")
+        self.db.execute(
+            "UPDATE memory SET created_at = created_at - 1.0 "
+            "WHERE id IN (SELECT id FROM memory ORDER BY created_at DESC LIMIT 10)"
+        )
 
     def _job_cache_cleanup(self) -> None:
         # Clean up stale/old embedding caches (e.g. older than 30 days)

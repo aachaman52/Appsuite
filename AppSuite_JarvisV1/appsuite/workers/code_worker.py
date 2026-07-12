@@ -21,7 +21,7 @@ class CodeWorker(BaseWorker):
 
     def plan(self, job: Dict[str, Any], state: Any) -> List[str]:
         prompt = job.get("prompt", "")
-        is_fps = "fps" in prompt.lower() or "shooter" in prompt.lower()
+        is_fps = any(k in prompt.lower() for k in ("fps", "shooter", "gta", "playable", "character", "third-person"))
         script_filename = "player.gd" if is_fps else "gameplay.gd"
         return [
             f"plan_architecture:{script_filename}",
@@ -61,7 +61,7 @@ class CodeWorker(BaseWorker):
         scripts_dir.mkdir(parents=True, exist_ok=True)
         
         prompt = job.get("prompt", "")
-        is_fps = "fps" in prompt.lower() or "shooter" in prompt.lower()
+        is_fps = any(k in prompt.lower() for k in ("fps", "shooter", "gta", "playable", "character", "third-person"))
         script_filename = "player.gd" if is_fps else "gameplay.gd"
         script_path = scripts_dir / script_filename
         
@@ -72,6 +72,9 @@ class CodeWorker(BaseWorker):
                 "const SPEED = 5.0\n"
                 "const JUMP_VELOCITY = 4.5\n\n"
                 "func _physics_process(delta: float) -> void:\n"
+                "    # Apply gravity\n"
+                "    if not is_on_floor():\n"
+                "        velocity.y -= 9.8 * delta\n\n"
                 "    var input_dir := Vector2.ZERO\n"
                 "    if Input.is_key_pressed(KEY_W): input_dir.y -= 1.0\n"
                 "    if Input.is_key_pressed(KEY_S): input_dir.y += 1.0\n"
@@ -81,6 +84,9 @@ class CodeWorker(BaseWorker):
                 "    if direction:\n"
                 "        velocity.x = direction.x * SPEED\n"
                 "        velocity.z = direction.z * SPEED\n"
+                "        # Rotate towards movement direction\n"
+                "        var target_angle = atan2(-direction.x, -direction.z)\n"
+                "        rotation.y = lerp_angle(rotation.y, target_angle, 0.15)\n"
                 "    else:\n"
                 "        velocity.x = move_toward(velocity.x, 0, SPEED)\n"
                 "        velocity.z = move_toward(velocity.z, 0, SPEED)\n"
@@ -124,7 +130,7 @@ class CodeWorker(BaseWorker):
 
     def run(self, job: Dict[str, Any], state: Any) -> WorkerResult:
         job_prompt = job.get("prompt", "Generic")
-        is_fps = "fps" in job_prompt.lower() or "shooter" in job_prompt.lower()
+        is_fps = any(k in job_prompt.lower() for k in ("fps", "shooter", "gta", "playable", "character", "third-person"))
         script_filename = "player.gd" if is_fps else "gameplay.gd"
 
         cfg = load_config()

@@ -14,6 +14,7 @@ from .config import AppConfig, load_config
 from .core.asset_registry import AssetRegistry
 from .core.jarvis import JarvisCore
 from .core.semantic_memory import SemanticMemory
+from .core.jarvis_memory import JarvisMemory
 from .core.jarvis_brain import JarvisBrain
 from .core.hardware_manager import HardwareManager
 from .core.token_banker import TokenBanker
@@ -45,6 +46,7 @@ class AppContext:
         self.db = Database(config.abs_path("database_path"))
         self.registry = AssetRegistry(self.db)
         self.memory = SemanticMemory(self.db)
+        self.jarvis_memory = JarvisMemory(self.db)  # New typed memory system
         self.templates = TemplateEngine(config.templates)
         self.token_banker = TokenBanker(config.get("token_banker", {}))
         self.provider_manager = ProviderManager(config.providers, token_banker=self.token_banker)
@@ -94,7 +96,8 @@ class AppContext:
         )
         self.supervisor = Supervisor(
             self.db, self.jarvis, self.pipeline, self.memory,
-            config.scheduler, config.retries, brain=self.brain
+            config.scheduler, config.retries, brain=self.brain,
+            jarvis_memory=self.jarvis_memory
         )
 
         # --- Phase 11 Components Wiring ---

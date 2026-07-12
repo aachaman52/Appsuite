@@ -47,28 +47,128 @@ class BlenderWorker(BaseWorker):
 
     def build_scene_layout(self, assets: List[Dict[str, Any]], template: Dict[str, Any]
                            ) -> Dict[str, Any]:
-        # Group by role, then lay each role out on its own grid ring.
+        prompt = template.get("prompt", "").lower()
+        is_street = any(k in prompt for k in ("street", "city", "village", "gta", "block", "town"))
+
         by_role: Dict[str, List[Dict[str, Any]]] = {}
         for a in assets:
             by_role.setdefault(a["role"], []).append(a)
+
         objects = []
-        ring = 0
-        for role, items in by_role.items():
-            spacing = 4.0 + ring * 2.0
-            for pos, asset in zip(_grid_layout(len(items), spacing), items):
-                objects.append({
-                    "asset_id": asset["id"],
-                    "name": f"{role}_{asset['id'][:6]}",
-                    "role": role,
-                    "source_file": asset["file_path"],
-                    "route": asset.get("route", "direct_godot"),
-                    "location": [round(pos[0] + ring * 1.5, 3), 0.0, round(pos[2], 3)],
-                    "rotation": [0.0, 0.0, 0.0],
-                    # fix scale: normalise everything to 1 unit, role-specific tweaks
-                    "scale": [1.0, 1.0, 1.0],
-                    "material": {"role": role, "base_color": _role_color(role)},
-                })
-            ring += 1
+
+        if is_street:
+            # 1. Road assets along Z axis (X=0)
+            road_items = by_role.get("road", [])
+            # If we don't have road assets, check building assets or fallback to place roads
+            if road_items:
+                road_spacing = 8.0
+                road_count = len(road_items)
+                for idx, asset in enumerate(road_items):
+                    z_pos = (idx - (road_count - 1) / 2.0) * road_spacing
+                    objects.append({
+                        "asset_id": asset["id"],
+                        "name": f"road_{asset['id'][:6]}_{idx}",
+                        "role": "road",
+                        "source_file": asset["file_path"],
+                        "route": asset.get("route", "direct_godot"),
+                        "location": [0.0, 0.0, round(z_pos, 3)],
+                        "rotation": [0.0, 0.0, 0.0],
+                        "scale": [3.0, 1.0, 3.0],
+                        "material": {"role": "road", "base_color": [0.2, 0.2, 0.2]},
+                    })
+
+            # 2. Houses/buildings on left and right sides
+            house_items = by_role.get("house", []) + by_role.get("building", [])
+            if house_items:
+                house_count = len(house_items)
+                for idx, asset in enumerate(house_items):
+                    side = -1 if (idx % 2 == 0) else 1
+                    z_index = idx // 2
+                    z_pos = (z_index - (house_count // 4)) * 12.0
+                    x_pos = side * 10.0
+                    rot_y = 1.5708 if side == -1 else -1.5708
+                    objects.append({
+                        "asset_id": asset["id"],
+                        "name": f"house_{asset['id'][:6]}_{idx}",
+                        "role": "house",
+                        "source_file": asset["file_path"],
+                        "route": asset.get("route", "direct_godot"),
+                        "location": [round(x_pos, 3), 0.0, round(z_pos, 3)],
+                        "rotation": [0.0, round(rot_y, 4), 0.0],
+                        "scale": [3.0, 3.0, 3.0],
+                        "material": {"role": "house", "base_color": [0.6, 0.4, 0.3]},
+                    })
+
+            # 3. Props (trees, barrels) along the sidewalk
+            props = by_role.get("tree", []) + by_role.get("barrel", [])
+            if props:
+                prop_count = len(props)
+                for idx, asset in enumerate(props):
+                    side = -1 if (idx % 2 == 0) else 1
+                    x_pos = side * 3.5
+                    z_pos = (idx // 2 - (prop_count // 4)) * 6.0
+                    
+                    import random
+                    rnd = random.Random(idx)
+                    x_pos += rnd.uniform(-0.5, 0.5)
+                    z_pos += rnd.uniform(-1.0, 1.0)
+                    
+                    objects.append({
+                        "asset_id": asset["id"],
+                        "name": f"{asset['role']}_{asset['id'][:6]}_{idx}",
+                        "role": asset["role"],
+                        "source_file": asset["file_path"],
+                        "route": asset.get("route", "direct_godot"),
+                        "location": [round(x_pos, 3), 0.0, round(z_pos, 3)],
+                        "rotation": [0.0, round(rnd.uniform(0, 6.28), 3), 0.0],
+                        "scale": [1.5, 1.5, 1.5] if asset["role"] == "tree" else [1.0, 1.0, 1.0],
+                        "material": {"role": asset["role"], "base_color": [0.1, 0.6, 0.2] if asset["role"] == "tree" else [0.5, 0.3, 0.1]},
+                    })
+
+            # 4. NPCs standing on the sidewalks
+            npcs = by_role.get("npc", []) + by_role.get("character", [])
+            if npcs:
+                npc_count = len(npcs)
+                for idx, asset in enumerate(npcs):
+                    side = 1 if (idx % 2 == 0) else -1
+                    x_pos = side * 4.5
+                    z_pos = (idx // 2 - (npc_count // 4)) * 8.0
+                    import random
+                    rnd = random.Random(idx + 100)
+                    x_pos += rnd.uniform(-0.5, 0.5)
+                    z_pos += rnd.uniform(-1.0, 1.0)
+                    
+                    objects.append({
+                        "asset_id": asset["id"],
+                        "name": f"npc_{asset['id'][:6]}_{idx}",
+                        "role": "npc",
+                        "source_file": asset["file_path"],
+                        "route": asset.get("route", "direct_godot"),
+                        "location": [round(x_pos, 3), 0.0, round(z_pos, 3)],
+                        "rotation": [0.0, round(rnd.uniform(0, 6.28), 3), 0.0],
+                        "scale": [1.0, 1.0, 1.0],
+                        "material": {"role": "npc", "base_color": [0.9, 0.8, 0.2]},
+                    })
+
+        else:
+            # Fallback ring-grid layout
+            ring = 0
+            for role, items in by_role.items():
+                spacing = 4.0 + ring * 2.0
+                for pos, asset in zip(_grid_layout(len(items), spacing), items):
+                    objects.append({
+                        "asset_id": asset["id"],
+                        "name": f"{role}_{asset['id'][:6]}",
+                        "role": role,
+                        "source_file": asset["file_path"],
+                        "route": asset.get("route", "direct_godot"),
+                        "location": [round(pos[0] + ring * 1.5, 3), 0.0, round(pos[2], 3)],
+                        "rotation": [0.0, 0.0, 0.0],
+                        "scale": [1.0, 1.0, 1.0],
+                        "material": {"role": role, "base_color": _role_color(role)},
+                    })
+                ring += 1
+
         return {
             "ground": template.get("ground", {}),
             "lighting": template.get("lighting", {}),

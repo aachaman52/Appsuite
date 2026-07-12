@@ -1,0 +1,1363 @@
+{
+  "ground": {
+    "size": 100,
+    "material": "grass"
+  },
+  "lighting": {
+    "preset": "warm_day",
+    "shadows": true,
+    "ambient": 0.3
+  },
+  "objects": [
+    {
+      "asset_id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+      "name": "house_b5ac0d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_f71de2\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+      "route": "direct_godot",
+      "location": [
+        -4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+      "name": "house_b5ac0d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_c71936\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+      "route": "direct_godot",
+      "location": [
+        0.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+      "name": "house_b5ac0d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_951c41\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+      "route": "direct_godot",
+      "location": [
+        4.0,
+        0.0,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+      "name": "house_b5ac0d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_740f8d\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+      "route": "direct_godot",
+      "location": [
+        -4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+      "name": "house_b5ac0d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_b86c86\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+      "route": "direct_godot",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+      "name": "house_b5ac0d",
+      "role": "house",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_21d4a5\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+      "route": "direct_godot",
+      "location": [
+        4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "house",
+        "base_color": [
+          0.55,
+          0.35,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_1aea9c\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -7.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_d572ea\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -1.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_159ae1\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        4.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_83363b\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        10.5,
+        0.0,
+        -9.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_15b455\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -7.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_ae8775\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -1.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_d10539\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        4.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_0aa6d7\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        10.5,
+        0.0,
+        -3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_359335\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -7.5,
+        0.0,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "barrel_3f048a",
+      "role": "barrel",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_8259b7\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -1.5,
+        0.0,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "barrel",
+        "base_color": [
+          0.45,
+          0.3,
+          0.15
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_8f6767\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -13.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_88e214\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -5.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_c72219\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        3.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_8a594d\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        11.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_f50cd7\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        19.0,
+        0.0,
+        -16.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_bd8e9d\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -13.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_aba02a\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -5.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_e14fa4\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        3.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_969b4e\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        11.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_1daa4d\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        19.0,
+        0.0,
+        -8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_28d35b\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -13.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_5133f6\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -5.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_fcbec9\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        3.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_7f13a9\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        11.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_9aa4c2\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        19.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_da1d36\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -13.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_5c2643\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -5.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_5cfb15\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        3.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_972fed\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        11.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "tree_3f048a",
+      "role": "tree",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_5d4730\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        19.0,
+        0.0,
+        8.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "tree",
+        "base_color": [
+          0.15,
+          0.5,
+          0.2
+        ]
+      }
+    },
+    {
+      "asset_id": "b5ac0d31-4193-40f8-b892-d187a6f6dd7a",
+      "name": "road_b5ac0d",
+      "role": "road",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\42846a7563edb155_33181b\\Starter-Kit-City-Builder-main\\models\\building-small-c.glb",
+      "route": "direct_godot",
+      "location": [
+        4.5,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "road",
+        "base_color": [
+          0.4,
+          0.4,
+          0.42
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_28faac\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -6.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_b4679b\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        6.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_1d2c7b\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        18.0,
+        0.0,
+        -12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_3edf9d\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -6.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_f2b7bb\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        6.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_5a172a\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        18.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_1e9d74\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        -6.0,
+        0.0,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+      "name": "npc_3f048a",
+      "role": "npc",
+      "source_file": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_0eec21\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+      "route": "direct_godot",
+      "location": [
+        6.0,
+        0.0,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "material": {
+        "role": "npc",
+        "base_color": [
+          0.8,
+          0.6,
+          0.5
+        ]
+      }
+    }
+  ]
+}

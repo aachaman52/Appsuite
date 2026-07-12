@@ -1,0 +1,27 @@
+{
+  "asset_id": "3f048a5f-c36d-4318-aa3e-65924470f9c8",
+  "job_id": "0d309bb5-600e-4a19-aa93-084c11c59ab8",
+  "role": "prop",
+  "source": "kenney",
+  "source_prompt": "make a fps shooter protottype",
+  "package_dir": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\projects\\0d309bb5-600e-4a19-aa93-084c11c59ab8\\Assets\\Normalized\\prop_kenney_nature_prop_3f048a5f",
+  "manifest_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\projects\\0d309bb5-600e-4a19-aa93-084c11c59ab8\\Assets\\Normalized\\prop_kenney_nature_prop_3f048a5f\\asset_manifest.json",
+  "primary_model": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\output\\projects\\0d309bb5-600e-4a19-aa93-084c11c59ab8\\Assets\\Normalized\\prop_kenney_nature_prop_3f048a5f\\character.glb",
+  "original_file_path": "C:\\Users\\Aachman_the_great\\.gemini\\antigravity\\scratch\\Appsuite\\AppSuite_JarvisV1\\data\\cache\\a65450f4ffc34b1b_c46a57\\Starter-Kit-3D-Platformer-main\\models\\character.glb",
+  "files": {
+    "models": [
+      "character.glb"
+    ],
+    "materials": [],
+    "textures": [
+      "colormap.png"
+    ],
+    "buffers": []
+  },
+  "warnings": [],
+  "metadata": {
+    "original_name": "kenney_nature_prop",
+    "format": "glb",
+    "source_url": "https://github.com/KenneyNL/Starter-Kit-3D-Platformer/archive/refs/heads/main.zip"
+  }
+}

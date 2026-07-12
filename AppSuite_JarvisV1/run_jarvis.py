@@ -44,6 +44,7 @@ from appsuite.workers.deploy_worker import DeployWorker
 from appsuite.workers.godot_worker import GodotWorker
 from appsuite.workers.internet_worker import InternetWorker
 from appsuite.workers.validation_worker import ValidationWorker
+from appsuite.workers.code_worker import CodeWorker
 
 
 def _bootstrap():
@@ -94,6 +95,12 @@ def _bootstrap():
             retries,
             worker_ctx,
             output_dir=cfg.abs_path("output_dir"),
+        ),
+        "code": CodeWorker(
+            wcfg.get("code", {}),
+            retries,
+            worker_ctx,
+            provider_manager=providers
         ),
     }
 

@@ -32,7 +32,8 @@ class SupervisorAction(Enum):
 
 
 class Supervisor:
-    def __init__(self, db, jarvis, pipeline, memory, scheduler_cfg, retries_cfg, brain=None):
+    def __init__(self, db, jarvis, pipeline, memory, scheduler_cfg, retries_cfg, brain=None,
+                 jarvis_memory=None):
         self.db = db
         self.jarvis = jarvis
         self.pipeline = pipeline
@@ -40,6 +41,7 @@ class Supervisor:
         self.scheduler_cfg = scheduler_cfg
         self.retries_cfg = retries_cfg
         self.brain = brain
+        self.jarvis_memory = jarvis_memory  # Typed Jarvis Memory System
         
         self.max_concurrent = int(scheduler_cfg.get("max_concurrent_jobs", 2))
         self.poll = float(scheduler_cfg.get("poll_interval_seconds", 1.0))
@@ -169,6 +171,17 @@ class Supervisor:
         job = self.db.next_queued_job()
         if not job:
             return
+        
+        # --- Consult Jarvis Memory before dispatching ---
+        if self.jarvis_memory:
+            try:
+                mem_ctx = self.jarvis_memory.build_planning_context(job["prompt"])
+                # Attach memory context to the job dict so pipeline can use it
+                job["_memory_context"] = mem_ctx
+            except Exception as exc:
+                log.warning("Supervisor: memory consultation failed – %s", exc)
+                job["_memory_context"] = {}
+        
         with self._lock:
             self._active[job["id"]] = time.time()
         self.db.update_job(job["id"], status="running", stage="dispatch")
@@ -204,15 +217,50 @@ class Supervisor:
           concurrently on the same DB row (W4).
         """
         job_id = job["id"]
+        start_time = time.time()
         self.db.update_job(job_id, attempts=1)
         try:
             summary = self.pipeline.execute(job)
+            elapsed = time.time() - start_time
             self.db.update_job(job_id, status="completed", stage="done",
                                result_json=json.dumps(summary), error=None)
             self.db.add_event(job_id, "Job completed", stage="done")
+            # Legacy memory
             self.memory.remember(job_id, job["prompt"],
                                  summary.get("template", ""), "success", summary)
+            # --- Jarvis Memory: record success ---
+            if self.jarvis_memory:
+                try:
+                    assets_db = self.db.get_assets_for_job(job_id)
+                    asset_names = [
+                        f"{a.get('name','unknown')}:{a.get('source','unknown')}:{a.get('role','general')}"
+                        for a in assets_db
+                    ]
+                    files = list(summary.get("generated_files", []))
+                    workers_used = list(summary.get("workers_used",
+                        ["internet", "analysis", "godot"]))
+                    self.jarvis_memory.record_success(
+                        job_id=job_id,
+                        prompt=job["prompt"],
+                        template_id=summary.get("template", "generic_scene"),
+                        workers_used=workers_used,
+                        assets_used=asset_names,
+                        completion_time_secs=elapsed,
+                        generated_files=files,
+                        reliability_score=1.0,
+                    )
+                    # Record individual asset results
+                    for a in assets_db:
+                        self.jarvis_memory.record_asset_result(
+                            asset_name=a.get("name", "unknown"),
+                            asset_source=a.get("source", "unknown"),
+                            category=a.get("role", "general"),
+                            success=True,
+                        )
+                except Exception as mem_exc:
+                    log.warning("[%s] Jarvis memory success record failed: %s", job_id[:8], mem_exc)
         except Exception as exc:  # noqa: BLE001
+            elapsed = time.time() - start_time
             tb = traceback.format_exc()
             log.error("[%s] Job failed: %s", job_id, exc)
             self.db.add_event(job_id, f"Job failed: {exc}",
@@ -221,6 +269,20 @@ class Supervisor:
                                error=str(exc))
             self.memory.remember(job_id, job["prompt"], "", "failed",
                                  {"error": str(exc), "trace": tb[-1000:]})
+            # --- Jarvis Memory: record failure ---
+            if self.jarvis_memory:
+                try:
+                    self.jarvis_memory.record_failure(
+                        prompt=job["prompt"],
+                        worker="supervisor",
+                        stage="pipeline",
+                        error=str(exc),
+                        stacktrace=tb,
+                        fix_that_worked="",
+                        retry_count=0,
+                    )
+                except Exception as mem_exc:
+                    log.warning("[%s] Jarvis memory failure record failed: %s", job_id[:8], mem_exc)
         finally:
             with self._lock:
                 self._active.pop(job_id, None)

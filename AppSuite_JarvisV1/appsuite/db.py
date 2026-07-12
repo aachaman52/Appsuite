@@ -115,9 +115,37 @@ CREATE TABLE IF NOT EXISTS procedural_memory (
     created_at REAL NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS success_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id TEXT NOT NULL,
+    prompt TEXT NOT NULL,
+    template_id TEXT,
+    workers_used_json TEXT,
+    assets_used_json TEXT,
+    completion_time_secs REAL,
+    generated_files_json TEXT,
+    reliability_score REAL DEFAULT 1.0,
+    created_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS asset_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    asset_name TEXT NOT NULL,
+    asset_source TEXT NOT NULL,
+    category TEXT,
+    use_count INTEGER DEFAULT 1,
+    success_count INTEGER DEFAULT 1,
+    fail_count INTEGER DEFAULT 0,
+    import_issues_json TEXT,
+    last_used_at REAL NOT NULL,
+    UNIQUE(asset_name, asset_source)
+);
+
 CREATE INDEX IF NOT EXISTS idx_assets_job ON assets(job_id);
 CREATE INDEX IF NOT EXISTS idx_events_job ON job_events(job_id);
 CREATE INDEX IF NOT EXISTS idx_assets_hash ON assets(file_hash);
+CREATE INDEX IF NOT EXISTS idx_success_mem_prompt ON success_memory(prompt);
+CREATE INDEX IF NOT EXISTS idx_asset_mem_category ON asset_memory(category);
 """
 
 
@@ -423,6 +451,125 @@ class Database:
                     r["recipe"] = json.loads(r["recipe_json"])
                 except Exception:
                     r["recipe"] = {}
+        return rows
+
+    # --- success memory ------------------------------------------------------
+    def add_success_memory(self, job_id: str, prompt: str, template_id: str,
+                           workers_used: List[str], assets_used: List[str],
+                           completion_time_secs: float, generated_files: List[str],
+                           reliability_score: float = 1.0) -> None:
+        self.execute(
+            "INSERT INTO success_memory (job_id, prompt, template_id, workers_used_json, "
+            "assets_used_json, completion_time_secs, generated_files_json, reliability_score, created_at) "
+            "VALUES (?,?,?,?,?,?,?,?,?)",
+            (job_id, prompt, template_id,
+             json.dumps(workers_used), json.dumps(assets_used),
+             completion_time_secs, json.dumps(generated_files),
+             reliability_score, time.time())
+        )
+
+    def get_success_memories(self, limit: int = 50) -> List[Dict[str, Any]]:
+        rows = self.query(
+            "SELECT * FROM success_memory ORDER BY reliability_score DESC, created_at DESC LIMIT ?",
+            (limit,)
+        )
+        for r in rows:
+            for field in ("workers_used_json", "assets_used_json", "generated_files_json"):
+                key = field.replace("_json", "")
+                if r.get(field):
+                    try:
+                        r[key] = json.loads(r[field])
+                    except Exception:
+                        r[key] = []
+        return rows
+
+    def find_similar_success(self, prompt: str, limit: int = 5) -> List[Dict[str, Any]]:
+        """Returns recent successes whose prompt shares keywords with the given prompt."""
+        words = [w.strip().lower() for w in prompt.split() if len(w) > 3]
+        if not words:
+            return self.get_success_memories(limit)
+        conditions = " OR ".join(["lower(prompt) LIKE ?" for _ in words])
+        params = tuple(f"%{w}%" for w in words) + (limit,)
+        rows = self.query(
+            f"SELECT * FROM success_memory WHERE {conditions} "
+            f"ORDER BY reliability_score DESC, created_at DESC LIMIT ?",
+            params
+        )
+        for r in rows:
+            for field in ("workers_used_json", "assets_used_json", "generated_files_json"):
+                key = field.replace("_json", "")
+                if r.get(field):
+                    try:
+                        r[key] = json.loads(r[field])
+                    except Exception:
+                        r[key] = []
+        return rows
+
+    # --- asset memory --------------------------------------------------------
+    def record_asset_usage(self, asset_name: str, asset_source: str,
+                           category: str, success: bool,
+                           import_issue: Optional[str] = None) -> None:
+        now = time.time()
+        existing = self.query_one(
+            "SELECT * FROM asset_memory WHERE asset_name=? AND asset_source=?",
+            (asset_name, asset_source)
+        )
+        if existing:
+            issues = []
+            if existing.get("import_issues_json"):
+                try:
+                    issues = json.loads(existing["import_issues_json"])
+                except Exception:
+                    pass
+            if import_issue:
+                issues.append(import_issue)
+            self.execute(
+                "UPDATE asset_memory SET use_count=use_count+1, "
+                "success_count=success_count+?, fail_count=fail_count+?, "
+                "import_issues_json=?, last_used_at=? "
+                "WHERE asset_name=? AND asset_source=?",
+                (1 if success else 0, 0 if success else 1,
+                 json.dumps(issues[-10:]), now, asset_name, asset_source)
+            )
+        else:
+            issues = [import_issue] if import_issue else []
+            self.execute(
+                "INSERT INTO asset_memory (asset_name, asset_source, category, use_count, "
+                "success_count, fail_count, import_issues_json, last_used_at) "
+                "VALUES (?,?,?,1,?,?,?,?)",
+                (asset_name, asset_source, category,
+                 1 if success else 0, 0 if success else 1,
+                 json.dumps(issues), now)
+            )
+
+    def get_best_assets_for_category(self, category: str, limit: int = 5) -> List[Dict[str, Any]]:
+        """Returns assets with highest success rate for a given category."""
+        rows = self.query(
+            "SELECT *, CAST(success_count AS REAL)/use_count AS success_rate "
+            "FROM asset_memory WHERE category=? AND use_count>0 "
+            "ORDER BY success_rate DESC, use_count DESC LIMIT ?",
+            (category, limit)
+        )
+        for r in rows:
+            if r.get("import_issues_json"):
+                try:
+                    r["import_issues"] = json.loads(r["import_issues_json"])
+                except Exception:
+                    r["import_issues"] = []
+        return rows
+
+    def get_all_asset_memory(self, limit: int = 200) -> List[Dict[str, Any]]:
+        rows = self.query(
+            "SELECT *, CAST(success_count AS REAL)/MAX(use_count,1) AS success_rate "
+            "FROM asset_memory ORDER BY last_used_at DESC LIMIT ?",
+            (limit,)
+        )
+        for r in rows:
+            if r.get("import_issues_json"):
+                try:
+                    r["import_issues"] = json.loads(r["import_issues_json"])
+                except Exception:
+                    r["import_issues"] = []
         return rows
 
     def close(self) -> None:
