@@ -19,6 +19,11 @@ class PluginManager:
         self.directory = directory
         self.enabled = enabled
         self.plugins: List[Dict[str, Any]] = []
+        
+        # Plugin registries
+        self.registered_workers: Dict[str, Any] = {}
+        self.registered_adapters: List[Any] = []
+        self.registered_agents: List[Any] = []
 
     def load(self, context: Dict[str, Any]) -> None:
         if not self.enabled or not self.directory.exists():
@@ -35,9 +40,21 @@ class PluginManager:
                     info.setdefault("name", file.stem)
                     info["module"] = module
                     self.plugins.append(info)
-                    log.info("Loaded plugin: %s", info["name"])
+                    
+                    # Process registrations
+                    if "workers" in info:
+                        self.registered_workers.update(info["workers"])
+                    if "adapters" in info:
+                        self.registered_adapters.extend(info["adapters"])
+                    if "agents" in info:
+                        self.registered_agents.extend(info["agents"])
+                        
+                    log.info("Loaded plugin: %s (Workers: %d, Adapters: %d, Agents: %d)", 
+                             info["name"], len(info.get("workers", {})), 
+                             len(info.get("adapters", [])), len(info.get("agents", [])))
             except Exception as exc:  # pragma: no cover
                 log.error("Failed to load plugin %s: %s", file.name, exc)
+
 
     def run_hook(self, hook: str, *args: Any, **kwargs: Any) -> List[Any]:
         results = []

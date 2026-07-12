@@ -288,6 +288,48 @@ class StrategyMemory:
 
 
 # ---------------------------------------------------------------------------
+# Repair Memory
+# ---------------------------------------------------------------------------
+
+class RepairMemory:
+    """Stores successful and failed repair actions for known error patterns."""
+
+    def __init__(self, db: Database) -> None:
+        self.db = db
+
+    def record(self, error_pattern: str, fix_action: str, success: bool) -> None:
+        try:
+            self.db.add_repair_memory(error_pattern, fix_action, success)
+            log.info("RepairMemory: recorded fix for '%s'", error_pattern[:40])
+        except Exception as exc:
+            log.warning("RepairMemory: failed to record – %s", exc)
+
+    def get_best_repair(self, error_pattern: str) -> Optional[str]:
+        return self.db.get_best_repair(error_pattern)
+
+
+# ---------------------------------------------------------------------------
+# Project Memory
+# ---------------------------------------------------------------------------
+
+class ProjectMemory:
+    """Stores generated projects, their templates, and complexity metrics."""
+
+    def __init__(self, db: Database) -> None:
+        self.db = db
+
+    def record(self, project_name: str, prompt: str, template_id: str, path: str, tags: List[str]) -> None:
+        try:
+            self.db.add_project_memory(project_name, prompt, template_id, path, tags)
+            log.info("ProjectMemory: recorded project '%s'", project_name)
+        except Exception as exc:
+            log.warning("ProjectMemory: failed to record – %s", exc)
+
+    def find_similar(self, prompt: str, limit: int = 5) -> List[Dict[str, Any]]:
+        return self.db.find_similar_projects(prompt, limit)
+
+
+# ---------------------------------------------------------------------------
 # JarvisMemory  (unified facade)
 # ---------------------------------------------------------------------------
 
@@ -309,9 +351,12 @@ class JarvisMemory:
     def __init__(self, db: Database) -> None:
         self.db = db
         self.success = SuccessMemory(db)
+        self.prompt = self.success  # PromptMemory alias
         self.failure = FailureMemory(db)
         self.asset = AssetMemory(db)
         self.strategy = StrategyMemory(db)
+        self.repair = RepairMemory(db)
+        self.project = ProjectMemory(db)
 
     # ------------------------------------------------------------------
     # Primary retrieval APIs (used by Supervisor before planning)
@@ -345,6 +390,14 @@ class JarvisMemory:
         Each entry: {error, context: {worker, stage, fix_that_worked, retry_count}}.
         """
         return self.failure.get_common_failures(prompt)
+
+    def get_best_repair(self, error_pattern: str) -> Optional[str]:
+        """Returns the best fix_action for a given error pattern."""
+        return self.repair.get_best_repair(error_pattern)
+
+    def find_similar_projects(self, prompt: str, limit: int = 5) -> List[Dict[str, Any]]:
+        """Returns previously generated projects that match the prompt."""
+        return self.project.find_similar(prompt, limit)
 
     # ------------------------------------------------------------------
     # Write APIs (called by Supervisor / Pipeline after execution)

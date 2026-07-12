@@ -141,6 +141,27 @@ CREATE TABLE IF NOT EXISTS asset_memory (
     UNIQUE(asset_name, asset_source)
 );
 
+CREATE TABLE IF NOT EXISTS repair_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    error_pattern TEXT UNIQUE NOT NULL,
+    fix_action TEXT NOT NULL,
+    success_count INTEGER DEFAULT 1,
+    fail_count INTEGER DEFAULT 0,
+    created_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS project_memory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_name TEXT UNIQUE NOT NULL,
+    prompt TEXT NOT NULL,
+    template_id TEXT,
+    path TEXT NOT NULL,
+    complexity_score REAL DEFAULT 1.0,
+    tags_json TEXT,
+    created_at REAL NOT NULL
+);
+
+
 CREATE INDEX IF NOT EXISTS idx_assets_job ON assets(job_id);
 CREATE INDEX IF NOT EXISTS idx_events_job ON job_events(job_id);
 CREATE INDEX IF NOT EXISTS idx_assets_hash ON assets(file_hash);
@@ -572,6 +593,59 @@ class Database:
                     r["import_issues"] = []
         return rows
 
+    def add_repair_memory(self, error_pattern: str, fix_action: str, success: bool) -> None:
+        with self._lock:
+            cur = self.conn.cursor()
+            cur.execute("SELECT id, success_count, fail_count FROM repair_memory WHERE error_pattern=?", (error_pattern,))
+            row = cur.fetchone()
+            if row:
+                if success:
+                    cur.execute("UPDATE repair_memory SET success_count = success_count + 1 WHERE id=?", (row["id"],))
+                else:
+                    cur.execute("UPDATE repair_memory SET fail_count = fail_count + 1 WHERE id=?", (row["id"],))
+            else:
+                cur.execute(
+                    "INSERT INTO repair_memory (error_pattern, fix_action, success_count, fail_count, created_at) VALUES (?, ?, ?, ?, ?)",
+                    (error_pattern, fix_action, 1 if success else 0, 0 if success else 1, time.time())
+                )
+            self.conn.commit()
+
+    def get_best_repair(self, error_pattern: str) -> Optional[str]:
+        with self._lock:
+            cur = self.conn.cursor()
+            cur.execute(
+                "SELECT fix_action FROM repair_memory WHERE ? LIKE '%' || error_pattern || '%' AND success_count > fail_count ORDER BY success_count DESC LIMIT 1",
+                (error_pattern,)
+            )
+            row = cur.fetchone()
+            if row:
+                return row["fix_action"]
+            return None
+
+    def add_project_memory(self, project_name: str, prompt: str, template_id: str, path: str, tags: List[str]) -> None:
+        with self._lock:
+            cur = self.conn.cursor()
+            cur.execute(
+                "INSERT OR REPLACE INTO project_memory (project_name, prompt, template_id, path, complexity_score, tags_json, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (project_name, prompt, template_id, path, len(tags) * 0.5 + 1.0, json.dumps(tags), time.time())
+            )
+            self.conn.commit()
+
+    def find_similar_projects(self, prompt: str, limit: int = 5) -> List[Dict[str, Any]]:
+        with self._lock:
+            words = [w for w in prompt.split() if len(w) > 3]
+            if not words:
+                return []
+            conditions = " OR ".join(["lower(prompt) LIKE ?" for _ in words])
+            params = tuple(f"%{w.lower()}%" for w in words) + (limit,)
+            cur = self.conn.cursor()
+            cur.execute(
+                f"SELECT * FROM project_memory WHERE {conditions} ORDER BY complexity_score DESC LIMIT ?",
+                params
+            )
+            return [dict(r) for r in cur.fetchall()]
+
     def close(self) -> None:
         with self._lock:
             if not self._closed:
@@ -582,4 +656,3 @@ class Database:
                     except Exception:
                         pass
                 self._connections.clear()
-
