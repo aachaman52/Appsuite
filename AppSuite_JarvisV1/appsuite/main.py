@@ -25,6 +25,7 @@ from .core.templates import TemplateEngine
 from .core.browser_agent import BrowserSupervisor
 from .core.project_analyzer import ProjectAnalyzer
 from .core.hardening import SessionManager, WatchdogManager
+from .core.health_monitor import WorkerHealthMonitor
 from .db import Database
 from .logging_setup import get_logger, setup_logging
 from .pipeline.pipeline import Pipeline
@@ -66,6 +67,8 @@ class AppContext:
         self.session_manager = SessionManager(self.db, str(config.abs_path("output_dir")))
         self.watchdog = WatchdogManager(timeout_secs=600, memory_limit_mb=8192)
         self.watchdog.start()
+        
+        self.health_monitor = WorkerHealthMonitor(config)
         
         self.jarvis = JarvisCore(config.scheduler, str(config.abs_path("output_dir")))
 
@@ -154,6 +157,8 @@ class AppContext:
         )
 
     def start(self) -> None:
+        self.log.info("AppSuite %s starting...", self.version)
+        self.health_monitor.run_preflight()
         self.supervisor.start()
         self.background_scheduler.start()
         self.log.info("AppSuite %s started", self.version)
