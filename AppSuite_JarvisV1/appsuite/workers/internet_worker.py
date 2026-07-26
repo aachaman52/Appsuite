@@ -11,14 +11,16 @@ pipeline is always completable offline.
 from __future__ import annotations
 
 import hashlib
-import io
-import shutil
+import time
+import urllib.parse
 import uuid
 import zipfile
+import concurrent.futures
+import io
+import shutil
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 import os
-import time
 
 from .base import BaseWorker, WorkerError
 from ..core.state import WorkerStatus, WorkerResult
@@ -633,24 +635,32 @@ class InternetWorker(BaseWorker):
         }
 
     def run(self, job: Dict[str, Any], state: Any) -> 'WorkerResult':
-        template = state["template"]
+        template = job.get("template", state.get("template", {}))
         assets: List[Dict[str, Any]] = []
         cache_hits = 0
         real_downloads = 0
 
+        tasks = []
         for slot in template.get("asset_slots", []):
             role = slot["role"]
             terms = slot.get("search_terms", [role])
             count = slot.get("count", 1)
             for i in range(count):
                 term = terms[i % len(terms)]
-                try:
-                    # Attempt search_and_fetch
-                    asset = self.search_and_fetch(job["id"], role, term)
-                except Exception as exc:
-                    self.log.warning("[internet] search_and_fetch failed for role=%s, term=%s: %s. Trying direct procedural fallback.", role, term, exc)
-                    asset = self._make_asset(job["id"], role, term, term, source="local_library")
-                
+                tasks.append((job["id"], role, term))
+
+        def fetch_task(task: Tuple[str, str, str]) -> Dict[str, Any]:
+            jid, r, t = task
+            try:
+                # Attempt search_and_fetch
+                return self.search_and_fetch(jid, r, t)
+            except Exception as exc:
+                self.log.warning("[internet] search_and_fetch failed for role=%s, term=%s: %s. Trying direct procedural fallback.", r, t, exc)
+                return self._make_asset(jid, r, t, t, source="local_library")
+
+        max_workers = self.config.get("max_workers", 4)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            for asset in executor.map(fetch_task, tasks):
                 if asset.get("cache_hit"):
                     cache_hits += 1
                 if asset.get("source") in ("kenney", "poly_pizza"):

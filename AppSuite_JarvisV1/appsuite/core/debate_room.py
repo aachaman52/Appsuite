@@ -58,13 +58,20 @@ class PlannerAgent(BaseDebateAgent):
                 workers = combo
                 reasoning = "Using historically proven worker sequence."
 
+        confidence = 0.8
+        mem_ctx = memory_ctx.memory_context
+        if mem_ctx:
+            if any("godot" in w.lower() for w in mem_ctx.failed_workers):
+                confidence -= 0.2
+                reasoning += " Reduced confidence due to recent Godot failures."
+
         return StrategyProposal(
             agent_name=self.name,
             template_id=template,
             worker_sequence=workers,
             asset_hints=memory_ctx.best_assets,
             reasoning=reasoning,
-            confidence=0.8
+            confidence=confidence
         )
 
 
@@ -76,18 +83,28 @@ class AssetAgent(BaseDebateAgent):
         # Focus heavily on Blender if 3D keywords present
         pl = prompt.lower()
         workers = ["internet", "analysis"]
+        mem_ctx = memory_ctx.memory_context
+        
         if any(k in pl for k in ("3d", "mesh", "blender", "model", "fbx", "glb")):
             workers.append("blender")
+            if mem_ctx and any("blender" in w.lower() for w in mem_ctx.failed_workers):
+                risks.append("Blender unstable")
+                
         workers.append("godot")
         
         reasoning = "Prioritizing asset processing and validation."
+        confidence = 0.85 if memory_ctx.best_assets else 0.6
+        if mem_ctx and mem_ctx.failed_assets:
+            reasoning += " Known failed assets exist, proceeding with caution."
+            confidence -= 0.1
+            
         return StrategyProposal(
             agent_name=self.name,
             template_id="generic_scene",
             worker_sequence=workers,
             asset_hints=memory_ctx.best_assets,
             reasoning=reasoning,
-            confidence=0.85 if memory_ctx.best_assets else 0.6
+            confidence=confidence
         )
 
 
@@ -147,6 +164,11 @@ class ReliabilityAgent(BaseDebateAgent):
         template = "generic_scene"
         reasoning = "Stripped pipeline down to essentials to minimize points of failure."
         confidence = 0.9 if len(risks) > 2 else 0.4
+        
+        mem_ctx = memory_ctx.memory_context
+        if mem_ctx and mem_ctx.repair_history:
+            reasoning += f" Leveraging {len(mem_ctx.repair_history)} known repair strategies for stability."
+            confidence += 0.1
         
         return StrategyProposal(
             agent_name=self.name,

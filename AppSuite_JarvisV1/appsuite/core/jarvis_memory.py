@@ -96,6 +96,20 @@ class SuccessMemory:
         )
         return rows
 
+    def get_successful_workers(self) -> List[str]:
+        rows = self.db.query(
+            "SELECT workers_used_json FROM success_memory ORDER BY created_at DESC LIMIT 50"
+        )
+        successful_workers = set()
+        for r in rows:
+            try:
+                workers = json.loads(r["workers_used_json"])
+                for w in workers:
+                    successful_workers.add(w)
+            except Exception:
+                pass
+        return list(successful_workers)
+
 
 # ---------------------------------------------------------------------------
 # Failure Memory
@@ -163,6 +177,20 @@ class FailureMemory:
             (min_count,)
         )
 
+    def get_failed_workers(self) -> List[str]:
+        rows = self.db.query(
+            "SELECT context_json FROM failure_memory ORDER BY created_at DESC LIMIT 100"
+        )
+        failed_workers = set()
+        for r in rows:
+            try:
+                ctx = json.loads(r["context_json"])
+                if "worker" in ctx:
+                    failed_workers.add(ctx["worker"])
+            except Exception:
+                pass
+        return list(failed_workers)
+
 
 # ---------------------------------------------------------------------------
 # Asset Memory
@@ -212,6 +240,12 @@ class AssetMemory:
             except Exception:
                 pass
         return []
+
+    def get_successful_assets(self) -> List[Dict[str, Any]]:
+        return self.db.query("SELECT * FROM asset_memory WHERE success_count > fail_count ORDER BY success_count DESC LIMIT 50")
+
+    def get_failed_assets(self) -> List[Dict[str, Any]]:
+        return self.db.query("SELECT * FROM asset_memory WHERE fail_count > success_count OR fail_count >= 3 ORDER BY fail_count DESC LIMIT 50")
 
 
 # ---------------------------------------------------------------------------
@@ -306,6 +340,9 @@ class RepairMemory:
 
     def get_best_repair(self, error_pattern: str) -> Optional[str]:
         return self.db.get_best_repair(error_pattern)
+
+    def get_repair_history(self) -> List[Dict[str, Any]]:
+        return self.db.query("SELECT * FROM repair_memory ORDER BY created_at DESC LIMIT 50")
 
 
 # ---------------------------------------------------------------------------

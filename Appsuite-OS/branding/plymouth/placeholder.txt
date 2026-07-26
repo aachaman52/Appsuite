@@ -1,0 +1,1 @@
+[Placeholder] Place Plymouth themes here. Post-install script will copy this to /usr/share/plymouth/themes/.

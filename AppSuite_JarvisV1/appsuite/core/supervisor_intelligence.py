@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional
 
 from ..logging_setup import get_logger
 from .debate_room import DebateRoom
+from .strategy_analyzer import StrategyAnalyzer
 
 log = get_logger("supervisor.intelligence")
 
@@ -42,6 +43,16 @@ _WORKER_BASE_RELIABILITY: Dict[str, float] = {
 # ---------------------------------------------------------------------------
 
 @dataclass
+class MemoryContext:
+    successful_assets: List[Dict[str, Any]] = field(default_factory=list)
+    failed_assets: List[Dict[str, Any]] = field(default_factory=list)
+    successful_workers: List[str] = field(default_factory=list)
+    failed_workers: List[str] = field(default_factory=list)
+    repair_history: List[Dict[str, Any]] = field(default_factory=list)
+    confidence_score: float = 1.0
+
+
+@dataclass
 class PlanningContext:
     prompt: str
     similar_successes: List[Dict[str, Any]] = field(default_factory=list)
@@ -51,6 +62,7 @@ class PlanningContext:
     reliability_score: float                 = 1.0
     predicted_risks:   List[str]             = field(default_factory=list)
     reasoning:         str                   = ""
+    memory_context:    Optional[MemoryContext] = None
 
 
 @dataclass
@@ -63,6 +75,7 @@ class ExecutionPlan:
     risk_flags: List[str]
     reasoning: str
     planning_context: Optional[PlanningContext] = None
+    pipeline_modifiers: List[str] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -92,16 +105,81 @@ class SupervisorIntelligence:
         ctx = self._build_planning_context(prompt)
         risks = self.predict_failures(prompt, ctx)
         
-        # Hold debate to get best strategy
-        winning_proposal = self.debate_room.hold_debate(prompt, ctx, risks, job_id)
+        # --- Execution Knowledge Graph Query ---
+        analyzer = StrategyAnalyzer(self.db)
+        best_strat_info = analyzer.highest_success_rate_strategy()
+        best_strat = best_strat_info.get("strategy")
+        best_rate = best_strat_info.get("success_rate", 0.0)
         
-        workers = winning_proposal.worker_sequence
-        assets = winning_proposal.asset_hints
-        template = winning_proposal.template_id
+        genre = "generic"
+        roles = self._infer_roles_from_prompt(prompt)
+        if roles:
+            genre = roles[0]
+            
+        best_asset_prov = analyzer.best_asset_provider_for_genre(genre)
         
-        prob = self.estimate_success_probability(prompt, ctx, workers)
-        reasoning = self._build_reasoning(prompt, ctx, prob, risks)
-        reasoning += f" | Debate Winner: {winning_proposal.agent_name} -> {winning_proposal.reasoning}"
+        # Determine strategy
+        winning_proposal = None
+        if best_strat and best_rate > 0.5:
+            # We found a highly successful strategy in the knowledge graph
+            reasoning = f"Planner Decision: Use complete strategy '{best_strat}'.\\nReason: Highest success rate in Execution Knowledge Graph ({best_rate*100:.0f}%).\\nAsset Provider chosen: {best_asset_prov} (Best for genre: {genre})."
+            
+            # Since strategy is just a name, we map it back or rely on DebateRoom
+            # For this exercise, if the graph says 'legacy', we use default.
+            workers = self._DEFAULT_SEQUENCE
+            if best_strat == "adaptive":
+                workers = ["internet", "analysis", "blender", "godot", "validation", "deploy"]
+            
+            assets = {"source": best_asset_prov}
+            template = "generic_scene"
+            prob = self.estimate_success_probability(prompt, ctx, workers)
+            
+        else:
+            # Hold debate to get best strategy if no strong knowledge graph signal
+            winning_proposal = self.debate_room.hold_debate(prompt, ctx, risks, job_id)
+            workers = winning_proposal.worker_sequence
+            assets = winning_proposal.asset_hints
+            template = winning_proposal.template_id
+            prob = self.estimate_success_probability(prompt, ctx, workers)
+            reasoning = self._build_reasoning(prompt, ctx, prob, risks)
+            reasoning += f" | Debate Winner: {winning_proposal.agent_name} -> {winning_proposal.reasoning}"
+
+        modifiers = []
+        if ctx.memory_context:
+            mem_ctx = ctx.memory_context
+            
+            # Rule 1: Sketchfab failed -> use Kenney
+            sketchfab_fails = sum(1 for a in mem_ctx.failed_assets if "sketchfab" in str(a.get("asset_source", "")).lower())
+            if sketchfab_fails >= 5:
+                assets["source"] = "kenney"
+                reasoning += "\\nPlanner Decision: Use Kenney.\\nReason: Sketchfab failed multiple previous attempts."
+                
+            # Rule 2: Blender timed out recently -> reduce asset count
+            blender_fails = sum(1 for w in mem_ctx.failed_workers if "blender" in w.lower())
+            if blender_fails > 0:
+                modifiers.append("reduce_asset_count")
+                reasoning += "\\nPlanner Decision: Reduce asset count.\\nReason: Blender timed out recently."
+                
+            # Rule 3: Godot import failed -> convert FBX to GLB first
+            godot_fails = sum(1 for w in mem_ctx.failed_workers if "godot" in w.lower())
+            if godot_fails > 0:
+                modifiers.append("convert_fbx_to_glb")
+                reasoning += "\\nPlanner Decision: Convert FBX to GLB first.\\nReason: Godot import failed previously."
+                
+            # Rule 4: Repair succeeded -> apply automatically
+            best_repair = analyzer.best_repair_action()
+            if best_repair:
+                modifiers.append(f"apply_repair:{best_repair}")
+                reasoning += f"\\nPlanner Decision: Prioritize repair {best_repair}.\\nReason: Execution Knowledge Graph shows it improves validation most."
+
+        # Store planner decision into StrategyMemory
+        self.memory.strategy.record(
+            prompt=prompt,
+            template_id=template,
+            worker_combination=workers,
+            repair_strategy=";".join(modifiers),
+            outcome="planned"
+        )
 
         plan = ExecutionPlan(
             prompt=prompt,
@@ -112,6 +190,7 @@ class SupervisorIntelligence:
             risk_flags=risks,
             reasoning=reasoning,
             planning_context=ctx,
+            pipeline_modifiers=modifiers,
         )
 
         log.info("[%s] Plan: template=%s  p=%.2f  risks=%d",
@@ -276,6 +355,17 @@ class SupervisorIntelligence:
             # Reliability from prior success
             if ctx.similar_successes:
                 ctx.reliability_score = ctx.similar_successes[0].get("reliability_score", 1.0)
+                
+            # Populate MemoryContext
+            mem_ctx = MemoryContext()
+            mem_ctx.successful_assets = self.memory.asset.get_successful_assets()
+            mem_ctx.failed_assets = self.memory.asset.get_failed_assets()
+            mem_ctx.successful_workers = self.memory.success.get_successful_workers()
+            mem_ctx.failed_workers = self.memory.failure.get_failed_workers()
+            mem_ctx.repair_history = self.memory.repair.get_repair_history()
+            mem_ctx.confidence_score = ctx.reliability_score
+            ctx.memory_context = mem_ctx
+            
         except Exception as exc:
             log.warning("PlanningContext build error: %s", exc)
         return ctx

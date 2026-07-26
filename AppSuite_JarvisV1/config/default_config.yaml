@@ -1,0 +1,38 @@
+system:
+  max_workers: 4
+  thread_pool_size: 8
+  cache_size_mb: 1024
+
+limits:
+  max_assets: 10
+  gpu_vram_limit_mb: 4096
+  ram_limit_mb: 8192
+
+timeouts:
+  godot_headless_sec: 300
+  blender_sec: 300
+  http_request_sec: 60
+
+retries:
+  worker_failure_limit: 2
+  repair_retry_count: 3
+
+validation:
+  score_threshold: 0.8
+
+benchmarks:
+  enabled: true
+  save_history: true
+
+# Legacy paths (migrated from config.json)
+log_dir: "output/logs"
+cache_dir: "output/cache"
+output_dir: "output"
+assets_dir: "output/assets"
+database_path: "data/appsuite.db"
+
+workers:
+  godot:
+    binary: "godot"
+  blender:
+    binary: "blender"

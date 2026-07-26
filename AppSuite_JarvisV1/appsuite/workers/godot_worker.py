@@ -156,9 +156,10 @@ class GodotWorker(BaseWorker):
             node_parts.append('[node name="Camera3D" type="Camera3D" parent="."]\n')
             node_parts.append('transform = Transform3D(1, 0, 0, 0, 0.7, 0.7, 0, -0.7, 0.7, 0, 40, 40)\n\n')
         
-        # Ground with collision
-        node_parts.append('[node name="Ground" type="StaticBody3D" parent="."]\n\n')
-        node_parts.append('[node name="GroundMesh" type="CSGBox3D" parent="Ground"]\n')
+        # Ground with collision and navigation
+        node_parts.append('[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]\n\n')
+        node_parts.append('[node name="Ground" type="StaticBody3D" parent="NavigationRegion3D"]\n\n')
+        node_parts.append('[node name="GroundMesh" type="CSGBox3D" parent="NavigationRegion3D/Ground"]\n')
         node_parts.append(f'size = Vector3({gsize}, 0.2, {gsize})\n')
         node_parts.append('material = SubResource("GroundMaterial")\n')
         node_parts.append('use_collision = true\n\n')

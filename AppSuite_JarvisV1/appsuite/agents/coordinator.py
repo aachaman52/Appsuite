@@ -131,25 +131,57 @@ class AgentCoordinator:
             rounds += 1
             log.info("[DebateRoom] Round %d / %d", rounds, max_rounds)
             
-            # Simulated multi-agent debate opinions / LLM prompt injection targets
-            architect_opinion = "Component design approved. Recommends standard modular scene layout."
-            critic_opinion = "CRITICISM: Verify if shader assets require validation. Check asset scale boundaries."
-            security_opinion = "SECURITY: Sandbox is active. Docker boundaries validated."
-            performance_opinion = "PERFORMANCE: Expected latency is within limits (<10s overhead)."
+            import os
+            
+            architect_opinion = "Component design approved."
+            critic_opinion = "Verify if shader assets require validation."
+            security_opinion = "Sandbox is active."
+            performance_opinion = "Expected latency is within limits."
+            votes = {
+                "ArchitectAgent": 1.0, "CriticAgent": 1.0, "SecurityAgent": 1.0, 
+                "PerformanceAgent": 1.0, "ReviewerAgent": 1.0
+            }
+
+            try:
+                import requests
+                provider = None
+                if getattr(self, "brain", None) and hasattr(self.brain, "providers"):
+                    provider = self.brain.providers.acquire("planning") or self.brain.providers.acquire("default")
+                
+                if provider:
+                    url = f"{provider['base_url']}/chat/completions"
+                    headers = {"Content-Type": "application/json"}
+                    api_key = os.environ.get(provider.get("api_key_env", "OPENAI_API_KEY"))
+                    if api_key:
+                        headers["Authorization"] = f"Bearer {api_key}"
+                        
+                    payload = {
+                        "model": "gpt-4-turbo",
+                        "messages": [
+                            {"role": "system", "content": "You are a multi-agent debate system. Return JSON with 'architect', 'critic', 'security', 'performance' string opinions, and 'critic_vote' as a float 0.0-1.0 (where < 0.5 rejects)."},
+                            {"role": "user", "content": f"Task: {prompt}"}
+                        ],
+                        "temperature": 0.5,
+                        "response_format": {"type": "json_object"}
+                    }
+                    resp = requests.post(url, headers=headers, json=payload, timeout=20.0)
+                    if resp.status_code == 200:
+                        data = json.loads(resp.json()["choices"][0]["message"]["content"])
+                        architect_opinion = data.get("architect", architect_opinion)
+                        critic_opinion = data.get("critic", critic_opinion)
+                        security_opinion = data.get("security", security_opinion)
+                        performance_opinion = data.get("performance", performance_opinion)
+                        votes["CriticAgent"] = float(data.get("critic_vote", 1.0))
+            except Exception as exc:
+                log.warning("Debate LLM failed: %s, using fallback heuristics.", exc)
+                # Heuristic fallback
+                if "complex" in prompt.lower() and rounds == 1:
+                    votes["CriticAgent"] = 0.0
             
             log.info("[DebateRoom] Architect: %s", architect_opinion)
             log.info("[DebateRoom] Critic: %s", critic_opinion)
             log.info("[DebateRoom] Security: %s", security_opinion)
             log.info("[DebateRoom] Performance: %s", performance_opinion)
-            
-            # Voting rules
-            votes = {
-                "ArchitectAgent": 1.0,
-                "CriticAgent": 0.0 if rounds == 1 else 1.0,  # Critic disagrees in Round 1, forces revision
-                "SecurityAgent": 1.0,
-                "PerformanceAgent": 1.0,
-                "ReviewerAgent": 1.0,
-            }
             
             log.info("[DebateRoom] Round %d votes: %s", rounds, votes)
             approved_count = sum(1 for v in votes.values() if v > 0.5)

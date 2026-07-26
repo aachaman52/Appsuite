@@ -202,8 +202,6 @@ class GraphOrchestrator:
                         res = None
                         t_start = time.time()
                         try:
-                            if not future.done():
-                                raise TimeoutError("Simulated API timeout")
                             # 5 minutes timeout per task
                             res = future.result(timeout=self.task_timeout)
                         except TimeoutError as exc:

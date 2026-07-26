@@ -1,0 +1,12 @@
+# User Configuration overrides
+system:
+  max_workers: 8 # Override default to utilize more cores
+
+limits:
+  max_assets: 15
+
+workers:
+  godot:
+    binary: "godot"
+  blender:
+    binary: "blender"

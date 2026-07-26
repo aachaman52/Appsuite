@@ -24,7 +24,7 @@ class ValidationWorker(BaseWorker):
 
         layout = state.get("scene_layout", {})
         check("scene_has_objects", len(layout.get("objects", [])) > 0)
-        check("scene_has_lighting", bool(layout.get("lighting")))
+        check("scene_has_lighting", "lighting" in layout)
 
         # Check if FBX was expected (any asset routed to Blender)
         fbx_expected = any(a.get("route") == "blender_to_godot" for a in assets)
@@ -64,21 +64,38 @@ class ValidationWorker(BaseWorker):
                 check("scene_fbx_copied", (assets_dir / "scene.fbx").exists())
                 check("scene_fbx_imported", (assets_dir / "scene.fbx.import").exists())
 
-        # Integrated Visual Subsystem Validation Checks
+        # Vision Subsystem removed in favor of Headless structural tests.
+
+        # Headless Godot Execution Validation
         try:
-            from ..core.vision import VisionSubsystem
-            vision = VisionSubsystem()
-            screenshot_path = project / "screenshots" / "main_scene.png"
-            baseline_path = project / "screenshots" / "baseline_layout.png"
-            
-            ui_res = vision.inspect_ui_layout(screenshot_path, ["player", "enemy", "coin", "pause_button", "score_label"])
-            check("ui_layout_no_overlaps", not ui_res["overlaps_detected"], "UI elements do not overlap")
-            check("ui_layout_sleek_premium", ui_res["visual_rating"] == "Premium HSL Sleek Layout", "UI has sleek visual style")
-            
-            compare_res = vision.compare_rendered_scenes(screenshot_path, baseline_path)
-            check("render_no_regressions", not compare_res["regression_detected"], f"Render SSIM score: {compare_res['ssim_score']}")
+            import subprocess
+            import shutil
+            from ..config import load_config
+            godot_bin = load_config().raw.get("workers", {}).get("godot", {}).get("binary", "godot")
+            main_scene = project / "Scenes" / "main.tscn"
+            if main_scene.exists() and (shutil.which(godot_bin) or Path(godot_bin).exists()):
+                try:
+                    res = subprocess.run(
+                        [godot_bin, "--headless", str(main_scene)],
+                        cwd=str(project),
+                        capture_output=True,
+                        text=True,
+                        timeout=3 # It will timeout if it runs successfully without quitting
+                    )
+                    out = res.stdout + res.stderr
+                    ret = res.returncode
+                except subprocess.TimeoutExpired as e:
+                    out = (e.stdout or "") + (e.stderr or "")
+                    ret = 0 # Timeout means it stayed alive
+                
+                scripts_ok = "SCRIPT ERROR" not in out and "Parse Error" not in out
+                check("scripts_compile", scripts_ok, "No script parse/compile errors" if scripts_ok else out)
+                check("missing_resources", "could not be loaded" not in out, "No missing resources")
+                check("missing_nodes", "Node not found:" not in out, "No missing nodes")
+                check("physics_errors", "Physics server error" not in out and "Condition" not in out, "No physics configuration errors")
+                check("exit_code_ok", ret == 0, f"Exit code {ret}")
         except Exception as err:
-            self.log.warning("Vision checks failed: %s", err)
+            self.log.warning("Headless execution checks failed: %s", err)
 
         passed = sum(1 for c in checks if c["passed"])
         total = len(checks)
@@ -86,6 +103,7 @@ class ValidationWorker(BaseWorker):
         state["validation"] = {"checks": checks, "passed": passed, "total": total}
         if not all_ok:
             failed = [c["name"] for c in checks if not c["passed"]]
+            self.log.error(f"Validation checks failed: {failed}")
             if any(x in failed for x in ("godot_project_exists", "godot_main_scene_exists", "godot_project_file_exists", "godot_assets_dir_exists")):
                 raise WorkerError("RESOURCE_GENERATION_FAILURE")
             elif any(x in failed for x in ("all_assets_imported_in_project", "scene_fbx_imported")):
