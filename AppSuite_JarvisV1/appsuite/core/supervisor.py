@@ -107,12 +107,6 @@ class Supervisor:
                 log.error("Supervisor: Non-recoverable error detected: %s. Aborting.", reason[:50])
                 return SupervisorAction.ABORT
             
-            # Simulated timeout for testing purposes
-            if "simulated timeout" in reason.lower():
-                log.info("Supervisor: Transient error detected, ordering RETRY")
-                time.sleep(1.0)
-                return SupervisorAction.RETRY
-
             # General failures
             return SupervisorAction.RETRY
 
@@ -321,5 +315,24 @@ class Supervisor:
                 except Exception as mem_exc:
                     log.warning("[%s] Jarvis memory failure record failed: %s", job_id[:8], mem_exc)
         finally:
+            # --- Record Execution Knowledge Graph ---
+            try:
+                plan_data = job.get("_execution_plan", {})
+                self.db.add_execution_graph(
+                    job_id=job_id,
+                    prompt=job.get("prompt", ""),
+                    genre=plan_data.get("template_id", "unknown") if plan_data else "unknown",
+                    planner_strategy=plan_data.get("reasoning", "legacy_or_debate").split("|")[0].strip() if plan_data else "legacy",
+                    asset_provider=plan_data.get("asset_hints", {}).get("source", "unknown") if plan_data and plan_data.get("asset_hints") else "unknown",
+                    code_provider="claude-3-5",
+                    workers_used=plan_data.get("worker_sequence", []) if plan_data else ["internet", "analysis", "godot", "validation"],
+                    repair_actions=plan_data.get("pipeline_modifiers", []) if plan_data else [],
+                    validation_score=1.0 if 'exc' not in locals() and status != "failed" else 0.0,
+                    execution_time=elapsed if 'elapsed' in locals() else (time.time() - start_time),
+                    final_success='exc' not in locals() and status != "failed"
+                )
+            except Exception as e:
+                log.error("[%s] Failed to record execution graph: %s", job_id, e)
+                
             with self._lock:
                 self._active.pop(job_id, None)

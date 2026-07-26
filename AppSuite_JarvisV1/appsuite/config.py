@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import os
+import yaml
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
@@ -13,6 +14,10 @@ from typing import Any, Dict, List
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = PROJECT_ROOT / "config"
 
+
+def _read_yaml(path: Path) -> Dict[str, Any]:
+    with open(path, "r", encoding="utf-8") as fh:
+        return yaml.safe_load(fh) or {}
 
 def _read_json(path: Path) -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8") as fh:
@@ -60,7 +65,16 @@ def load_config(reload: bool = False) -> AppConfig:
     global _cached
     if _cached is not None and not reload:
         return _cached
-    base = _read_json(CONFIG_DIR / "config.json")
+    base = _read_yaml(CONFIG_DIR / "default_config.yaml")
+    user_config_path = CONFIG_DIR / "user_config.yaml"
+    if user_config_path.exists():
+        user_cfg = _read_yaml(user_config_path)
+        # Simple top-level dictionary merge
+        for k, v in user_cfg.items():
+            if isinstance(v, dict) and isinstance(base.get(k), dict):
+                base[k].update(v)
+            else:
+                base[k] = v
     providers = _read_json(CONFIG_DIR / "providers.json").get("providers", [])
     templates = _read_json(CONFIG_DIR / "templates.json").get("templates", [])
     cfg = AppConfig(raw=base, providers=providers, templates=templates)

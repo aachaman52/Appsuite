@@ -5,8 +5,8 @@ For FBX/GLTF/GLB: validates structure via header checks since these are
 binary or JSON formats that cannot be line-scanned like OBJ.
 Provides structured failure reasons for each validation failure.
 """
-from __future__ import annotations
-
+import re
+import concurrent.futures
 from pathlib import Path
 from typing import Any, Dict, List
 from ..core.state import WorkerStatus, WorkerResult
@@ -274,13 +274,10 @@ class AnalysisWorker(BaseWorker):
         analysed: List[Dict[str, Any]] = []
         rejected = 0
 
-        for asset in state.get("assets", []):
+        def analyze_asset(asset: Dict[str, Any]) -> Dict[str, Any]:
             path = Path(asset["file_path"])
             if not path.exists():
-                raise WorkerError(
-                    f"Asset file missing: {path} "
-                    f"(source={asset.get('source')}, role={asset.get('role')})"
-                )
+                return {"success": False, "reason": "file_missing", "asset": asset, "path": path}
 
             ext = path.suffix.lower()
             stats: Dict[str, Any] = {}
@@ -301,22 +298,16 @@ class AnalysisWorker(BaseWorker):
                     stats = self.inspect_gltf(path)
                     asset["dependencies_ok"] = True
                 else:
-                    # Unknown format - pass with low score
                     stats = {"vertices": 0, "faces": 0}
                     asset["dependencies_ok"] = True
             except WorkerError as exc:
-                self.log.warning("Asset failed inspection (%s): %s", path.name, exc)
-                rejected += 1
-                continue
+                return {"success": False, "reason": "inspection_failed", "exc": exc, "asset": asset, "path": path}
 
-            # Complete texture and material diagnostics
             diag = self.analyze_textures_and_materials(path)
             asset.setdefault("metadata", {}).update(diag)
             
-            # Verify external texture files exist on disk
             missing_textures = []
             for tex in diag.get("textures_external", []):
-                # Check path.parent or recursively in path.parent
                 found = False
                 for p in path.parent.rglob("*"):
                     if p.is_file() and (p.name.lower() == tex.lower() or p.stem.lower() == tex.lower()):
@@ -326,21 +317,36 @@ class AnalysisWorker(BaseWorker):
                     missing_textures.append(tex)
             
             if missing_textures:
-                self.log.error(f"Asset {path.name} is missing textures: {missing_textures}")
-                raise WorkerError("TEXTURE_NOT_FOUND")
+                return {"success": False, "reason": "texture_missing", "missing": missing_textures, "asset": asset, "path": path}
 
             score = self.quality_score(stats, asset.get("file_size", path.stat().st_size))
             asset["quality_score"] = score
             asset.setdefault("metadata", {}).update(stats)
 
             if score < min_q:
-                self.log.info(
-                    "Asset rejected (score=%.2f < %.2f): %s", score, min_q, path.name
-                )
-                rejected += 1
-                continue
+                return {"success": False, "reason": "low_score", "score": score, "asset": asset, "path": path}
 
-            analysed.append(asset)
+            return {"success": True, "asset": asset}
+
+        max_workers = self.config.get("max_workers", 4)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            results = list(executor.map(analyze_asset, state.get("assets", [])))
+
+        for res in results:
+            if res["success"]:
+                analysed.append(res["asset"])
+            else:
+                rejected += 1
+                reason = res["reason"]
+                if reason == "file_missing":
+                    raise WorkerError(f"Asset file missing: {res['path']}")
+                elif reason == "inspection_failed":
+                    self.log.warning("Asset failed inspection (%s): %s", res["path"].name, res["exc"])
+                elif reason == "texture_missing":
+                    self.log.error(f"Asset {res['path'].name} is missing textures: {res['missing']}")
+                    raise WorkerError("TEXTURE_NOT_FOUND")
+                elif reason == "low_score":
+                    self.log.info("Asset rejected (score=%.2f < %.2f): %s", res["score"], min_q, res["path"].name)
 
         if not analysed:
             raise WorkerError(

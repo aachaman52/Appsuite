@@ -1,0 +1,1 @@
+[Placeholder] Place SVG/PNG icon sets here. Post-install script will copy this to /usr/share/icons/.

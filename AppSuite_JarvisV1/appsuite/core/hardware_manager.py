@@ -28,7 +28,25 @@ class HardwareManager:
         return time.time() - self.start_time
 
     def _gpu_stats(self) -> Dict[str, Any]:
-        """Simple mock for GPU stats (same as previous implementation)."""
+        """Fetch GPU stats using nvidia-smi if available."""
+        try:
+            import subprocess
+            result = subprocess.run(
+                ["nvidia-smi", "--query-gpu=name,memory.total,memory.used", "--format=csv,noheader,nounits"],
+                capture_output=True, text=True, check=True, timeout=2.0
+            )
+            lines = result.stdout.strip().split('\n')
+            if lines:
+                parts = lines[0].split(',')
+                if len(parts) >= 3:
+                    return {
+                        "available": True,
+                        "name": parts[0].strip(),
+                        "vram_total": int(parts[1].strip()),
+                        "vram_used": int(parts[2].strip())
+                    }
+        except Exception:
+            pass
         return {"available": False, "name": None, "vram_total": 0, "vram_used": 0}
 
     def resources(self) -> Dict[str, Any]:

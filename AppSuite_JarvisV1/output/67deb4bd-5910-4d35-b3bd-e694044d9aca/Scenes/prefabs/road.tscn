@@ -1,6 +1,0 @@
-[gd_scene format=3]
-
-[node name="road" type="StaticBody3D"]
-
-[node name="Mesh" type="CSGBox3D" parent="."]
-use_collision = true

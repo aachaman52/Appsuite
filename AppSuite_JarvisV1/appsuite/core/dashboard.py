@@ -30,8 +30,24 @@ except ImportError:
 class DashboardApp:
     """FastAPI dashboard backend exposing runtime metrics and OS component states."""
     
-    def __init__(self, ctx: Any) -> None:
+    def __init__(self, ctx: Any, event_bus: Any = None) -> None:
         self.ctx = ctx
+        self.event_bus = event_bus
+        self.live_state = {
+            "pipeline_progress": 0.0,
+            "worker_status": {},
+            "current_stage": "idle",
+            "eta_seconds": 0,
+            "downloads": 0,
+            "validation_score": 0.0,
+            "repair_count": 0
+        }
+        if self.event_bus:
+            self.event_bus.subscribe("WorkerStarted", self._on_worker_started)
+            self.event_bus.subscribe("WorkerFinished", self._on_worker_finished)
+            self.event_bus.subscribe("WorkerFailed", self._on_worker_failed)
+            self.event_bus.subscribe("PipelineCompleted", self._on_pipeline_completed)
+            
         self.app = FastAPI(title="AppSuite Jarvis V1 Dashboard Backend", version="11.0.0")
         self.router = APIRouter()
         self._setup_routes()
@@ -41,12 +57,26 @@ class DashboardApp:
         
         @self.router.get("/api/health")
         def health():
+            gpu_percent = 0.0
+            try:
+                # Naive GPU check via nvidia-smi if available, for quick stats
+                import subprocess
+                res = subprocess.run(["nvidia-smi", "--query-gpu=utilization.gpu", "--format=csv,noheader,nounits"], capture_output=True, text=True, timeout=1)
+                gpu_percent = float(res.stdout.strip().split('\n')[0])
+            except Exception:
+                pass
+                
             return {
                 "status": "healthy",
                 "cpu_percent": psutil.cpu_percent(),
                 "memory_percent": psutil.virtual_memory().percent,
+                "gpu_percent": gpu_percent,
                 "pid": os.getpid()
             }
+            
+        @self.router.get("/api/live_state")
+        def get_live_state():
+            return self.live_state
             
         @self.router.get("/api/jobs")
         def list_jobs():
@@ -113,3 +143,21 @@ class DashboardApp:
             except Exception:
                 pass
             return {}
+
+    def _on_worker_started(self, event: Dict[str, Any]) -> None:
+        self.live_state["current_stage"] = event.get("worker", "unknown")
+        self.live_state["worker_status"][event.get("worker", "unknown")] = "running"
+        
+    def _on_worker_finished(self, event: Dict[str, Any]) -> None:
+        worker = event.get("worker", "unknown")
+        self.live_state["worker_status"][worker] = "completed"
+        # Dummy progress bump based on worker list length (assume ~7 workers)
+        self.live_state["pipeline_progress"] += (100.0 / 7.0)
+        
+    def _on_worker_failed(self, event: Dict[str, Any]) -> None:
+        self.live_state["worker_status"][event.get("worker", "unknown")] = "failed"
+        self.live_state["repair_count"] += 1
+        
+    def _on_pipeline_completed(self, event: Dict[str, Any]) -> None:
+        self.live_state["current_stage"] = "completed" if event.get("success") else "failed"
+        self.live_state["pipeline_progress"] = 100.0 if event.get("success") else self.live_state["pipeline_progress"]

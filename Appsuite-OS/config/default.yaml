@@ -1,0 +1,28 @@
+os:
+  iso_name: "appsuite-os-1.0.0-beta.iso"
+  version: "1.0.0"
+  build_number: "20260726"
+  ubuntu_major_version: "24.04"
+  iso_flavor: "live-server-amd64"
+  fallback_mirrors:
+    - "https://releases.ubuntu.com"
+    - "https://mirror.math.princeton.edu/pub/ubuntu-iso"
+    - "https://mirrors.kernel.org/ubuntu-releases"
+
+system:
+  desktop_environment: "gnome"
+  hostname: "appsuite-os"
+  username: "appsuite"
+  locale: "en_US.UTF-8"
+  timezone: "Etc/UTC"
+  language: "en"
+  kernel: "linux-generic-hwe-24.04"
+
+build:
+  compression: "gzip"
+  output_folder: "output"
+  work_folder: "build"
+  # On Linux/WSL the build dir MUST be on a native Linux filesystem (ext4/tmpfs)
+  # to support device nodes and hard links that unsquashfs requires.
+  # /home is on /dev/sdd (ext4, ~949GB free) — safe for large squashfs extractions.
+  linux_work_dir: "/home/appsuite-build"

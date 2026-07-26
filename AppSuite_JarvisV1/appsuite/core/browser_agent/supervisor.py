@@ -14,6 +14,22 @@ from .adapters import AdapterRegistry
 from .dom_interpreter import DOMInterpreter
 from .memory import WebsiteMemory
 
+try:
+    import requests
+except ImportError:
+    import urllib.request as _urllib_req
+    class _requests:
+        @staticmethod
+        def get(url, **kwargs):
+            headers = kwargs.get('headers', {})
+            req = _urllib_req.Request(url, headers=headers)
+            with _urllib_req.urlopen(req, timeout=10.0) as response:
+                class MockResponse:
+                    def __init__(self, text):
+                        self.text = text
+                return MockResponse(response.read().decode('utf-8', errors='ignore'))
+    requests = _requests()
+
 log = get_logger("browser_agent")
 
 class BrowserSupervisor:
@@ -34,9 +50,12 @@ class BrowserSupervisor:
             
         log.info("BrowserAgent: Searching %s for '%s'", adapter.domain, query)
         
-        # In a real implementation, we would HTTP GET the url here
-        # html = requests.get(url).text
-        html = "<html>mock dom</html>"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppSuite/1.0'}
+        try:
+            html = requests.get(url, headers=headers).text
+        except Exception as e:
+            log.warning("BrowserAgent: Failed to fetch search results from %s: %s", url, e)
+            return []
         
         dom = self.interpreter.parse_html(html)
         results = adapter.extract_search_results(dom)
@@ -49,8 +68,12 @@ class BrowserSupervisor:
         adapter = self.adapters.get_adapter(url)
         log.info("BrowserAgent: Extracting info from %s", url)
         
-        # html = requests.get(url).text
-        html = "<html>mock dom</html>"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppSuite/1.0'}
+        try:
+            html = requests.get(url, headers=headers).text
+        except Exception as e:
+            log.warning("BrowserAgent: Failed to fetch content from %s: %s", url, e)
+            return ""
         
         dom = self.interpreter.parse_html(html)
         summary = self.interpreter.summarize_content(dom)
@@ -63,8 +86,12 @@ class BrowserSupervisor:
         adapter = self.adapters.get_adapter(page_url)
         log.info("BrowserAgent: Resolving download for %s", page_url)
         
-        # html = requests.get(page_url).text
-        html = "<html>mock dom</html>"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppSuite/1.0'}
+        try:
+            html = requests.get(page_url, headers=headers).text
+        except Exception as e:
+            log.warning("BrowserAgent: Failed to fetch page %s: %s", page_url, e)
+            return None
         
         dom = self.interpreter.parse_html(html)
         download_url = adapter.get_download_url(page_url, dom)

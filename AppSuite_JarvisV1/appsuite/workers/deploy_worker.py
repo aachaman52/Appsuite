@@ -9,7 +9,7 @@ import ftplib
 import json
 import shutil
 import subprocess
-import tempfile
+import time
 import zipfile
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -213,63 +213,70 @@ class DeployWorker(BaseWorker):
         remote_build_dir = f"{self.ftp_remote_dir}/{job_id}"
         self.log.info("Uploading files to FTP (individual files): %s", remote_build_dir)
         
-        try:
-            ftp = ftplib.FTP(self.ftp_host, self.ftp_user, self.ftp_pass, timeout=30)
-            ftp.set_debuglevel(1)
-            
-            # Create remote directory
+        max_retries = 3
+        
+        for attempt in range(max_retries):
             try:
-                ftp.cwd(remote_build_dir)
-            except ftplib.error_temp:
-                self.log.info("Creating remote directory: %s", remote_build_dir)
-                parts = remote_build_dir.split('/')
-                for i, part in enumerate(parts):
-                    if not part:
-                        continue
-                    try:
-                        ftp.cwd(part)
-                    except ftplib.error_temp:
-                        ftp.mkd(part)
-                        ftp.cwd(part)
-            
-            # Upload all files
-            file_count = 0
-            for file_path in build_output_dir.rglob("*"):
-                if file_path.is_file():
-                    # Create subdirectories as needed
-                    rel_path = file_path.relative_to(build_output_dir)
-                    rel_parts = rel_path.parts[:-1]  # All but filename
-                    
-                    # Navigate/create parent directories
-                    current = remote_build_dir
-                    for part in rel_parts:
-                        current = f"{current}/{part}"
+                ftp = ftplib.FTP(self.ftp_host, self.ftp_user, self.ftp_pass, timeout=30)
+                ftp.set_debuglevel(1)
+                
+                # Create remote directory
+                try:
+                    ftp.cwd(remote_build_dir)
+                except ftplib.error_temp:
+                    self.log.info("Creating remote directory: %s", remote_build_dir)
+                    parts = remote_build_dir.split('/')
+                    for i, part in enumerate(parts):
+                        if not part:
+                            continue
                         try:
-                            ftp.cwd(current)
+                            ftp.cwd(part)
                         except ftplib.error_temp:
                             ftp.mkd(part)
-                            ftp.cwd(current)
-                    
-                    # Upload file
-                    filename = file_path.name
-                    with open(file_path, 'rb') as f:
-                        self.log.info("Uploading: %s", rel_path)
-                        ftp.storbinary(f'STOR {filename}', f, blocksize=8192)
-                    file_count += 1
-            
-            ftp.quit()
-            public_url = f"{self.web_base_url}/jarvis_builds/{job_id}/"
-            self.log.info("Deploy successful! Uploaded %d files. Public URL: %s",
-                         file_count, public_url)
-            return public_url
-            
-        except ftplib.all_errors as exc:
-            self.log.error("FTP deployment failed: %s", exc)
-            raise WorkerError(f"FTP_DEPLOYMENT_FAILED: {exc}")
-        except Exception as exc:
-            if isinstance(exc, WorkerError):
-                raise
-            raise WorkerError(f"FTP_DEPLOYMENT_FAILED: {exc}")
+                            ftp.cwd(part)
+                
+                # Upload all files
+                file_count = 0
+                for file_path in build_output_dir.rglob("*"):
+                    if file_path.is_file():
+                        rel_path = file_path.relative_to(build_output_dir)
+                        rel_parts = rel_path.parts[:-1]
+                        
+                        current = remote_build_dir
+                        for part in rel_parts:
+                            current = f"{current}/{part}"
+                            try:
+                                ftp.cwd(current)
+                            except ftplib.error_temp:
+                                ftp.mkd(part)
+                                ftp.cwd(current)
+                        
+                        filename = file_path.name
+                        with open(file_path, 'rb') as f:
+                            self.log.info("Uploading: %s", rel_path)
+                            ftp.storbinary(f'STOR {filename}', f, blocksize=8192)
+                        file_count += 1
+                
+                ftp.quit()
+                public_url = f"{self.web_base_url}/jarvis_builds/{job_id}/"
+                self.log.info("Deploy successful! Uploaded %d files. Public URL: %s",
+                             file_count, public_url)
+                return public_url
+                
+            except ftplib.all_errors as exc:
+                self.log.error("FTP deployment attempt %d failed: %s", attempt + 1, exc)
+                if attempt == max_retries - 1:
+                    raise WorkerError(f"FTP_DEPLOYMENT_FAILED: {exc}")
+                time.sleep(2 ** attempt)  # Exponential backoff
+            except Exception as exc:
+                if isinstance(exc, WorkerError):
+                    raise
+                self.log.error("FTP deployment attempt %d failed: %s", attempt + 1, exc)
+                if attempt == max_retries - 1:
+                    raise WorkerError(f"FTP_DEPLOYMENT_FAILED: {exc}")
+                time.sleep(2 ** attempt)
+        
+        raise WorkerError("FTP_DEPLOYMENT_FAILED: Maximum retries exceeded.")
 
     def run(self, job: Dict[str, Any], state: Any) -> 'WorkerResult':
         """
@@ -292,6 +299,25 @@ class DeployWorker(BaseWorker):
         if not project_dir.exists():
             raise WorkerError(f"PROJECT_NOT_FOUND: {project_dir}")
         
+        # Verify project structure
+        self.log.info("Verifying project structure at %s", project_dir)
+        required = ["project.godot", "Scenes", "Scripts", "Assets"]
+        for req in required:
+            if not (project_dir / req).exists() and not (project_dir / req.lower()).exists():
+                self.log.warning("Packaging Warning: Missing %s in project directory", req)
+                
+        # Compress output project folder locally
+        project_zip_path = self.output_dir / job_id / f"project_{job_id[:8]}.zip"
+        try:
+            with zipfile.ZipFile(project_zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+                for file_path in project_dir.rglob("*"):
+                    if file_path.is_file():
+                        arcname = file_path.relative_to(project_dir)
+                        zf.write(file_path, arcname)
+            self.log.info("Compressed project folder to %s", project_zip_path)
+        except Exception as e:
+            self.log.error("Failed to compress project folder: %s", e)
+
         # Check if Godot binary is available
         if not self._binary_available():
             self.log.warning("Godot binary not available; skipping deployment")
@@ -326,6 +352,7 @@ class DeployWorker(BaseWorker):
                     "deployed": True,
                     "url": public_url,
                     "build_output_dir": str(build_output_dir),
+                    "project_zip": str(project_zip_path),
                     "ftp_host": self.ftp_host,
                     "remote_dir": f"{self.ftp_remote_dir}/{job_id[:8]}"
                 },

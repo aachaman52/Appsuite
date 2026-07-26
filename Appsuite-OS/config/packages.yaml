@@ -1,0 +1,42 @@
+# Packages to be pre-installed via APT during the chroot phase
+repositories:
+  - "ppa:obsproject/obs-studio"
+  - "ppa:ondrej/php" # Example PPA, remove if not needed
+
+packages:
+  # Base System & Desktop
+  - ubuntu-desktop-minimal
+  - xorg
+  - plymouth
+  - gdm3
+  
+  # Development Tools
+  - git
+  - python3-pip
+  - python3-venv
+  - build-essential
+  - curl
+  - wget
+  - jq
+  - software-properties-common
+  - flatpak
+  
+  # AppSuite Dependencies
+  - blender
+  
+  # Drivers & Hardware
+  - ubuntu-drivers-common
+  
+  # Utilities
+  - vim
+  - htop
+  - terminator
+  - openssh-server
+
+custom_installs:
+  # Examples of external binaries or apt repositories added inline
+  - "curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg"
+  - "echo 'deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main' > /etc/apt/sources.list.d/vscode.list"
+  - "apt-get update"
+  - "apt-get install -y code"
+  - "curl -fsSL https://ollama.com/install.sh | sh"

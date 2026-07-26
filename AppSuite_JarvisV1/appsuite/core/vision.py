@@ -21,8 +21,16 @@ class VisionSubsystem:
         """
         log.info("Inspecting UI layout for: %s", screenshot_path)
         if not screenshot_path.exists():
-            screenshot_path.parent.mkdir(parents=True, exist_ok=True)
-            screenshot_path.write_bytes(b"MOCK_PNG_DATA")
+            log.error("Screenshot not found: %s", screenshot_path)
+            return {
+                "screenshot_analyzed": str(screenshot_path),
+                "overlaps_detected": False,
+                "alignment_ok": False,
+                "elements_found": [],
+                "visual_rating": "Missing",
+                "timestamp": time.time(),
+                "error": "File not found"
+            }
             
         overlaps_detected = False
         alignment_ok = True
@@ -55,18 +63,38 @@ class VisionSubsystem:
     def compare_rendered_scenes(self, actual_path: Path, expected_path: Path) -> Dict[str, Any]:
         """Compare actual render to expected baseline for visual regressions."""
         log.info("Comparing rendered scene %s with baseline %s", actual_path, expected_path)
-        if not actual_path.exists():
-            actual_path.parent.mkdir(parents=True, exist_ok=True)
-            actual_path.write_bytes(b"ACTUAL_RENDER_DATA")
-        if not expected_path.exists():
-            expected_path.parent.mkdir(parents=True, exist_ok=True)
-            expected_path.write_bytes(b"EXPECTED_RENDER_DATA")
+        if not actual_path.exists() or not expected_path.exists():
+            log.error("Missing images for comparison. Actual: %s, Expected: %s", actual_path.exists(), expected_path.exists())
+            return {
+                "ssim_score": 0.0,
+                "regression_detected": True,
+                "status": "failed",
+                "error": "Missing files"
+            }
             
-        ssim = 0.98
+        try:
+            import cv2
+            from skimage.metrics import structural_similarity
+            img1 = cv2.imread(str(actual_path), cv2.IMREAD_GRAYSCALE)
+            img2 = cv2.imread(str(expected_path), cv2.IMREAD_GRAYSCALE)
+            if img1 is not None and img2 is not None and img1.shape == img2.shape:
+                ssim, _ = structural_similarity(img1, img2, full=True)
+            else:
+                ssim = 0.0
+        except ImportError:
+            # Fallback to simple byte length comparison (rough heuristic)
+            sz1 = actual_path.stat().st_size
+            sz2 = expected_path.stat().st_size
+            if sz2 == 0:
+                ssim = 0.0
+            else:
+                diff = abs(sz1 - sz2) / sz2
+                ssim = max(0.0, 1.0 - diff)
+        
         regression_detected = ssim < 0.90
         
         return {
-            "ssim_score": ssim,
+            "ssim_score": float(ssim),
             "regression_detected": regression_detected,
             "status": "passed" if not regression_detected else "failed"
         }

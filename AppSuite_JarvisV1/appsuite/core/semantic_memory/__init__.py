@@ -135,8 +135,9 @@ class SemanticMemory:
                     else:
                         seen.add(key)
                 if to_delete:
-                    ids_str = ",".join(str(i) for i in to_delete[:50])
-                    self.db.execute(f"DELETE FROM strategy_memory WHERE id IN ({ids_str})")
+                    # Parameterized IN clause to prevent SQL injection
+                    placeholders = ",".join("?" * min(len(to_delete), 50))
+                    self.db.execute(f"DELETE FROM strategy_memory WHERE id IN ({placeholders})", tuple(to_delete[:50]))
         except Exception:
             pass
 

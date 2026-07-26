@@ -434,7 +434,7 @@ bpy.ops.export_scene.fbx(filepath=fbx_path, path_mode='COPY', embed_textures=Tru
                     "has_textures": len(conv_diag["textures"]) > 0
                 })
         
-        layout = self.build_scene_layout(state["assets"], state["template"])
+        layout = self.build_scene_layout(state["assets"], job.get("template", state.get("template", {})))
         (outputs_dir / "scene.json").write_text(json.dumps(layout, indent=2), encoding="utf-8")
         
         state["scene_layout"] = layout

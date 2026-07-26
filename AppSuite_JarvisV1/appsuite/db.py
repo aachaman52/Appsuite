@@ -161,12 +161,46 @@ CREATE TABLE IF NOT EXISTS project_memory (
     created_at REAL NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS worker_executions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id TEXT NOT NULL,
+    worker_name TEXT NOT NULL,
+    execution_time REAL,
+    cpu_usage REAL,
+    ram_usage REAL,
+    gpu_usage REAL,
+    success BOOLEAN,
+    retries INTEGER,
+    timeout BOOLEAN,
+    repair_triggered BOOLEAN,
+    tokens_used INTEGER,
+    assets_processed INTEGER,
+    failure_category TEXT,
+    created_at REAL NOT NULL
+);
+
 
 CREATE INDEX IF NOT EXISTS idx_assets_job ON assets(job_id);
 CREATE INDEX IF NOT EXISTS idx_events_job ON job_events(job_id);
 CREATE INDEX IF NOT EXISTS idx_assets_hash ON assets(file_hash);
 CREATE INDEX IF NOT EXISTS idx_success_mem_prompt ON success_memory(prompt);
 CREATE INDEX IF NOT EXISTS idx_asset_mem_category ON asset_memory(category);
+
+CREATE TABLE IF NOT EXISTS execution_graph (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id TEXT NOT NULL,
+    prompt TEXT NOT NULL,
+    genre TEXT,
+    planner_strategy TEXT,
+    asset_provider TEXT,
+    code_provider TEXT,
+    workers_used_json TEXT,
+    repair_actions_json TEXT,
+    validation_score REAL,
+    execution_time REAL,
+    final_success BOOLEAN,
+    created_at REAL NOT NULL
+);
 """
 
 
@@ -594,57 +628,134 @@ class Database:
         return rows
 
     def add_repair_memory(self, error_pattern: str, fix_action: str, success: bool) -> None:
-        with self._lock:
-            cur = self.conn.cursor()
-            cur.execute("SELECT id, success_count, fail_count FROM repair_memory WHERE error_pattern=?", (error_pattern,))
-            row = cur.fetchone()
-            if row:
-                if success:
-                    cur.execute("UPDATE repair_memory SET success_count = success_count + 1 WHERE id=?", (row["id"],))
-                else:
-                    cur.execute("UPDATE repair_memory SET fail_count = fail_count + 1 WHERE id=?", (row["id"],))
+        row = self.query_one("SELECT id, success_count, fail_count FROM repair_memory WHERE error_pattern=?", (error_pattern,))
+        if row:
+            if success:
+                self.execute("UPDATE repair_memory SET success_count = success_count + 1 WHERE id=?", (row["id"],))
             else:
-                cur.execute(
-                    "INSERT INTO repair_memory (error_pattern, fix_action, success_count, fail_count, created_at) VALUES (?, ?, ?, ?, ?)",
-                    (error_pattern, fix_action, 1 if success else 0, 0 if success else 1, time.time())
-                )
-            self.conn.commit()
+                self.execute("UPDATE repair_memory SET fail_count = fail_count + 1 WHERE id=?", (row["id"],))
+        else:
+            self.execute(
+                "INSERT INTO repair_memory (error_pattern, fix_action, success_count, fail_count, created_at) VALUES (?, ?, ?, ?, ?)",
+                (error_pattern, fix_action, 1 if success else 0, 0 if success else 1, time.time())
+            )
 
     def get_best_repair(self, error_pattern: str) -> Optional[str]:
-        with self._lock:
-            cur = self.conn.cursor()
-            cur.execute(
-                "SELECT fix_action FROM repair_memory WHERE ? LIKE '%' || error_pattern || '%' AND success_count > fail_count ORDER BY success_count DESC LIMIT 1",
-                (error_pattern,)
-            )
-            row = cur.fetchone()
-            if row:
-                return row["fix_action"]
-            return None
+        row = self.query_one(
+            "SELECT fix_action FROM repair_memory WHERE ? LIKE '%' || error_pattern || '%' AND success_count > fail_count ORDER BY success_count DESC LIMIT 1",
+            (error_pattern,)
+        )
+        if row:
+            return row["fix_action"]
+        return None
 
     def add_project_memory(self, project_name: str, prompt: str, template_id: str, path: str, tags: List[str]) -> None:
-        with self._lock:
-            cur = self.conn.cursor()
-            cur.execute(
-                "INSERT OR REPLACE INTO project_memory (project_name, prompt, template_id, path, complexity_score, tags_json, created_at) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (project_name, prompt, template_id, path, len(tags) * 0.5 + 1.0, json.dumps(tags), time.time())
-            )
-            self.conn.commit()
+        self.execute(
+            "INSERT OR REPLACE INTO project_memory (project_name, prompt, template_id, path, complexity_score, tags_json, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (project_name, prompt, template_id, path, len(tags) * 0.5 + 1.0, json.dumps(tags), time.time())
+        )
 
     def find_similar_projects(self, prompt: str, limit: int = 5) -> List[Dict[str, Any]]:
-        with self._lock:
-            words = [w for w in prompt.split() if len(w) > 3]
-            if not words:
-                return []
-            conditions = " OR ".join(["lower(prompt) LIKE ?" for _ in words])
-            params = tuple(f"%{w.lower()}%" for w in words) + (limit,)
-            cur = self.conn.cursor()
-            cur.execute(
-                f"SELECT * FROM project_memory WHERE {conditions} ORDER BY complexity_score DESC LIMIT ?",
-                params
-            )
-            return [dict(r) for r in cur.fetchall()]
+        words = [w for w in prompt.split() if len(w) > 3]
+        if not words:
+            return []
+        conditions = " OR ".join(["lower(prompt) LIKE ?" for _ in words])
+        params = tuple(f"%{w.lower()}%" for w in words) + (limit,)
+        return self.query(
+            f"SELECT * FROM project_memory WHERE {conditions} ORDER BY complexity_score DESC LIMIT ?",
+            params
+        )
+
+    # --- execution knowledge graph --------------------------------------------
+    def add_execution_graph(self, job_id: str, prompt: str, genre: str,
+                            planner_strategy: str, asset_provider: str, code_provider: str,
+                            workers_used: list, repair_actions: list, validation_score: float,
+                            execution_time: float, final_success: bool) -> None:
+        import time, json
+        self.execute(
+            "INSERT INTO execution_graph (job_id, prompt, genre, planner_strategy, asset_provider, code_provider, workers_used_json, repair_actions_json, validation_score, execution_time, final_success, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (job_id, prompt, genre, planner_strategy, asset_provider, code_provider,
+             json.dumps(workers_used), json.dumps(repair_actions), validation_score,
+             execution_time, final_success, time.time())
+        )
+
+    def get_execution_graphs(self, limit: int = 1000) -> List[Dict[str, Any]]:
+        import json
+        rows = self.query("SELECT * FROM execution_graph ORDER BY created_at DESC LIMIT ?", (limit,))
+        for r in rows:
+            r['workers_used'] = json.loads(r.get('workers_used_json', '[]') or '[]')
+            r['repair_actions'] = json.loads(r.get('repair_actions_json', '[]') or '[]')
+        return rows
+
+    # --- worker executions ----------------------------------------------------
+    def add_worker_execution(self, job_id: str, worker_name: str, execution_time: float,
+                             cpu_usage: float, ram_usage: float, gpu_usage: float,
+                             success: bool, retries: int, timeout: bool,
+                             repair_triggered: bool, tokens_used: int,
+                             assets_processed: int, failure_category: str) -> None:
+        self.execute(
+            "INSERT INTO worker_executions (job_id, worker_name, execution_time, cpu_usage, ram_usage, gpu_usage, success, retries, timeout, repair_triggered, tokens_used, assets_processed, failure_category, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (job_id, worker_name, execution_time, cpu_usage, ram_usage, gpu_usage, success, retries, timeout, repair_triggered, tokens_used, assets_processed, failure_category, time.time())
+        )
+
+    def get_worker_executions(self, worker_name: str, limit: int = 100) -> List[Dict[str, Any]]:
+        return self.query(
+            "SELECT * FROM worker_executions WHERE worker_name = ? ORDER BY created_at DESC LIMIT ?",
+            (worker_name, limit)
+        )
+
+    def get_worker_stats(self, worker_name: str) -> Dict[str, Any]:
+        row = self.query_one(
+            "SELECT COUNT(*) as total_runs, "
+            "SUM(CASE WHEN success THEN 1 ELSE 0 END) as successes, "
+            "SUM(CASE WHEN timeout THEN 1 ELSE 0 END) as timeouts, "
+            "SUM(retries) as total_retries, "
+            "SUM(CASE WHEN repair_triggered THEN 1 ELSE 0 END) as repairs_triggered, "
+            "AVG(execution_time) as avg_runtime, "
+            "AVG(ram_usage) as avg_ram, "
+            "AVG(cpu_usage) as avg_cpu "
+            "FROM worker_executions WHERE worker_name = ?",
+            (worker_name,)
+        )
+        if not row or row["total_runs"] == 0:
+            return {
+                "total_runs": 0, "success_rate": 1.0, "timeouts": 0, "repairs_triggered": 0,
+                "avg_runtime": 0.0, "avg_ram": 0.0, "avg_cpu": 0.0,
+                "reliability_score": 1.0, "recovery_rate": 1.0, "performance_score": 1.0
+            }
+            
+        runs = row["total_runs"]
+        successes = row["successes"]
+        
+        # Determine specific failure categories
+        fail_cats = self.query(
+            "SELECT failure_category, COUNT(*) as count FROM worker_executions "
+            "WHERE worker_name = ? AND success = FALSE AND failure_category != '' "
+            "GROUP BY failure_category ORDER BY count DESC",
+            (worker_name,)
+        )
+        
+        success_rate = successes / runs
+        reliability_score = success_rate - (row["timeouts"] / runs) * 0.2
+        performance_score = 1.0 if row["avg_runtime"] < 10.0 else (10.0 / row["avg_runtime"])
+        recovery_rate = 1.0 if (runs - successes) == 0 else row["repairs_triggered"] / (runs - successes)
+        
+        return {
+            "total_runs": runs,
+            "success_rate": success_rate,
+            "timeouts": row["timeouts"],
+            "repairs_triggered": row["repairs_triggered"],
+            "avg_runtime": row["avg_runtime"] or 0.0,
+            "avg_ram": row["avg_ram"] or 0.0,
+            "avg_cpu": row["avg_cpu"] or 0.0,
+            "reliability_score": max(0.0, reliability_score),
+            "performance_score": performance_score,
+            "recovery_rate": recovery_rate,
+            "failure_categories": {r["failure_category"]: r["count"] for r in fail_cats}
+        }
 
     def close(self) -> None:
         with self._lock:

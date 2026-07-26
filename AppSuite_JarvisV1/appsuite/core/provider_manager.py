@@ -397,5 +397,7 @@ func input_event_jump():
                 "findings": "Godot 4 moves CharacterBody3D by setting its velocity property and calling move_and_slide().",
                 "code_examples": ["velocity = direction * SPEED\nmove_and_slide()"]
             })
+        elif "gdscript" in prompt_lower or ".gd" in prompt_lower or "code" in prompt_lower:
+            return "extends Node\n\nfunc _ready() -> void:\n\tpass\n"
         else:
             return "Generated content fallback"

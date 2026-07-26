@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "system": {
+      "type": "object",
+      "properties": {
+        "max_workers": {"type": "integer", "default": 4},
+        "thread_pool_size": {"type": "integer", "default": 8},
+        "cache_size_mb": {"type": "integer", "default": 1024}
+      }
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_assets": {"type": "integer", "default": 10},
+        "gpu_vram_limit_mb": {"type": "integer", "default": 4096},
+        "ram_limit_mb": {"type": "integer", "default": 8192}
+      }
+    },
+    "timeouts": {
+      "type": "object",
+      "properties": {
+        "godot_headless_sec": {"type": "integer", "default": 300},
+        "blender_sec": {"type": "integer", "default": 300},
+        "http_request_sec": {"type": "integer", "default": 60}
+      }
+    },
+    "retries": {
+      "type": "object",
+      "properties": {
+        "worker_failure_limit": {"type": "integer", "default": 2},
+        "repair_retry_count": {"type": "integer", "default": 3}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "score_threshold": {"type": "number", "default": 0.8}
+      }
+    },
+    "benchmarks": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean", "default": true},
+        "save_history": {"type": "boolean", "default": true}
+      }
+    }
+  }
+}
