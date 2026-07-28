@@ -1,1 +1,0 @@
-[Placeholder] Place GRUB background images (e.g. splash.png) here. Modify generate_iso.sh to include them in the ISO boot directory.
