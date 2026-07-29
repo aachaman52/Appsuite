@@ -17,6 +17,20 @@ def generate_animated_webp(frames, output_path, duration_ms=100):
             loop=0
         )
 
+def generate_animated_gif(frames, output_path, duration_ms=100):
+    if len(frames) > 0:
+        # Convert frames to RGB/P mode for GIF compatibility
+        gif_frames = [f.convert("RGBA") for f in frames]
+        gif_frames[0].save(
+            output_path,
+            format="GIF",
+            save_all=True,
+            append_images=gif_frames[1:],
+            duration=duration_ms,
+            loop=0,
+            disposal=2
+        )
+
 def generate_all_animations(target_root):
     anim_dir = os.path.join(target_root, "animations")
     ensure_dir(anim_dir)
@@ -55,7 +69,9 @@ def generate_all_animations(target_root):
             img.save(frame_path, "PNG")
             frames.append(img)
             
-        # Compile WebP animation
-        generate_animated_webp(frames, os.path.join(anim_dir, f"{cat}_animation.webp"))
+        # Compile WebP and GIF animations directly into the animations directory
+        generate_animated_webp(frames, os.path.join(anim_dir, f"{cat}.webp"))
+        generate_animated_gif(frames, os.path.join(anim_dir, f"{cat}.gif"))
         
-    logger.info("Successfully generated boot and system animations (WebP + frame sequences)")
+    logger.info("Successfully generated boot and system animations (WebP + GIF + frame sequences)")
+
