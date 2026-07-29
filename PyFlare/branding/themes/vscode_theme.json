@@ -1,0 +1,11 @@
+{
+  "name": "PyFlare Dark VSCode",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#0B0F19",
+    "editor.foreground": "#FFFFFF",
+    "sideBar.background": "#111827",
+    "activityBar.background": "#0B0F19",
+    "statusBar.background": "#5B5FFF"
+  }
+}
