@@ -109,7 +109,7 @@ The branding system follows five core principles:
 
 ## Statistics
 
-- Total Assets: 80
+- Total Assets: 195+
 - Logo Variants: 5
 - Application Icons: 4
 - System Icons: 20
@@ -119,6 +119,11 @@ The branding system follows five core principles:
 - UI Backgrounds: 8
 - Social Graphics: 8
 - Metadata Files: 1
+- Cursors: 13
+- Sounds: 10 (.wav format)
+- Animations: 5 sets (40 frames total)
+- Badges: 8 sets (SVG & PNG)
+- Placeholder Graphics: 6
 
 ## Future Work
 
@@ -150,8 +155,8 @@ PyFlare/branding/
 ├── logos/              # SVG & PNG logos
 ├── icons/              # Apps, Folders, System, Mimetypes, and size Exports
 ├── wallpapers/         # 4K Desktop wallpapers
-├── login/              # Lockscreen & login backgrounds
-├── installer/          # Installer frame assets
+├── login/              # Lockscreen, login backgrounds, avatars & UI icons
+├── installer/          # Installer frame and setup assets
 ├── ui/                 # Settings, Dashboard, and Welcome screen backgrounds
 ├── social/             # Discord, GitHub, LinkedIn, X, and Reddit headers
 ├── colors/             # Primary, secondary, and gradient swatch sheets
@@ -159,5 +164,11 @@ PyFlare/branding/
 ├── screenshots/        # OS feature preview placeholders
 ├── favicon/            # Website favicons and touch icons
 ├── export/             # Multipurpose vector format exports (.ai, .eps, .pdf, .svg)
+├── cursors/            # Custom desktop pointers & cursors theme
+├── sounds/             # Sound theme audio events (.wav)
+├── animations/         # Loading & boot frame sequences
+├── badges/             # SVG & PNG ecosystem badges
+├── placeholders/       # System & asset placeholders
+├── themes/             # JSON Desktop themes (Dark, Light, Midnight)
 └── manifest.json       # Branding metadata configuration file
 ```
