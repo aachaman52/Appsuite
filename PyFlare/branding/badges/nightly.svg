@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 160 40">
-  <rect width="160" height="40" rx="10" fill="#111827" stroke="#5B5FFF" stroke-width="2"/>
-  <text x="80" y="25" fill="#00D4FF" font-family="sans-serif" font-size="14" text-anchor="middle" font-weight="bold">NIGHTLY</text>
+  <rect width="160" height="40" rx="10" fill="#111827" stroke="#8A5CF5" stroke-width="2"/>
+  <text x="80" y="25" fill="#FFFFFF" font-family="sans-serif" font-size="12" text-anchor="middle" font-weight="bold">NIGHTLY</text>
 </svg>
