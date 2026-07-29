@@ -1,0 +1,29 @@
+{
+  "name": "PyFlare Branding System",
+  "version": "1.0.0",
+  "colors": {
+    "primary": {
+      "electric_indigo": "#5B5FFF",
+      "vibrant_cyan": "#00D4FF",
+      "subtle_violet": "#8A5CF5"
+    },
+    "secondary": {
+      "dark_navy": "#0B0F19"
+    }
+  },
+  "directories": {
+    "logos": "branding/logos",
+    "icons": "branding/icons",
+    "wallpapers": "branding/wallpapers",
+    "ui": "branding/ui",
+    "splash": "branding/splash",
+    "login": "branding/login",
+    "installer": "branding/installer",
+    "social": "branding/social",
+    "colors": "branding/colors",
+    "mockups": "branding/mockups",
+    "screenshots": "branding/screenshots",
+    "favicon": "branding/favicon",
+    "export": "branding/export"
+  }
+}
