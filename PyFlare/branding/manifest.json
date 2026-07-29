@@ -1,29 +1,3198 @@
 {
-  "name": "PyFlare Branding System",
-  "version": "1.0.0",
-  "colors": {
-    "primary": {
-      "electric_indigo": "#5B5FFF",
-      "vibrant_cyan": "#00D4FF",
-      "subtle_violet": "#8A5CF5"
+  "name": "PyFlare Branding manifest",
+  "generated_at": "2026-07-29T17:38:49.814345",
+  "assets": {
+    "README.md": {
+      "size_bytes": 1224,
+      "created_at": "2026-07-29T17:38:49.809344",
+      "dimensions": null,
+      "sha256": "8b9b40c715138499a42b73b71adf49cd3b5b168b843e89b2d18141a956917622",
+      "category": "README.md"
     },
-    "secondary": {
-      "dark_navy": "#0B0F19"
+    "Walkthrough.txt": {
+      "size_bytes": 7866,
+      "created_at": "2026-07-29T17:28:21.441487",
+      "dimensions": null,
+      "sha256": "4c5c9d5751218d3cb2309ac4120dcba6d9cec8bebe1d3d5ddc7a01f6ffae7570",
+      "category": "Walkthrough.txt"
+    },
+    "animations/boot_animation.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:38:49.449532",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
+    "animations/error_animation.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:38:49.752137",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
+    "animations/loading_animation.webp": {
+      "size_bytes": 28318,
+      "created_at": "2026-07-29T17:38:49.594849",
+      "dimensions": "256x256",
+      "sha256": "384015bbf3a4dba4b669f06e6c4983d96a8c3cec341bd8804bd735ba13ae595a",
+      "category": "animations"
+    },
+    "animations/shutdown_animation.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:38:49.527519",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
+    "animations/success_animation.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:38:49.682825",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
+    "animations/boot/frame_00.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.260993",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/boot/frame_01.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.267221",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/boot/frame_02.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.270244",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/boot/frame_03.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:38:49.274823",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/boot/frame_04.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.278090",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/boot/frame_05.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.283638",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/boot/frame_06.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.285398",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/boot/frame_07.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.288836",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/boot/frame_08.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.293517",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/boot/frame_09.png": {
+      "size_bytes": 715,
+      "created_at": "2026-07-29T17:38:49.296581",
+      "dimensions": "256x256",
+      "sha256": "6257931f89eb26bc0c7b1c912844f50a7926d5bf2c3c7ffbd89114f14c9e464f",
+      "category": "animations"
+    },
+    "animations/boot/frame_10.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.299604",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/boot/frame_11.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.301296",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_0.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.106166",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_1.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.116346",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_2.png": {
+      "size_bytes": 1058,
+      "created_at": "2026-07-29T17:34:23.119487",
+      "dimensions": "256x256",
+      "sha256": "1c6fdf84ed12c46094b3506a9f1e20078ad6e684ea6193e7c8633afe2c062dfd",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_3.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.123880",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_4.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.127288",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_5.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.129621",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_6.png": {
+      "size_bytes": 849,
+      "created_at": "2026-07-29T17:34:23.132563",
+      "dimensions": "256x256",
+      "sha256": "9f0d7700194ef7b01e4b8366e34ce78d4727899a7604f261d4908101b2349eda",
+      "category": "animations"
+    },
+    "animations/boot_logo/frame_7.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.134328",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "animations/error/frame_0.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.202851",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/error/frame_00.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.710812",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/error/frame_01.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.714003",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/error/frame_02.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.718775",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/error/frame_03.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:38:49.720479",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/error/frame_04.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.723831",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/error/frame_05.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.725576",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/error/frame_06.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.728267",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/error/frame_07.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.733147",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/error/frame_08.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.737941",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/error/frame_09.png": {
+      "size_bytes": 715,
+      "created_at": "2026-07-29T17:38:49.741152",
+      "dimensions": "256x256",
+      "sha256": "6257931f89eb26bc0c7b1c912844f50a7926d5bf2c3c7ffbd89114f14c9e464f",
+      "category": "animations"
+    },
+    "animations/error/frame_1.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.207665",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/error/frame_10.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.744434",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/error/frame_11.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.747856",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/error/frame_2.png": {
+      "size_bytes": 1058,
+      "created_at": "2026-07-29T17:34:23.207665",
+      "dimensions": "256x256",
+      "sha256": "1c6fdf84ed12c46094b3506a9f1e20078ad6e684ea6193e7c8633afe2c062dfd",
+      "category": "animations"
+    },
+    "animations/error/frame_3.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.207665",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/error/frame_4.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.214118",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/error/frame_5.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.215877",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "animations/error/frame_6.png": {
+      "size_bytes": 849,
+      "created_at": "2026-07-29T17:34:23.215877",
+      "dimensions": "256x256",
+      "sha256": "9f0d7700194ef7b01e4b8366e34ce78d4727899a7604f261d4908101b2349eda",
+      "category": "animations"
+    },
+    "animations/error/frame_7.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.215877",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "animations/loading/frame_00.png": {
+      "size_bytes": 1203,
+      "created_at": "2026-07-29T17:38:49.554681",
+      "dimensions": "256x256",
+      "sha256": "42d357963395cb1dfb432be07d4b7b70971c75087653032b135e7280c3d274b6",
+      "category": "animations"
+    },
+    "animations/loading/frame_01.png": {
+      "size_bytes": 1310,
+      "created_at": "2026-07-29T17:38:49.558017",
+      "dimensions": "256x256",
+      "sha256": "ea1fac8b456f26b833cdb534b0b2dce51f5e61eec678f70b39fcabda49f0d907",
+      "category": "animations"
+    },
+    "animations/loading/frame_02.png": {
+      "size_bytes": 1315,
+      "created_at": "2026-07-29T17:38:49.561846",
+      "dimensions": "256x256",
+      "sha256": "bebdda85b566f33974dfb22e9d8d757b4b50bb5f1494688cf8e7d9e99fd6dbac",
+      "category": "animations"
+    },
+    "animations/loading/frame_03.png": {
+      "size_bytes": 1203,
+      "created_at": "2026-07-29T17:38:49.566487",
+      "dimensions": "256x256",
+      "sha256": "1a2d45183eab8ca2188d82544f25f471b0bb47cf581e2a3db12905938b454aee",
+      "category": "animations"
+    },
+    "animations/loading/frame_04.png": {
+      "size_bytes": 1311,
+      "created_at": "2026-07-29T17:38:49.569909",
+      "dimensions": "256x256",
+      "sha256": "3c9ba38e3b1aeff6deb74196df5f17961f3893820af3810e57f44c6f74b6d7ee",
+      "category": "animations"
+    },
+    "animations/loading/frame_05.png": {
+      "size_bytes": 1309,
+      "created_at": "2026-07-29T17:38:49.573260",
+      "dimensions": "256x256",
+      "sha256": "f1aa86088dc61a7ea2e4cf87c9892306fbbf0e44af5bcb5d9481b386ef6182ee",
+      "category": "animations"
+    },
+    "animations/loading/frame_06.png": {
+      "size_bytes": 1204,
+      "created_at": "2026-07-29T17:38:49.576561",
+      "dimensions": "256x256",
+      "sha256": "cc3ed615a8d3ddbbf6febd773cd454ed19b06fba1547cc9d99d37c11a83f940f",
+      "category": "animations"
+    },
+    "animations/loading/frame_07.png": {
+      "size_bytes": 1317,
+      "created_at": "2026-07-29T17:38:49.581601",
+      "dimensions": "256x256",
+      "sha256": "2fe6071e84b31366d8239fcce8820585953e3fa076e4e88c747b70a9235bd1ad",
+      "category": "animations"
+    },
+    "animations/loading/frame_08.png": {
+      "size_bytes": 1313,
+      "created_at": "2026-07-29T17:38:49.583323",
+      "dimensions": "256x256",
+      "sha256": "e98edd3754c20017c57185402f1b5d3ab9902fce98b55bc13658c991dc44dce0",
+      "category": "animations"
+    },
+    "animations/loading/frame_09.png": {
+      "size_bytes": 1203,
+      "created_at": "2026-07-29T17:38:49.586716",
+      "dimensions": "256x256",
+      "sha256": "8d420fa97d6b3d338cf4f3139ea417c4bdc1202afb3b06db6618a720baee01e2",
+      "category": "animations"
+    },
+    "animations/loading/frame_10.png": {
+      "size_bytes": 1313,
+      "created_at": "2026-07-29T17:38:49.589791",
+      "dimensions": "256x256",
+      "sha256": "476474ba64a7bf00dc5d0da1ffe00c2dd31219bea1785af199c7223d4caaec65",
+      "category": "animations"
+    },
+    "animations/loading/frame_11.png": {
+      "size_bytes": 1314,
+      "created_at": "2026-07-29T17:38:49.591525",
+      "dimensions": "256x256",
+      "sha256": "5e422f61add09cea44007c127ebaddc9504a58dd704fbfd22e073675c25fd979",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_0.png": {
+      "size_bytes": 1373,
+      "created_at": "2026-07-29T17:34:23.138398",
+      "dimensions": "256x256",
+      "sha256": "7cb60737700c2f81bfa63a4297513e619b055823072637c10708fa76d6357bd9",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_1.png": {
+      "size_bytes": 1340,
+      "created_at": "2026-07-29T17:34:23.140256",
+      "dimensions": "256x256",
+      "sha256": "c19959b351688710a5fff508d4f1e57af1f73e0bc10536610271fe95359b1897",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_2.png": {
+      "size_bytes": 1341,
+      "created_at": "2026-07-29T17:34:23.140256",
+      "dimensions": "256x256",
+      "sha256": "ea016366f5b526ef2774c50fb537366b5dc0488a4ba033e0d64975d893a08cf5",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_3.png": {
+      "size_bytes": 1343,
+      "created_at": "2026-07-29T17:34:23.140256",
+      "dimensions": "256x256",
+      "sha256": "5ff20cc4eb8636b8d50b8a1bcd37904f34fe7ea736ba90b6de9017f8f9925679",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_4.png": {
+      "size_bytes": 1341,
+      "created_at": "2026-07-29T17:34:23.140256",
+      "dimensions": "256x256",
+      "sha256": "d53e69e6ee364afe16cb2b8ab4a017ec1529450b544f90b4c27610336f663e58",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_5.png": {
+      "size_bytes": 1346,
+      "created_at": "2026-07-29T17:34:23.140256",
+      "dimensions": "256x256",
+      "sha256": "e7d3f95430cf72bb23032d7b81bd0425e38da6968852569a500fa0ce4ba47aa6",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_6.png": {
+      "size_bytes": 1340,
+      "created_at": "2026-07-29T17:34:23.152970",
+      "dimensions": "256x256",
+      "sha256": "ffdd590b2cadd28737dccfb258fc80e47d2d312957a27bf892848ed96a8ed0fd",
+      "category": "animations"
+    },
+    "animations/loading_spinner/frame_7.png": {
+      "size_bytes": 1339,
+      "created_at": "2026-07-29T17:34:23.156637",
+      "dimensions": "256x256",
+      "sha256": "3c927d45134f12a064261600231c9fad7feb7549a5abfa424709846c8bdf07e3",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_0.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.156637",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_00.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.488388",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_01.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.493319",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_02.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.496402",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_03.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:38:49.499818",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_04.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.503093",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_05.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.506153",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_06.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.511139",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_07.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.514289",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_08.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.517693",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_09.png": {
+      "size_bytes": 715,
+      "created_at": "2026-07-29T17:38:49.520866",
+      "dimensions": "256x256",
+      "sha256": "6257931f89eb26bc0c7b1c912844f50a7926d5bf2c3c7ffbd89114f14c9e464f",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_1.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.156637",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_10.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.522239",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_11.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.525815",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_2.png": {
+      "size_bytes": 1058,
+      "created_at": "2026-07-29T17:34:23.163920",
+      "dimensions": "256x256",
+      "sha256": "1c6fdf84ed12c46094b3506a9f1e20078ad6e684ea6193e7c8633afe2c062dfd",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_3.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.163920",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_4.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.167692",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_5.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.170327",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_6.png": {
+      "size_bytes": 849,
+      "created_at": "2026-07-29T17:34:23.170327",
+      "dimensions": "256x256",
+      "sha256": "9f0d7700194ef7b01e4b8366e34ce78d4727899a7604f261d4908101b2349eda",
+      "category": "animations"
+    },
+    "animations/shutdown/frame_7.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.177192",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "animations/success/frame_0.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.179531",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/success/frame_00.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.646513",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/success/frame_01.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.652796",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/success/frame_02.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.656225",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/success/frame_03.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:38:49.657472",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/success/frame_04.png": {
+      "size_bytes": 928,
+      "created_at": "2026-07-29T17:38:49.660371",
+      "dimensions": "256x256",
+      "sha256": "4142ed243fd3636ad5778d938c8b953083e6deef4c9660e77a76766e5241c9bc",
+      "category": "animations"
+    },
+    "animations/success/frame_05.png": {
+      "size_bytes": 890,
+      "created_at": "2026-07-29T17:38:49.663584",
+      "dimensions": "256x256",
+      "sha256": "54428c70691e86859426c7966b90ece7fbfbdcdbca6683e96f3016b132496da7",
+      "category": "animations"
+    },
+    "animations/success/frame_06.png": {
+      "size_bytes": 828,
+      "created_at": "2026-07-29T17:38:49.668034",
+      "dimensions": "256x256",
+      "sha256": "ed66f9fef01ba1a679d700059af7f67b5e20279987c88eb6c8e68d4eca3ac7d9",
+      "category": "animations"
+    },
+    "animations/success/frame_07.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.669805",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/success/frame_08.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.673212",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/success/frame_09.png": {
+      "size_bytes": 715,
+      "created_at": "2026-07-29T17:38:49.674875",
+      "dimensions": "256x256",
+      "sha256": "6257931f89eb26bc0c7b1c912844f50a7926d5bf2c3c7ffbd89114f14c9e464f",
+      "category": "animations"
+    },
+    "animations/success/frame_1.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.183500",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/success/frame_10.png": {
+      "size_bytes": 725,
+      "created_at": "2026-07-29T17:38:49.676554",
+      "dimensions": "256x256",
+      "sha256": "2f09fdc2ba1737dc56e7f091f594701ac57500d0f3051ae84e219ea36d1b9dfe",
+      "category": "animations"
+    },
+    "animations/success/frame_11.png": {
+      "size_bytes": 769,
+      "created_at": "2026-07-29T17:38:49.678286",
+      "dimensions": "256x256",
+      "sha256": "715b97df4b3904de46d83539e1ea4d96dce254f19556835af73f154929f370c9",
+      "category": "animations"
+    },
+    "animations/success/frame_2.png": {
+      "size_bytes": 1058,
+      "created_at": "2026-07-29T17:34:23.186173",
+      "dimensions": "256x256",
+      "sha256": "1c6fdf84ed12c46094b3506a9f1e20078ad6e684ea6193e7c8633afe2c062dfd",
+      "category": "animations"
+    },
+    "animations/success/frame_3.png": {
+      "size_bytes": 1027,
+      "created_at": "2026-07-29T17:34:23.191130",
+      "dimensions": "256x256",
+      "sha256": "c4ce8fde2cbcf76c16d64cd7beb641017f63207ddc5045be7138a884c066c9eb",
+      "category": "animations"
+    },
+    "animations/success/frame_4.png": {
+      "size_bytes": 949,
+      "created_at": "2026-07-29T17:34:23.191130",
+      "dimensions": "256x256",
+      "sha256": "741785fb7c184e96de38204213e9530087f14e0a41c7a78a58f2df4be8e33822",
+      "category": "animations"
+    },
+    "animations/success/frame_5.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.195337",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "animations/success/frame_6.png": {
+      "size_bytes": 849,
+      "created_at": "2026-07-29T17:34:23.197346",
+      "dimensions": "256x256",
+      "sha256": "9f0d7700194ef7b01e4b8366e34ce78d4727899a7604f261d4908101b2349eda",
+      "category": "animations"
+    },
+    "animations/success/frame_7.png": {
+      "size_bytes": 880,
+      "created_at": "2026-07-29T17:34:23.201371",
+      "dimensions": "256x256",
+      "sha256": "46d1dffe633684d9999013b3a35e6d01118277342472fac8020f5d036f9b4a76",
+      "category": "animations"
+    },
+    "badges/ai_powered.png": {
+      "size_bytes": 1360,
+      "created_at": "2026-07-29T17:34:23.578105",
+      "dimensions": "320x80",
+      "sha256": "8b209b76cbf44cff08e2e113b7db46a06062d145c9612fa50d013fb4eb436ed8",
+      "category": "badges"
+    },
+    "badges/ai_powered.svg": {
+      "size_bytes": 321,
+      "created_at": "2026-07-29T17:34:23.578105",
+      "dimensions": null,
+      "sha256": "91094a428f0e7fa4aa891494e02f814e1fbe3a63a63a044cd8e62d461c64aab5",
+      "category": "badges"
+    },
+    "badges/alpha.png": {
+      "size_bytes": 764,
+      "created_at": "2026-07-29T17:34:23.512624",
+      "dimensions": "320x80",
+      "sha256": "20c515a822f1cc8abe2ee3a3955cd6f8af6da79efb7b2cbb5e03d4ef11b4f78f",
+      "category": "badges"
+    },
+    "badges/alpha.svg": {
+      "size_bytes": 316,
+      "created_at": "2026-07-29T17:34:23.512624",
+      "dimensions": null,
+      "sha256": "40ed8cb9cc3a0d776a50c93cdbe16e964867c8cb66439331a6187f2e22270625",
+      "category": "badges"
+    },
+    "badges/beta.png": {
+      "size_bytes": 842,
+      "created_at": "2026-07-29T17:34:23.553631",
+      "dimensions": "320x80",
+      "sha256": "2185e76adfdcbf8f5f77c1bdf10d23cd62998ee9b03ea26497af3cb9c5871a2d",
+      "category": "badges"
+    },
+    "badges/beta.svg": {
+      "size_bytes": 315,
+      "created_at": "2026-07-29T17:34:23.521803",
+      "dimensions": null,
+      "sha256": "821d3babddb49901dddcb5dd91f36fd9c70519436938de88eac14770211fbd37",
+      "category": "badges"
+    },
+    "badges/developer_preview.png": {
+      "size_bytes": 1471,
+      "created_at": "2026-07-29T17:34:23.589104",
+      "dimensions": "320x80",
+      "sha256": "12c63af63a99d53112a57b2c659585e45e8811a99dc4b63da3ff6c54bc7c86c8",
+      "category": "badges"
+    },
+    "badges/developer_preview.svg": {
+      "size_bytes": 328,
+      "created_at": "2026-07-29T17:34:23.589104",
+      "dimensions": null,
+      "sha256": "e2142777575c6e05f74685aaa9b3e6a8603d9854eba30777ac1042a8ced13289",
+      "category": "badges"
+    },
+    "badges/experimental.png": {
+      "size_bytes": 1333,
+      "created_at": "2026-07-29T17:34:23.578105",
+      "dimensions": "320x80",
+      "sha256": "c7bf4ec20b693f8ffd0e7d2498818b949c0afe0bd488c86f174657d5f53b22b9",
+      "category": "badges"
+    },
+    "badges/experimental.svg": {
+      "size_bytes": 323,
+      "created_at": "2026-07-29T17:34:23.570695",
+      "dimensions": null,
+      "sha256": "6e1db84892de25c5fa3f8137e363ed1bae6dd40091285d8cb21d4b86c6619ee6",
+      "category": "badges"
+    },
+    "badges/nightly.png": {
+      "size_bytes": 958,
+      "created_at": "2026-07-29T17:34:23.569276",
+      "dimensions": "320x80",
+      "sha256": "c80edc8781866b9d1108bca29805e65cb12ccbf263a001bf3c7c4e1f840bcc8f",
+      "category": "badges"
+    },
+    "badges/nightly.svg": {
+      "size_bytes": 318,
+      "created_at": "2026-07-29T17:34:23.553631",
+      "dimensions": null,
+      "sha256": "020ada32665496b1a21db2db1a4e41f10cb81f5eb21fa5e45069701e7d3db273",
+      "category": "badges"
+    },
+    "badges/open_source_ready.png": {
+      "size_bytes": 1743,
+      "created_at": "2026-07-29T17:34:23.589104",
+      "dimensions": "320x80",
+      "sha256": "5c5e5c713f46c03f3ec4dd715ade7f990d92c45c93490b75b0909adabf7d8fad",
+      "category": "badges"
+    },
+    "badges/open_source_ready.svg": {
+      "size_bytes": 328,
+      "created_at": "2026-07-29T17:34:23.585933",
+      "dimensions": null,
+      "sha256": "d27566eeefc392fb6128eaafdc5f4e9fc87ace8641d97f8e417826329e97b2cf",
+      "category": "badges"
+    },
+    "badges/stable.png": {
+      "size_bytes": 1053,
+      "created_at": "2026-07-29T17:34:23.570695",
+      "dimensions": "320x80",
+      "sha256": "f59ecdc0555f216a15e7f21ace9fdd03e679d6efd3ac462eedf4c025b1728968",
+      "category": "badges"
+    },
+    "badges/stable.svg": {
+      "size_bytes": 317,
+      "created_at": "2026-07-29T17:34:23.570695",
+      "dimensions": null,
+      "sha256": "904c834cd6f0316ca52e461c83e4752a27438954a3e4eeec0f279babdbc390ae",
+      "category": "badges"
+    },
+    "colors/colors.css": {
+      "size_bytes": 190,
+      "created_at": "2026-07-29T17:38:49.786734",
+      "dimensions": null,
+      "sha256": "dc5f1dfb4a0fa9ce6afc1db3c20af38852e5affd40b356f74e50f9ddd3ab4d65",
+      "category": "colors"
+    },
+    "colors/colors.json": {
+      "size_bytes": 174,
+      "created_at": "2026-07-29T17:38:49.785337",
+      "dimensions": null,
+      "sha256": "6f3bd206b0f9e13ac9d4bd76f1156b3ff8d8394231a31d0b3f08791722474ea6",
+      "category": "colors"
+    },
+    "colors/colors.qml": {
+      "size_bytes": 370,
+      "created_at": "2026-07-29T17:38:49.788922",
+      "dimensions": null,
+      "sha256": "5823cf12e5bc6c5793786b1afa1d3bcd4685fad03cfefe6c0a4a9f281812fa23",
+      "category": "colors"
+    },
+    "colors/colors.scss": {
+      "size_bytes": 157,
+      "created_at": "2026-07-29T17:38:49.787845",
+      "dimensions": null,
+      "sha256": "de874878dad20a1ef651893602c3d002e4e9601c1c2498ec13fb5499ce6e1b6b",
+      "category": "colors"
+    },
+    "colors/colors.toml": {
+      "size_bytes": 153,
+      "created_at": "2026-07-29T17:38:49.789479",
+      "dimensions": null,
+      "sha256": "17acc416f50d3ba9498466517ba204ae11a7ce84905469adf3a925bfb070a9c9",
+      "category": "colors"
+    },
+    "colors/colors.yaml": {
+      "size_bytes": 159,
+      "created_at": "2026-07-29T17:38:49.790574",
+      "dimensions": null,
+      "sha256": "29dcaffe5390d2133cdfe479c6fe2492f37058efd3aae929471492a789cc8971",
+      "category": "colors"
+    },
+    "colors/gradient_palette.png": {
+      "size_bytes": 3209,
+      "created_at": "2026-07-29T17:01:55.126757",
+      "dimensions": "1200x400",
+      "sha256": "309626006fe48afd3be054fb54ff79632a331c9c26d25e2ad36090f53c0a734d",
+      "category": "colors"
+    },
+    "colors/primary_palette.png": {
+      "size_bytes": 2906,
+      "created_at": "2026-07-29T17:01:55.110788",
+      "dimensions": "1200x400",
+      "sha256": "6796a340f4ee2afe4eec8c75dfe1214e6f21dd614f1a9e1cab28f0057335dadc",
+      "category": "colors"
+    },
+    "colors/secondary_palette.png": {
+      "size_bytes": 2906,
+      "created_at": "2026-07-29T17:01:55.120737",
+      "dimensions": "1200x400",
+      "sha256": "f9c3902a51140f203954e80a4fb68d7cb433551130a6d12d5bfe8bb2fbc3e212",
+      "category": "colors"
+    },
+    "cursors/busy.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.819654",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/busy.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.601115",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/crosshair.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.827129",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/crosshair.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.606771",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/default.cur": {
+      "size_bytes": 756,
+      "created_at": "2026-07-29T17:38:43.809082",
+      "dimensions": null,
+      "sha256": "2c70ca17c444e305b778fe0e206843b3e6bf9a97394a39bfa20aa627606aada1",
+      "category": "cursors"
+    },
+    "cursors/default.png": {
+      "size_bytes": 511,
+      "created_at": "2026-07-29T17:34:22.573478",
+      "dimensions": "128x128",
+      "sha256": "f9334d51bd5a8e941e7f2f0b577fd38cc321d5c7274f1647bb15341215066736",
+      "category": "cursors"
+    },
+    "cursors/forbidden.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.830542",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/forbidden.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.606771",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/hand.cur": {
+      "size_bytes": 756,
+      "created_at": "2026-07-29T17:38:43.815155",
+      "dimensions": null,
+      "sha256": "66105f303cccfc96e427b9ef361eb3977a4b0fef1c606bd8107d869d1858d604",
+      "category": "cursors"
+    },
+    "cursors/hand.png": {
+      "size_bytes": 511,
+      "created_at": "2026-07-29T17:34:22.590524",
+      "dimensions": "128x128",
+      "sha256": "f9334d51bd5a8e941e7f2f0b577fd38cc321d5c7274f1647bb15341215066736",
+      "category": "cursors"
+    },
+    "cursors/index.theme": {
+      "size_bytes": 87,
+      "created_at": "2026-07-29T17:38:43.803452",
+      "dimensions": null,
+      "sha256": "8e6bd0a814770038ec3c443aa67ce6982b26d4b5cd8fa09bd2d2db41198faba0",
+      "category": "cursors"
+    },
+    "cursors/move.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.821672",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/move.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.606771",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/pointer.cur": {
+      "size_bytes": 756,
+      "created_at": "2026-07-29T17:38:43.811465",
+      "dimensions": null,
+      "sha256": "2c70ca17c444e305b778fe0e206843b3e6bf9a97394a39bfa20aa627606aada1",
+      "category": "cursors"
+    },
+    "cursors/pointer.png": {
+      "size_bytes": 511,
+      "created_at": "2026-07-29T17:34:22.590524",
+      "dimensions": "128x128",
+      "sha256": "f9334d51bd5a8e941e7f2f0b577fd38cc321d5c7274f1647bb15341215066736",
+      "category": "cursors"
+    },
+    "cursors/precision_select.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.840694",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/precision_select.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.616965",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/resize_diagonal.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.838680",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/resize_diagonal.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.606771",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/resize_horizontal.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.830542",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/resize_horizontal.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.606771",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/resize_vertical.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.830542",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/resize_vertical.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.606771",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "cursors/text.cur": {
+      "size_bytes": 435,
+      "created_at": "2026-07-29T17:38:43.817641",
+      "dimensions": null,
+      "sha256": "9b72bf5df7d9376a72d2e3371f57209dd1ee6f98d4b5cda4e08cd55a3c0418cd",
+      "category": "cursors"
+    },
+    "cursors/text.png": {
+      "size_bytes": 352,
+      "created_at": "2026-07-29T17:34:22.601115",
+      "dimensions": "128x128",
+      "sha256": "77c3fb10f4a8e9f4dfd3212ce6278f79ea5cc786db5b59865687e6df82e0d879",
+      "category": "cursors"
+    },
+    "cursors/working.cur": {
+      "size_bytes": 1222,
+      "created_at": "2026-07-29T17:38:43.821672",
+      "dimensions": null,
+      "sha256": "640f734bbec902fa295ff5feb761eee057e754643eebb2ecc8c2a6d638e1e326",
+      "category": "cursors"
+    },
+    "cursors/working.png": {
+      "size_bytes": 753,
+      "created_at": "2026-07-29T17:34:22.603724",
+      "dimensions": "128x128",
+      "sha256": "c1c9fc02da7a09ac8059b661e135c1d4e98a6a63011ea1e843087245f394ed69",
+      "category": "cursors"
+    },
+    "docs/api_documentation_banner.png": {
+      "size_bytes": 3704,
+      "created_at": "2026-07-29T17:34:23.404449",
+      "dimensions": "1200x300",
+      "sha256": "c84bdfc39f6f737c622daa35814de6b4c8d5aafd7251ab38b6ddd2bb466d147f",
+      "category": "docs"
+    },
+    "docs/CHANGELOG.md": {
+      "size_bytes": 316,
+      "created_at": "2026-07-29T17:38:49.811596",
+      "dimensions": null,
+      "sha256": "8e61e269495657309dbdc0e75dbd1825f3a375bb5f82dda97c7d7e9e3a213f4a",
+      "category": "docs"
+    },
+    "docs/developer_documentation_banner.png": {
+      "size_bytes": 3951,
+      "created_at": "2026-07-29T17:34:23.404449",
+      "dimensions": "1200x300",
+      "sha256": "60b922d9830505f00b988a0a67175602696d126c6db96937aeab6d457d52af6e",
+      "category": "docs"
+    },
+    "docs/LICENSE": {
+      "size_bytes": 245,
+      "created_at": "2026-07-29T17:38:49.812142",
+      "dimensions": null,
+      "sha256": "d5945daab464f2c82fa8789e0bf38ca2ae30c2a97e1bce9cf45c09e728602dbf",
+      "category": "docs"
+    },
+    "docs/presentation_background.png": {
+      "size_bytes": 12518,
+      "created_at": "2026-07-29T17:34:23.433612",
+      "dimensions": "1920x1080",
+      "sha256": "9b3a330314ea0ae9861e2c80b034991dfb1a0ba6b3cb30a7fcc41baf4f1f097f",
+      "category": "docs"
+    },
+    "docs/readme_header.png": {
+      "size_bytes": 3676,
+      "created_at": "2026-07-29T17:34:23.392626",
+      "dimensions": "1200x400",
+      "sha256": "66343f56e94876f51c4b54cedf72efd5d7fee968efffb95440535468c94aca49",
+      "category": "docs"
+    },
+    "docs/release_notes_banner.png": {
+      "size_bytes": 3406,
+      "created_at": "2026-07-29T17:34:23.506346",
+      "dimensions": "1200x300",
+      "sha256": "b77de7f5acba22e08ee5b4cc9e51acb7058a6a55505e236a707c734423a82146",
+      "category": "docs"
+    },
+    "export/logo.ai": {
+      "size_bytes": 48,
+      "created_at": "2026-07-29T17:01:57.705994",
+      "dimensions": null,
+      "sha256": "2eb212746d8c150f5a3ad6e292d59c15c5b521009030094554e2410ede5e2df9",
+      "category": "export"
+    },
+    "export/logo.eps": {
+      "size_bytes": 58,
+      "created_at": "2026-07-29T17:01:57.713334",
+      "dimensions": null,
+      "sha256": "ff8593fb68e70b10824e6df0ff36366d30aef2b96c8e9bac8e0bd152ad80c769",
+      "category": "export"
+    },
+    "export/logo.pdf": {
+      "size_bytes": 50,
+      "created_at": "2026-07-29T17:01:57.713334",
+      "dimensions": null,
+      "sha256": "503a8248dab1d1360f63a2ccd32fb970b452d9b7d142b5a4772fa8b3b5092f0b",
+      "category": "export"
+    },
+    "export/logo.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:01:57.705994",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "export"
+    },
+    "export/logo.svg": {
+      "size_bytes": 521,
+      "created_at": "2026-07-29T17:01:57.705994",
+      "dimensions": null,
+      "sha256": "52e0a100404dd0f670b360100572c976f4c9805e3f9733ae276dc360a3cae9a3",
+      "category": "export"
+    },
+    "favicon/apple-touch-icon.png": {
+      "size_bytes": 48938,
+      "created_at": "2026-07-29T17:01:55.273319",
+      "dimensions": "180x180",
+      "sha256": "2500c663ae6b09d96f5c3df82f451d8f50c7f56e8b7dde6481bae8bbbdb9f3ec",
+      "category": "favicon"
+    },
+    "favicon/favicon-16.png": {
+      "size_bytes": 655,
+      "created_at": "2026-07-29T17:01:55.246772",
+      "dimensions": "16x16",
+      "sha256": "4b72a0db0747186519dd7e02794ca71efcce6b03b72854b3ef1f300575ab8c8d",
+      "category": "favicon"
+    },
+    "favicon/favicon-32.png": {
+      "size_bytes": 1814,
+      "created_at": "2026-07-29T17:01:55.260134",
+      "dimensions": "32x32",
+      "sha256": "a6079dd95adba675a6fafdbdb523afd1487528bedf98ffe779ac9273221c22f0",
+      "category": "favicon"
+    },
+    "favicon/favicon.ico": {
+      "size_bytes": 2506,
+      "created_at": "2026-07-29T17:01:57.690094",
+      "dimensions": null,
+      "sha256": "a067b293ea9e8865ef038dca07248604237267f462756a8dcdb2a6ed00038357",
+      "category": "favicon"
+    },
+    "icons/apps/ai_assistant.png": {
+      "size_bytes": 442010,
+      "created_at": "2026-07-29T16:44:47.396168",
+      "dimensions": "1024x1024",
+      "sha256": "c6378995bca343c727831e3bbd8a1fb986ba45aae4ac588cb4d44bccaa99bc14",
+      "category": "icons"
+    },
+    "icons/apps/project_manager.png": {
+      "size_bytes": 521171,
+      "created_at": "2026-07-29T16:44:47.396168",
+      "dimensions": "1024x1024",
+      "sha256": "d86f9b94d5126582d3ccf50bd3f71f933e8c7402d612c5ed6c1da0a83fcb5bd7",
+      "category": "icons"
+    },
+    "icons/apps/pyflare.png": {
+      "size_bytes": 602765,
+      "created_at": "2026-07-29T16:44:47.396168",
+      "dimensions": "1024x1024",
+      "sha256": "63727a7b6d0af354540f67663e39f797e0f479df11c696599810682585dab526",
+      "category": "icons"
+    },
+    "icons/apps/pyflare_hub.png": {
+      "size_bytes": 655315,
+      "created_at": "2026-07-29T16:44:47.396168",
+      "dimensions": "1024x1024",
+      "sha256": "dfdbfa8b82bfdbbb93017e53b726d7c7e124dea9cbf5fd1110f068049c0f00f7",
+      "category": "icons"
+    },
+    "icons/export/pyflare_1024x1024.png": {
+      "size_bytes": 1034869,
+      "created_at": "2026-07-29T17:01:54.922201",
+      "dimensions": "1024x1024",
+      "sha256": "b4e44c8af6f1baa1b0463deb1a74fc0b7c3d7ed79d28c3fc237125e69b6c4ebe",
+      "category": "icons"
+    },
+    "icons/export/pyflare_128x128.png": {
+      "size_bytes": 31164,
+      "created_at": "2026-07-29T17:01:54.811353",
+      "dimensions": "128x128",
+      "sha256": "33cf63b4ff46bfc5f017d000c5a6b1d80fda7aa1b536087055f8a0b29e3eac91",
+      "category": "icons"
+    },
+    "icons/export/pyflare_16x16.png": {
+      "size_bytes": 655,
+      "created_at": "2026-07-29T17:01:54.707066",
+      "dimensions": "16x16",
+      "sha256": "4b72a0db0747186519dd7e02794ca71efcce6b03b72854b3ef1f300575ab8c8d",
+      "category": "icons"
+    },
+    "icons/export/pyflare_24x24.png": {
+      "size_bytes": 1157,
+      "created_at": "2026-07-29T17:01:54.713401",
+      "dimensions": "24x24",
+      "sha256": "d085d824a4b1d21a4d310d161b3d625f60bce967fd3f85c2f77db4cb0bc29a68",
+      "category": "icons"
+    },
+    "icons/export/pyflare_256x256.png": {
+      "size_bytes": 97956,
+      "created_at": "2026-07-29T17:01:54.827388",
+      "dimensions": "256x256",
+      "sha256": "304cb430fd2ea30378f02c8ecb3f83ab73714cffc12132c7d84816b5f91ecf68",
+      "category": "icons"
+    },
+    "icons/export/pyflare_32x32.png": {
+      "size_bytes": 1814,
+      "created_at": "2026-07-29T17:01:54.729827",
+      "dimensions": "32x32",
+      "sha256": "a6079dd95adba675a6fafdbdb523afd1487528bedf98ffe779ac9273221c22f0",
+      "category": "icons"
+    },
+    "icons/export/pyflare_48x48.png": {
+      "size_bytes": 3804,
+      "created_at": "2026-07-29T17:01:54.739578",
+      "dimensions": "48x48",
+      "sha256": "a551a7b3e9d7d7304830ad4427a44457b39d7d9f8b0d747da7d356e415446912",
+      "category": "icons"
+    },
+    "icons/export/pyflare_512x512.png": {
+      "size_bytes": 326356,
+      "created_at": "2026-07-29T17:01:54.862226",
+      "dimensions": "512x512",
+      "sha256": "10a07ea1dfc35fe5edca2ecf1683d62f482bc253a4fea0529f753b7f36832b89",
+      "category": "icons"
+    },
+    "icons/export/pyflare_64x64.png": {
+      "size_bytes": 7952,
+      "created_at": "2026-07-29T17:01:54.753116",
+      "dimensions": "64x64",
+      "sha256": "a29703771b1d1986b341f4a9498cd7a48d2b48a96188601c7d81e678ad219519",
+      "category": "icons"
+    },
+    "icons/folders/desktop.png": {
+      "size_bytes": 15530,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "0d5db08bfffb7966747e8e3cda189d39fdf8ddcca740facb781ded457939fcc9",
+      "category": "icons"
+    },
+    "icons/folders/documents.png": {
+      "size_bytes": 15505,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "7af6a68f243bc874612a37cf63ca41c5b66e73ee5b7db21f333f3c2babe2a179",
+      "category": "icons"
+    },
+    "icons/folders/downloads.png": {
+      "size_bytes": 16543,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "b4d8bfc0d0b41da4922d5d8e5077b1e2ac4d243b3dc48a451445e2f3a0041961",
+      "category": "icons"
+    },
+    "icons/folders/engine.png": {
+      "size_bytes": 26946,
+      "created_at": "2026-07-29T16:54:14.020588",
+      "dimensions": "1024x1024",
+      "sha256": "a8cdbc560f4b7dde356059eef4dbda47607dc64d9f3fc2dbd99bd768e4ed9292",
+      "category": "icons"
+    },
+    "icons/folders/folder_assets.png": {
+      "size_bytes": 20107,
+      "created_at": "2026-07-29T16:44:47.411809",
+      "dimensions": "1024x1024",
+      "sha256": "e70a1ff0c663d95aabe9862302f381e0aa795c67926de399bbbe50c47d07185e",
+      "category": "icons"
+    },
+    "icons/folders/folder_default.png": {
+      "size_bytes": 441975,
+      "created_at": "2026-07-29T16:44:47.411809",
+      "dimensions": "1024x1024",
+      "sha256": "db7a775691bf8f216e6d2a514d565ac59c43ab63961a2e4186e82b3a27bc58d2",
+      "category": "icons"
+    },
+    "icons/folders/folder_projects.png": {
+      "size_bytes": 537155,
+      "created_at": "2026-07-29T16:44:47.411809",
+      "dimensions": "1024x1024",
+      "sha256": "d31ad16098e8908224c3be5e0a14efb5c2806d82d0308257caeed73d2b3604de",
+      "category": "icons"
+    },
+    "icons/folders/music.png": {
+      "size_bytes": 17589,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "fb48aae0bdd774925549a95ac77a0d9dd3452339f027e83eb3e7b93f8ffb6107",
+      "category": "icons"
+    },
+    "icons/folders/pictures.png": {
+      "size_bytes": 22599,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "9678be72f5cfc9e4edb8ee22cb19fe4e95acbc47bb0f85021e0146e836b3c585",
+      "category": "icons"
+    },
+    "icons/folders/plugins.png": {
+      "size_bytes": 18319,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "e7623583f5420b5f774dbd947f3128b8e2bbf961643f570d4b59eb3d2bd70944",
+      "category": "icons"
+    },
+    "icons/folders/projects.png": {
+      "size_bytes": 21182,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "47a7fd9a1ecc8cfb359ed5fe0bfb289c596c13a6d71305253414ef50049737ce",
+      "category": "icons"
+    },
+    "icons/folders/templates.png": {
+      "size_bytes": 15938,
+      "created_at": "2026-07-29T16:54:14.018029",
+      "dimensions": "1024x1024",
+      "sha256": "8a5ef6c02e2d6b300c745be04fe14185617591636c2d79ab7ade7660e8baeaf9",
+      "category": "icons"
+    },
+    "icons/folders/videos.png": {
+      "size_bytes": 25693,
+      "created_at": "2026-07-29T16:54:14.005316",
+      "dimensions": "1024x1024",
+      "sha256": "42a05933a418447900ed7022d35095fa5d03777bec5450bb599f6ee8ae81a3b1",
+      "category": "icons"
+    },
+    "icons/mimetypes/blend.png": {
+      "size_bytes": 30197,
+      "created_at": "2026-07-29T16:49:34.414891",
+      "dimensions": "1024x1024",
+      "sha256": "9720ff4415022d788e613e4f0596654ad2f113d0a6cd4f5f2c407a9d1a551dd5",
+      "category": "icons"
+    },
+    "icons/mimetypes/cpp.png": {
+      "size_bytes": 21835,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "d255ae3a0310092a6818ed93fc97d1a008c7d24c21811021843eff65dc31c9a8",
+      "category": "icons"
+    },
+    "icons/mimetypes/csharp.png": {
+      "size_bytes": 22117,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "54efff722d9edbe4fd8203747553ccda765aec6395d29602ac87f60fe763b083",
+      "category": "icons"
+    },
+    "icons/mimetypes/fbx.png": {
+      "size_bytes": 25079,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "339b7c0d0c3162650c49a84744c920ce4474894ef748f513a3c11a0a94636942",
+      "category": "icons"
+    },
+    "icons/mimetypes/gltf.png": {
+      "size_bytes": 17720,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "11932a474702a45bc4dc5547f5670d603c42bcef858c2f8aebdec91df43275f3",
+      "category": "icons"
+    },
+    "icons/mimetypes/image.png": {
+      "size_bytes": 16478,
+      "created_at": "2026-07-29T16:49:34.414891",
+      "dimensions": "1024x1024",
+      "sha256": "15bd88c2893f2fa2ff3c47b6ca85eebcb66e07fbfcddf3dc88158c4a429fb1a2",
+      "category": "icons"
+    },
+    "icons/mimetypes/javascript.png": {
+      "size_bytes": 13948,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "078fbccc2fb6d93d3b5a98032c07c7ac818efca172d23f5771d1b8f2f11c43c8",
+      "category": "icons"
+    },
+    "icons/mimetypes/json.png": {
+      "size_bytes": 15126,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "2f3d5c55b8dbc967a9e8e2ba35d8864e8b72e7156bfdf127ab7eee44b83a7de5",
+      "category": "icons"
+    },
+    "icons/mimetypes/python.png": {
+      "size_bytes": 16826,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "d376797b2c429d90d6c21323da39d0837a6a12aa869b12c64ba265b4b51397f5",
+      "category": "icons"
+    },
+    "icons/mimetypes/scene.png": {
+      "size_bytes": 25282,
+      "created_at": "2026-07-29T16:49:34.398951",
+      "dimensions": "1024x1024",
+      "sha256": "a8af42997306f3f43fb853112ed1b502247e042764a43bd0a817ce27b657a5cf",
+      "category": "icons"
+    },
+    "icons/system/ai.png": {
+      "size_bytes": 70217,
+      "created_at": "2026-07-29T16:47:02.455638",
+      "dimensions": "1024x1024",
+      "sha256": "ee47c3b7805cdb46fcddef78ad3e1af581c7448b45d7db7aef18215f60c7ab28",
+      "category": "icons"
+    },
+    "icons/system/battery.png": {
+      "size_bytes": 13147,
+      "created_at": "2026-07-29T16:57:55.775490",
+      "dimensions": "1024x1024",
+      "sha256": "64a69b1f1b1051dba5b25c30297eb4b2099fb230aa4e1f5a5554744934df5345",
+      "category": "icons"
+    },
+    "icons/system/bluetooth.png": {
+      "size_bytes": 12515,
+      "created_at": "2026-07-29T16:57:55.775490",
+      "dimensions": "1024x1024",
+      "sha256": "8a33ccd5de1bdc64726024415e2d45d41f3b011ee81300050e250f1520a0bd80",
+      "category": "icons"
+    },
+    "icons/system/brightness.png": {
+      "size_bytes": 18770,
+      "created_at": "2026-07-29T16:57:55.781739",
+      "dimensions": "1024x1024",
+      "sha256": "e1a42d9b1cb192b2b8c7e29dd315c2a5a7e6672880d7a8b381ef50bc236fd82e",
+      "category": "icons"
+    },
+    "icons/system/browser.png": {
+      "size_bytes": 91836,
+      "created_at": "2026-07-29T16:47:02.455638",
+      "dimensions": "1024x1024",
+      "sha256": "71f32a7509649b230dbd5b36ebc4ee23001b9d67c39dc611576f651358c548d8",
+      "category": "icons"
+    },
+    "icons/system/cloud_sync.png": {
+      "size_bytes": 24291,
+      "created_at": "2026-07-29T16:57:55.786903",
+      "dimensions": "1024x1024",
+      "sha256": "c50dbbf3e282405af45a743f4d9cc6152867b979c91ab8d9c79778d6ed1fc007",
+      "category": "icons"
+    },
+    "icons/system/downloads.png": {
+      "size_bytes": 16277,
+      "created_at": "2026-07-29T16:47:02.473480",
+      "dimensions": "1024x1024",
+      "sha256": "05ab4f8e57cc0203b3c92286b329209e0f7ce66b6152f20a7d2e6c7d0a2378a3",
+      "category": "icons"
+    },
+    "icons/system/extensions.png": {
+      "size_bytes": 15394,
+      "created_at": "2026-07-29T16:57:55.786903",
+      "dimensions": "1024x1024",
+      "sha256": "1f32ad7d006c880ef55562d5297774990035e405d0d099ab81953e5f4b7a71f2",
+      "category": "icons"
+    },
+    "icons/system/files.png": {
+      "size_bytes": 16963,
+      "created_at": "2026-07-29T16:44:47.411809",
+      "dimensions": "1024x1024",
+      "sha256": "46c2ad10822e6c89c7ef01df53c6f4597df4e4525be46e969a35d97d5c4c8ba8",
+      "category": "icons"
+    },
+    "icons/system/help.png": {
+      "size_bytes": 19717,
+      "created_at": "2026-07-29T16:47:02.473480",
+      "dimensions": "1024x1024",
+      "sha256": "fc0b27f7ff80cb88410ec7d56bcfb42bf5ebb4ec0b92536d83ad02b7b215bf2a",
+      "category": "icons"
+    },
+    "icons/system/marketplace.png": {
+      "size_bytes": 11420,
+      "created_at": "2026-07-29T16:57:55.786903",
+      "dimensions": "1024x1024",
+      "sha256": "e0fd38f2ebbb1597cb0be1655a04d39ce26a722547c34d1a506a76ec33445395",
+      "category": "icons"
+    },
+    "icons/system/media.png": {
+      "size_bytes": 48048,
+      "created_at": "2026-07-29T16:47:02.473480",
+      "dimensions": "1024x1024",
+      "sha256": "b9c7b7355bc320de269e68acbfe2bb7da47f289078066db7d1b5c269ede96486",
+      "category": "icons"
+    },
+    "icons/system/network.png": {
+      "size_bytes": 53403,
+      "created_at": "2026-07-29T16:47:02.473480",
+      "dimensions": "1024x1024",
+      "sha256": "2c4e0e63856728611296a03e020db0b1e64962fe703f85141c52784fa7092447",
+      "category": "icons"
+    },
+    "icons/system/package_manager.png": {
+      "size_bytes": 20179,
+      "created_at": "2026-07-29T16:47:02.471462",
+      "dimensions": "1024x1024",
+      "sha256": "37c6a9c0f5f3cc5a5ee1e1ab5346e938dbdf9391c0be120257808767ec3d26c4",
+      "category": "icons"
+    },
+    "icons/system/search.png": {
+      "size_bytes": 24430,
+      "created_at": "2026-07-29T16:57:55.783679",
+      "dimensions": "1024x1024",
+      "sha256": "9fbcdc3d005d49eb46f506cccbfe2c79ae9c6a1937910e685d42bc5a6b3c7f9a",
+      "category": "icons"
+    },
+    "icons/system/security.png": {
+      "size_bytes": 40317,
+      "created_at": "2026-07-29T16:47:02.473480",
+      "dimensions": "1024x1024",
+      "sha256": "5a00cb185099badb11e7769cadc5a9e7e143721d72ca0ec6a2c758b791c48f92",
+      "category": "icons"
+    },
+    "icons/system/settings.png": {
+      "size_bytes": 105725,
+      "created_at": "2026-07-29T16:44:47.411809",
+      "dimensions": "1024x1024",
+      "sha256": "a23fff48f9c8834741ec4bb78b466cdf1fc3f7bbe4812ba0dbbec078f7bc4142",
+      "category": "icons"
+    },
+    "icons/system/store.png": {
+      "size_bytes": 20398,
+      "created_at": "2026-07-29T16:47:02.455638",
+      "dimensions": "1024x1024",
+      "sha256": "14ec5f1aea004a2016a3fd7c524c876f2145df780240602d7ba01049a7bc9f69",
+      "category": "icons"
+    },
+    "icons/system/terminal.png": {
+      "size_bytes": 27456,
+      "created_at": "2026-07-29T16:44:47.411809",
+      "dimensions": "1024x1024",
+      "sha256": "ada8954c7efa9cf196157f91f653d6b0043529e6e68dfa7443334020ace4e14e",
+      "category": "icons"
+    },
+    "icons/system/trash.png": {
+      "size_bytes": 10679,
+      "created_at": "2026-07-29T16:57:55.783679",
+      "dimensions": "1024x1024",
+      "sha256": "638ab934f0ec528f114da9d0ed8ebaa4a9dc9af7775e0328ac18a397dc9bdb97",
+      "category": "icons"
+    },
+    "icons/system/update.png": {
+      "size_bytes": 44809,
+      "created_at": "2026-07-29T16:47:02.473480",
+      "dimensions": "1024x1024",
+      "sha256": "f0d7e9a7a957bc93a7ee4c1ac1644cba9ac4f5bc40c85d6a2131bfbac5fc1898",
+      "category": "icons"
+    },
+    "icons/system/volume.png": {
+      "size_bytes": 22190,
+      "created_at": "2026-07-29T16:57:55.775490",
+      "dimensions": "1024x1024",
+      "sha256": "eb90bd8da8a359c502850eacb956d42c4180240453a72e676f80590a090617a3",
+      "category": "icons"
+    },
+    "icons/system/wifi.png": {
+      "size_bytes": 41296,
+      "created_at": "2026-07-29T16:57:55.775490",
+      "dimensions": "1024x1024",
+      "sha256": "3ce865e143259e8c9169455a7e79a80cd244afa7d7897da4a0dd5b0d6c8dc366",
+      "category": "icons"
+    },
+    "installer/error.png": {
+      "size_bytes": 3660,
+      "created_at": "2026-07-29T17:34:23.299771",
+      "dimensions": "512x512",
+      "sha256": "99646fa9ce6bd68dc1aded1bfc4e996733316adf0124f96ad2e35c5d90c9630f",
+      "category": "installer"
+    },
+    "installer/finish.png": {
+      "size_bytes": 3599,
+      "created_at": "2026-07-29T17:34:23.287881",
+      "dimensions": "512x512",
+      "sha256": "366067d9166299a40b15ad4af6812fde2850ea71901c2909e2a3132708adef0f",
+      "category": "installer"
+    },
+    "installer/installer_background.png": {
+      "size_bytes": 38748,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "1920x1080",
+      "sha256": "69b6b1bc07ae78cc39c98244aa22b97e14ae5a18776118bec7a2654842fb1138",
+      "category": "installer"
+    },
+    "installer/installing.png": {
+      "size_bytes": 3654,
+      "created_at": "2026-07-29T17:34:23.277546",
+      "dimensions": "512x512",
+      "sha256": "da800d60c3df044c65f7a5f2c4e2a939dff88e5da58a9ce7758cd4d29b09e50e",
+      "category": "installer"
+    },
+    "installer/install_progress.png": {
+      "size_bytes": 4032,
+      "created_at": "2026-07-29T17:34:23.274469",
+      "dimensions": "512x512",
+      "sha256": "fc7b713c1ba2c50fa5075135e56e0b15e529d8d30666478b70e8a29860e2752f",
+      "category": "installer"
+    },
+    "installer/success.png": {
+      "size_bytes": 3956,
+      "created_at": "2026-07-29T17:34:23.287881",
+      "dimensions": "512x512",
+      "sha256": "030264eceacde7ec8461fcd2ef12a12f6f4beb7ba5c906666ec8289c22cda3a4",
+      "category": "installer"
+    },
+    "login/guest_avatar.png": {
+      "size_bytes": 1970,
+      "created_at": "2026-07-29T17:34:23.233133",
+      "dimensions": "256x256",
+      "sha256": "af9fa0a3f95f32795af731a9bf86f4ef6c37d86b04c76e29df4fa7d3d5238f2e",
+      "category": "login"
+    },
+    "login/lockscreen_background.png": {
+      "size_bytes": 74020,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "3840x2160",
+      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "category": "login"
+    },
+    "login/lock_icon.png": {
+      "size_bytes": 1757,
+      "created_at": "2026-07-29T17:34:23.244054",
+      "dimensions": "256x256",
+      "sha256": "8b2e3e6e6b0c781d89be25713b2465b9a1dfc8188f3f335d1ed937a85288d6cf",
+      "category": "login"
+    },
+    "login/login_background.png": {
+      "size_bytes": 74020,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "3840x2160",
+      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "category": "login"
+    },
+    "login/password_icon.png": {
+      "size_bytes": 1757,
+      "created_at": "2026-07-29T17:34:23.237155",
+      "dimensions": "256x256",
+      "sha256": "8b2e3e6e6b0c781d89be25713b2465b9a1dfc8188f3f335d1ed937a85288d6cf",
+      "category": "login"
+    },
+    "login/power_icon.png": {
+      "size_bytes": 1757,
+      "created_at": "2026-07-29T17:34:23.240921",
+      "dimensions": "256x256",
+      "sha256": "8b2e3e6e6b0c781d89be25713b2465b9a1dfc8188f3f335d1ed937a85288d6cf",
+      "category": "login"
+    },
+    "login/user_avatar.png": {
+      "size_bytes": 1970,
+      "created_at": "2026-07-29T17:34:23.231022",
+      "dimensions": "256x256",
+      "sha256": "af9fa0a3f95f32795af731a9bf86f4ef6c37d86b04c76e29df4fa7d3d5238f2e",
+      "category": "login"
+    },
+    "logos/png/pyflare_icon.png": {
+      "size_bytes": 478758,
+      "created_at": "2026-07-29T16:39:28.105805",
+      "dimensions": "1024x1024",
+      "sha256": "fcbd3c59419f700ce7fdc405dd7423a9574b9bcfced6a0ff73e0af17c2ed9b4c",
+      "category": "logos"
+    },
+    "logos/png/splash_logo.png": {
+      "size_bytes": 506939,
+      "created_at": "2026-07-29T16:39:28.111576",
+      "dimensions": "1024x1024",
+      "sha256": "82a8e477091a08fd10b06a2ff9ef3563a9fff09e3ae099525f99fa66c703ad44",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/ai.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.567396",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/browser.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.735379",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/files.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.787333",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/lock.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.190195",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/marketplace.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.619547",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/package_manager.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.373388",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/password.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.257806",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/power.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.135850",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/pyflare.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.073574",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/security.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.502463",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/settings.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.314428",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/store.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.678242",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/1024x1024/update.png": {
+      "size_bytes": 7168,
+      "created_at": "2026-07-29T17:38:43.438336",
+      "dimensions": "1024x1024",
+      "sha256": "2aaf4e48903f30ace5857f34f4a56a8cf4816e24f229e6c4bde11cfd20c97917",
+      "category": "logos"
+    },
+    "logos/png/128x128/ai.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.546697",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/browser.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.718811",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/files.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.770717",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/lock.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.171351",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/marketplace.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.602482",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/package_manager.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.355318",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/password.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.238369",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/power.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.117685",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/pyflare.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.055945",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/security.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.484169",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/settings.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.298295",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/store.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.660243",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/128x128/update.png": {
+      "size_bytes": 513,
+      "created_at": "2026-07-29T17:38:43.420128",
+      "dimensions": "128x128",
+      "sha256": "e8fad355b9a3f6a9432ba71fc9690cd5181db7383f231b97f77639e61d24e527",
+      "category": "logos"
+    },
+    "logos/png/16x16/ai.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.523298",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/browser.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.701120",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/files.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.750427",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/lock.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.153475",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/marketplace.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.584617",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/package_manager.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.334220",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/password.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.208618",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/power.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.098284",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/pyflare.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.030133",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/security.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.457982",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/settings.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.276583",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/store.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.641644",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/16x16/update.png": {
+      "size_bytes": 120,
+      "created_at": "2026-07-29T17:38:43.398906",
+      "dimensions": "16x16",
+      "sha256": "170490193d6ccd9ef761546f6cb4a263cbce7b93fec68c7a4d3bf8f3bddb7946",
+      "category": "logos"
+    },
+    "logos/png/24x24/ai.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.526774",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/browser.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.704071",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/files.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.755388",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/lock.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.156314",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/marketplace.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.587498",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/package_manager.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.337726",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/password.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.212046",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/power.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.101749",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/pyflare.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.039472",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/security.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.463253",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/settings.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.280335",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/store.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.644781",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/24x24/update.png": {
+      "size_bytes": 154,
+      "created_at": "2026-07-29T17:38:43.402216",
+      "dimensions": "24x24",
+      "sha256": "99c28f46b054b47463238cab94c431a422ce0ac20bfcbc0ce51ce973e8c9a52e",
+      "category": "logos"
+    },
+    "logos/png/256x256/ai.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.550711",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/browser.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.721715",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/files.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.773566",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/lock.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.175276",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/marketplace.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.605959",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/package_manager.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.360887",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/password.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.242980",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/power.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.120001",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/pyflare.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.059358",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/security.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.487673",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/settings.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.301704",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/store.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.663972",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/256x256/update.png": {
+      "size_bytes": 1083,
+      "created_at": "2026-07-29T17:38:43.423648",
+      "dimensions": "256x256",
+      "sha256": "f8264edf07fc2c8509c6ead0ca76580945e138ed500bfaed31bad1aa4d3844cd",
+      "category": "logos"
+    },
+    "logos/png/32x32/ai.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.530495",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/browser.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.706311",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/files.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.757684",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/lock.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.158609",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/marketplace.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.590588",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/package_manager.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.341182",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/password.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.215774",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/power.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.104789",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/pyflare.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.042915",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/security.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.467664",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/settings.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.283415",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/store.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.648316",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/32x32/update.png": {
+      "size_bytes": 170,
+      "created_at": "2026-07-29T17:38:43.405512",
+      "dimensions": "32x32",
+      "sha256": "2c0a4501c65be8c5a27643ed7e4667230eeca2b4dbfafbfabfc500d638fe9791",
+      "category": "logos"
+    },
+    "logos/png/48x48/ai.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.533312",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/browser.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.708733",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/files.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.760871",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/lock.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.162070",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/marketplace.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.592963",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/package_manager.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.344589",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/password.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.226581",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/power.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.107109",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/pyflare.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.047376",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/security.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.470851",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/settings.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.285732",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/store.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.651155",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/48x48/update.png": {
+      "size_bytes": 212,
+      "created_at": "2026-07-29T17:38:43.409046",
+      "dimensions": "48x48",
+      "sha256": "93bb60e50d41f6a250f14501298484bbd5ff5d574224c4a71176adc96f63170a",
+      "category": "logos"
+    },
+    "logos/png/512x512/ai.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.556144",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/browser.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.726868",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/files.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.778152",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/lock.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.181369",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/marketplace.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.610804",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/package_manager.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.366305",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/password.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.249259",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/power.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.124614",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/pyflare.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.064561",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/security.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.492558",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/settings.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.307362",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/store.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.668587",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/512x512/update.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:38:43.428238",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "logos"
+    },
+    "logos/png/64x64/ai.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.538581",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/browser.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.712191",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/files.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.764344",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/lock.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.165033",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/marketplace.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.595844",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/package_manager.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.348339",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/password.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.230892",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/power.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.110608",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/pyflare.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.050263",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/security.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.476461",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/settings.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.289103",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/store.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.654126",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/64x64/update.png": {
+      "size_bytes": 261,
+      "created_at": "2026-07-29T17:38:43.413875",
+      "dimensions": "64x64",
+      "sha256": "01cc5401e519d253aa1de824eb4be5c18a9f47cf0a477259d8b2631636e91832",
+      "category": "logos"
+    },
+    "logos/png/96x96/ai.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.542140",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/browser.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.715801",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/files.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.767268",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/lock.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.168579",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/marketplace.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.598919",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/package_manager.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.351882",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/password.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.234612",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/power.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.113965",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/pyflare.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.053144",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/security.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.480620",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/settings.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.293592",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/store.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.656994",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/png/96x96/update.png": {
+      "size_bytes": 381,
+      "created_at": "2026-07-29T17:38:43.417255",
+      "dimensions": "96x96",
+      "sha256": "c4ed8938d161ce5ba2472c54000b78c5b11bd1ea6931146a32c063cf9999bf0a",
+      "category": "logos"
+    },
+    "logos/svg/ai.svg": {
+      "size_bytes": 754,
+      "created_at": "2026-07-29T17:38:43.519694",
+      "dimensions": null,
+      "sha256": "eaa33a3118263235fbb4da6bc29545d2f5f63bff100937ceb806255041c7b97a",
+      "category": "logos"
+    },
+    "logos/svg/browser.svg": {
+      "size_bytes": 360,
+      "created_at": "2026-07-29T17:38:43.696949",
+      "dimensions": null,
+      "sha256": "79b9e7ff572cd890a12d46229943e6954d81a7b3f4bf61a4bfb2505dbd0c7c28",
+      "category": "logos"
+    },
+    "logos/svg/files.svg": {
+      "size_bytes": 294,
+      "created_at": "2026-07-29T17:38:43.747044",
+      "dimensions": null,
+      "sha256": "87cbc313592b63c51a1106b108f6653f294e9fd2fee04b890e50ed73ac4525b6",
+      "category": "logos"
+    },
+    "logos/svg/lock.svg": {
+      "size_bytes": 433,
+      "created_at": "2026-07-29T17:38:43.150537",
+      "dimensions": null,
+      "sha256": "5a35e81c1d8a1ac01163808dc0b38ea71ebbbd246b16bed9046569e9bd0bcb65",
+      "category": "logos"
+    },
+    "logos/svg/marketplace.svg": {
+      "size_bytes": 298,
+      "created_at": "2026-07-29T17:38:43.580302",
+      "dimensions": null,
+      "sha256": "8231c2c3b09c323d34411abd41b136dc5f591f204cd5df91c6e7619f5aaca408",
+      "category": "logos"
+    },
+    "logos/svg/package_manager.svg": {
+      "size_bytes": 342,
+      "created_at": "2026-07-29T17:38:43.331208",
+      "dimensions": null,
+      "sha256": "3ddb9687d42dc15ad60b7d54fd6380e43800d1b1cd45a83e07255fc9cc78ddbd",
+      "category": "logos"
+    },
+    "logos/svg/password.svg": {
+      "size_bytes": 365,
+      "created_at": "2026-07-29T17:38:43.204031",
+      "dimensions": null,
+      "sha256": "25099f66a01b46610828ce926c38181323d7da61df8bcfca07de18860e78093d",
+      "category": "logos"
+    },
+    "logos/svg/power.svg": {
+      "size_bytes": 312,
+      "created_at": "2026-07-29T17:38:43.091801",
+      "dimensions": null,
+      "sha256": "f616d07423999cdb7b3b1e651d158206c488752c8b59701f80b85acb644cee6d",
+      "category": "logos"
+    },
+    "logos/svg/pyflare.svg": {
+      "size_bytes": 521,
+      "created_at": "2026-07-29T16:39:28.127994",
+      "dimensions": null,
+      "sha256": "52e0a100404dd0f670b360100572c976f4c9805e3f9733ae276dc360a3cae9a3",
+      "category": "logos"
+    },
+    "logos/svg/pyflare_dark.svg": {
+      "size_bytes": 653,
+      "created_at": "2026-07-29T16:39:28.127994",
+      "dimensions": null,
+      "sha256": "17b5dcc2e723f31798e4850153750984c0ee3801939c5053769cb9c5be07540e",
+      "category": "logos"
+    },
+    "logos/svg/pyflare_light.svg": {
+      "size_bytes": 639,
+      "created_at": "2026-07-29T16:39:28.132074",
+      "dimensions": null,
+      "sha256": "9f4e1ea9da7df20163ac72d5b44e83d7a17867f13ccf0a2ee647e809363a9397",
+      "category": "logos"
+    },
+    "logos/svg/security.svg": {
+      "size_bytes": 377,
+      "created_at": "2026-07-29T17:38:43.449194",
+      "dimensions": null,
+      "sha256": "ac20c8e8930edb7c5c14b554c30f67c4ce576804539a8c10382a77622574e06c",
+      "category": "logos"
+    },
+    "logos/svg/settings.svg": {
+      "size_bytes": 419,
+      "created_at": "2026-07-29T17:38:43.271057",
+      "dimensions": null,
+      "sha256": "e42f4c3309d6d6cdd0dcf76da9108e53b72298e83081730636ddd05080b18175",
+      "category": "logos"
+    },
+    "logos/svg/store.svg": {
+      "size_bytes": 260,
+      "created_at": "2026-07-29T17:38:43.638780",
+      "dimensions": null,
+      "sha256": "629d954f07260a03492912bc60af84f43b68639395208bcc6e4006e6faa311de",
+      "category": "logos"
+    },
+    "logos/svg/update.svg": {
+      "size_bytes": 454,
+      "created_at": "2026-07-29T17:38:43.394726",
+      "dimensions": null,
+      "sha256": "d92ec11a0ad2fa4235f8094d220a73a974cab9bda77d48da9141fcebda032ce0",
+      "category": "logos"
+    },
+    "mockups/desktop.png": {
+      "size_bytes": 7405,
+      "created_at": "2026-07-29T17:01:55.152414",
+      "dimensions": "1280x720",
+      "sha256": "f87e32140a890db5cecee4042b69054e1d65a4a0c6276a610b7e134b19e5444f",
+      "category": "mockups"
+    },
+    "mockups/installer.png": {
+      "size_bytes": 7344,
+      "created_at": "2026-07-29T17:01:55.181987",
+      "dimensions": "1280x720",
+      "sha256": "63dcea82a5a86a1d13a1aa7fe4e368dbf0c3b975700a29a213ef46d910d850c9",
+      "category": "mockups"
+    },
+    "mockups/store.png": {
+      "size_bytes": 7311,
+      "created_at": "2026-07-29T17:01:55.212994",
+      "dimensions": "1280x720",
+      "sha256": "7116b125e13f25f364937fed1337503020e6e3eac39df2c59ce1c7442da6313f",
+      "category": "mockups"
+    },
+    "mockups/terminal.png": {
+      "size_bytes": 7267,
+      "created_at": "2026-07-29T17:01:55.200237",
+      "dimensions": "1280x720",
+      "sha256": "e741fafb7cd1aeae5e94b78ab09c925d60da06f284ef247d3eac43438fd0fd41",
+      "category": "mockups"
+    },
+    "mockups/website.png": {
+      "size_bytes": 7495,
+      "created_at": "2026-07-29T17:01:55.170599",
+      "dimensions": "1280x720",
+      "sha256": "d95677c6245c4c582c069aeeba9f2a2691811345a477dad29513f1ac89ca9f28",
+      "category": "mockups"
+    },
+    "placeholders/missing_asset.png": {
+      "size_bytes": 3116,
+      "created_at": "2026-07-29T17:34:23.353818",
+      "dimensions": "512x512",
+      "sha256": "5423d352fc7b1d828ee11a03b1d5c556cbc6ad5c38f8bc057b9e54e75ea31a8c",
+      "category": "placeholders"
+    },
+    "placeholders/missing_icon.png": {
+      "size_bytes": 3156,
+      "created_at": "2026-07-29T17:34:23.362876",
+      "dimensions": "512x512",
+      "sha256": "b51987d6858a6d4899d7d29cd86ab4cbf84291569d39c1db9652440f5ef22631",
+      "category": "placeholders"
+    },
+    "placeholders/missing_model.png": {
+      "size_bytes": 3206,
+      "created_at": "2026-07-29T17:34:23.353818",
+      "dimensions": "512x512",
+      "sha256": "6a5ee8f89b54db0fcf10efa17aa79e5f333e7310d16dd5ec8023dfa237df1d14",
+      "category": "placeholders"
+    },
+    "placeholders/missing_texture.png": {
+      "size_bytes": 3269,
+      "created_at": "2026-07-29T17:34:23.347217",
+      "dimensions": "512x512",
+      "sha256": "f2a3f8e7fd43faa0372854526f46f5f72bc09fbe4fe1828a8353ef37d0f12edb",
+      "category": "placeholders"
+    },
+    "placeholders/unknown_file.png": {
+      "size_bytes": 3512,
+      "created_at": "2026-07-29T17:34:23.373051",
+      "dimensions": "512x512",
+      "sha256": "8a62be66b3983dfbee94a7a5d95330c8a1689b9bee5a88fd0abfac135b4af5d2",
+      "category": "placeholders"
+    },
+    "placeholders/unknown_project.png": {
+      "size_bytes": 3772,
+      "created_at": "2026-07-29T17:34:23.381638",
+      "dimensions": "512x512",
+      "sha256": "2123ee3264d74311e30197d6f59ba7d9f038566c4705973b46da58cfa72ea358",
+      "category": "placeholders"
+    },
+    "screenshots/desktop_dark.png": {
+      "size_bytes": 0,
+      "created_at": "2026-07-29T17:01:57.716615",
+      "dimensions": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "category": "screenshots"
+    },
+    "screenshots/desktop_light.png": {
+      "size_bytes": 0,
+      "created_at": "2026-07-29T17:01:57.716615",
+      "dimensions": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "category": "screenshots"
+    },
+    "screenshots/installer.png": {
+      "size_bytes": 0,
+      "created_at": "2026-07-29T17:01:57.716615",
+      "dimensions": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "category": "screenshots"
+    },
+    "screenshots/launcher.png": {
+      "size_bytes": 0,
+      "created_at": "2026-07-29T17:01:57.716615",
+      "dimensions": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "category": "screenshots"
+    },
+    "screenshots/terminal.png": {
+      "size_bytes": 0,
+      "created_at": "2026-07-29T17:01:57.716615",
+      "dimensions": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "category": "screenshots"
+    },
+    "social/community_banner.png": {
+      "size_bytes": 38900,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "1920x600",
+      "sha256": "313330d2faae02256476f8f361cd801c0ac0bca81c8563a09866356e9a43aaf9",
+      "category": "social"
+    },
+    "social/discord_banner.png": {
+      "size_bytes": 44505,
+      "created_at": "2026-07-29T16:57:55.794374",
+      "dimensions": "1920x1080",
+      "sha256": "6a911bc9670b853c2780980e22a733ad66bd0a5adc30816049ca23620d2b306a",
+      "category": "social"
+    },
+    "social/github_banner.png": {
+      "size_bytes": 41800,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "1920x640",
+      "sha256": "f83a996927e6bb72310a9d80017c9c7eaf1f6836ec6a5e3a608acc408b23494f",
+      "category": "social"
+    },
+    "social/launch_poster.png": {
+      "size_bytes": 55078,
+      "created_at": "2026-07-29T16:57:55.797487",
+      "dimensions": "2160x3840",
+      "sha256": "56449238732595ff9a42a02e7693f0a518ad4b7739c161ca69ced3a9317b173d",
+      "category": "social"
+    },
+    "social/linkedin_banner.png": {
+      "size_bytes": 25824,
+      "created_at": "2026-07-29T16:57:55.786903",
+      "dimensions": "1584x396",
+      "sha256": "0d4b1e5c3836e02935db5d3b7cac53f57f6a24ded6aa983a1081e55d50feae72",
+      "category": "social"
+    },
+    "social/open_graph.png": {
+      "size_bytes": 26754,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "1200x630",
+      "sha256": "88f35116173cd5375db32cfc51d71fd1745fac4259dc5409301ca038a8bfb84f",
+      "category": "social"
+    },
+    "social/profile_header.png": {
+      "size_bytes": 44505,
+      "created_at": "2026-07-29T16:57:55.794374",
+      "dimensions": "1920x1080",
+      "sha256": "6a911bc9670b853c2780980e22a733ad66bd0a5adc30816049ca23620d2b306a",
+      "category": "social"
+    },
+    "social/reddit_banner.png": {
+      "size_bytes": 31913,
+      "created_at": "2026-07-29T16:57:55.794374",
+      "dimensions": "1920x384",
+      "sha256": "87dfad20737a370e4f09ecd964eaf2fdf9aa58ea4fa0b1a41b173a38c2d645bd",
+      "category": "social"
+    },
+    "social/website_hero.png": {
+      "size_bytes": 74020,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "3840x2160",
+      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "category": "social"
+    },
+    "social/x_banner.png": {
+      "size_bytes": 29799,
+      "created_at": "2026-07-29T16:57:55.786903",
+      "dimensions": "1500x500",
+      "sha256": "f9c4d53fcd659a91451a12fde98e43e9a83e2c3d13ba075770b093796bd947d0",
+      "category": "social"
+    },
+    "social/youtube_banner.png": {
+      "size_bytes": 49831,
+      "created_at": "2026-07-29T16:54:14.033767",
+      "dimensions": "2560x1440",
+      "sha256": "ced85d4ca2486bef1f8eb080f42f7c37fcb1c70872195b127ca89b315bbf3e4a",
+      "category": "social"
+    },
+    "sounds/empty_trash.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:23.072769",
+      "dimensions": null,
+      "sha256": "2ba8055bf321a81e8c275b5024ec3c129376145613d496a7ac28729a391b6f07",
+      "category": "sounds"
+    },
+    "sounds/error.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.856294",
+      "dimensions": null,
+      "sha256": "32b33af6f0b0a4bf669a43b6c2a6e159da290617c784f956208f16e7afb2779e",
+      "category": "sounds"
+    },
+    "sounds/login.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.936232",
+      "dimensions": null,
+      "sha256": "6dddf6672a04882965ef5cc23f18ba018af890b099ca98c59f25d5acccf8e859",
+      "category": "sounds"
+    },
+    "sounds/logout.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.986729",
+      "dimensions": null,
+      "sha256": "6dddf6672a04882965ef5cc23f18ba018af890b099ca98c59f25d5acccf8e859",
+      "category": "sounds"
+    },
+    "sounds/notification.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.772977",
+      "dimensions": null,
+      "sha256": "d5651e1c123e9a400363e51fbd5c41e2c3c9c69de46331e8c2bb57ecaeec1162",
+      "category": "sounds"
+    },
+    "sounds/recycle.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:23.039169",
+      "dimensions": null,
+      "sha256": "9b67f45722c5cee16f00b0145b578faa04dd0f34025ac48d6d8d6855a9ce5b22",
+      "category": "sounds"
+    },
+    "sounds/shutdown.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.705485",
+      "dimensions": null,
+      "sha256": "d6975b2116a5d027ddc88f82b46e88db656f97f4e27da15cb6dcea397d753576",
+      "category": "sounds"
+    },
+    "sounds/startup.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.620754",
+      "dimensions": null,
+      "sha256": "d6975b2116a5d027ddc88f82b46e88db656f97f4e27da15cb6dcea397d753576",
+      "category": "sounds"
+    },
+    "sounds/success.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.806216",
+      "dimensions": null,
+      "sha256": "a8cfea79d67e1b7cab2db5820b7421a5107bc233f3a45dbcdb3801e9600d434f",
+      "category": "sounds"
+    },
+    "sounds/warning.wav": {
+      "size_bytes": 70604,
+      "created_at": "2026-07-29T17:34:22.892300",
+      "dimensions": null,
+      "sha256": "2ab63bf52457ff86bfbe2afcb58043657a4311e04fb19ea6190fde4bb254777e",
+      "category": "sounds"
+    },
+    "splash/boot_splash.png": {
+      "size_bytes": 579454,
+      "created_at": "2026-07-29T16:39:28.111576",
+      "dimensions": "1024x1024",
+      "sha256": "885d4c4af5b50c025a67f1df8faf628dedc72e37033379890e20dd654d4ab2a8",
+      "category": "splash"
+    },
+    "store/application_placeholder.png": {
+      "size_bytes": 3774,
+      "created_at": "2026-07-29T17:34:23.315587",
+      "dimensions": "800x450",
+      "sha256": "1938de4690dc659d8fb732b61b71a4fe5f46b161fc2b99500bc60802ce6d79b3",
+      "category": "store"
+    },
+    "store/featured_banner.png": {
+      "size_bytes": 3380,
+      "created_at": "2026-07-29T17:34:23.303861",
+      "dimensions": "800x450",
+      "sha256": "811620dbe25a227c2bbe12d2a57789369e38050d91a4f096bb7db2056717ee72",
+      "category": "store"
+    },
+    "store/game_placeholder.png": {
+      "size_bytes": 3841,
+      "created_at": "2026-07-29T17:34:23.329559",
+      "dimensions": "800x450",
+      "sha256": "0b1422881bdc1660efde81acfadc74254797ad3d9bf288fa969541b7593e4771",
+      "category": "store"
+    },
+    "store/plugin_placeholder.png": {
+      "size_bytes": 3801,
+      "created_at": "2026-07-29T17:34:23.320318",
+      "dimensions": "800x450",
+      "sha256": "583750e6ef943ced28b71ec13be6d25ea49ecd95f105ce29edcbd6f74385e40f",
+      "category": "store"
+    },
+    "store/categories/development.png": {
+      "size_bytes": 1500,
+      "created_at": "2026-07-29T17:34:23.337226",
+      "dimensions": "256x256",
+      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "category": "store"
+    },
+    "store/categories/games.png": {
+      "size_bytes": 1500,
+      "created_at": "2026-07-29T17:34:23.337226",
+      "dimensions": "256x256",
+      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "category": "store"
+    },
+    "store/categories/personalization.png": {
+      "size_bytes": 1500,
+      "created_at": "2026-07-29T17:34:23.337226",
+      "dimensions": "256x256",
+      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "category": "store"
+    },
+    "store/categories/utilities.png": {
+      "size_bytes": 1500,
+      "created_at": "2026-07-29T17:34:23.331296",
+      "dimensions": "256x256",
+      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "category": "store"
+    },
+    "themes/color_definitions.json": {
+      "size_bytes": 165,
+      "created_at": "2026-07-29T17:34:23.229009",
+      "dimensions": null,
+      "sha256": "b3ae24d20dfb83a4f8c68fcadba8d044727df93964b0d6a818f3008342a70253",
+      "category": "themes"
+    },
+    "themes/dark_theme.json": {
+      "size_bytes": 391,
+      "created_at": "2026-07-29T17:34:23.224188",
+      "dimensions": null,
+      "sha256": "0ab552d259a93df1f008f264dc668a1b5d26f93e39658b54e5153a0e21b5b071",
+      "category": "themes"
+    },
+    "themes/light_theme.json": {
+      "size_bytes": 392,
+      "created_at": "2026-07-29T17:34:23.226999",
+      "dimensions": null,
+      "sha256": "15ab034e036e9811819e3fa31e47d8a3c015ce82682121cfc1d5e660be289719",
+      "category": "themes"
+    },
+    "themes/midnight_theme.json": {
+      "size_bytes": 396,
+      "created_at": "2026-07-29T17:34:23.226999",
+      "dimensions": null,
+      "sha256": "736b68d449ff17aa4054b710cfcdf34b0f41fc7b085f4b5b6c966ed4549576ee",
+      "category": "themes"
+    },
+    "themes/vscode_theme.json": {
+      "size_bytes": 270,
+      "created_at": "2026-07-29T17:38:49.795162",
+      "dimensions": null,
+      "sha256": "53dc84fa4c2dbf0c543d8426e0631493b0d4a67296a441f1fda9f7303d277d08",
+      "category": "themes"
+    },
+    "themes/gtk/gtk.css": {
+      "size_bytes": 235,
+      "created_at": "2026-07-29T17:38:49.793677",
+      "dimensions": null,
+      "sha256": "4eab9e50fa3c666d512bf0c9ab8e6c2e2d17fc06ea1aa7d8a85a9b0b8caefff4",
+      "category": "themes"
+    },
+    "ui/about_banner.png": {
+      "size_bytes": 40877,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "1920x600",
+      "sha256": "b802844ee3e9f3bd7ce5759c11085600bca23e4b0b292330de2418275013ef63",
+      "category": "ui"
+    },
+    "ui/dashboard_background.png": {
+      "size_bytes": 80852,
+      "created_at": "2026-07-29T16:57:55.801363",
+      "dimensions": "3840x2160",
+      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "category": "ui"
+    },
+    "ui/settings_background.png": {
+      "size_bytes": 80852,
+      "created_at": "2026-07-29T16:57:55.802933",
+      "dimensions": "3840x2160",
+      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "category": "ui"
+    },
+    "ui/store_background.png": {
+      "size_bytes": 80852,
+      "created_at": "2026-07-29T16:57:55.802933",
+      "dimensions": "3840x2160",
+      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "category": "ui"
+    },
+    "ui/terminal_background.png": {
+      "size_bytes": 80852,
+      "created_at": "2026-07-29T16:57:55.806170",
+      "dimensions": "3840x2160",
+      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "category": "ui"
+    },
+    "ui/welcome_background.png": {
+      "size_bytes": 74020,
+      "created_at": "2026-07-29T16:54:14.021635",
+      "dimensions": "3840x2160",
+      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "category": "ui"
+    },
+    "wallpapers/abstract_blue.png": {
+      "size_bytes": 319716,
+      "created_at": "2026-07-29T16:39:28.121571",
+      "dimensions": "3840x2160",
+      "sha256": "ca4310624a4019f02b71ede0bdf9fd73dd7aefb3620b7321a8bd0380fc8f8e89",
+      "category": "wallpapers"
+    },
+    "wallpapers/aurora.png": {
+      "size_bytes": 319716,
+      "created_at": "2026-07-29T16:39:28.111576",
+      "dimensions": "3840x2160",
+      "sha256": "ca4310624a4019f02b71ede0bdf9fd73dd7aefb3620b7321a8bd0380fc8f8e89",
+      "category": "wallpapers"
+    },
+    "wallpapers/default_dark.png": {
+      "size_bytes": 319716,
+      "created_at": "2026-07-29T16:39:28.111576",
+      "dimensions": "3840x2160",
+      "sha256": "ca4310624a4019f02b71ede0bdf9fd73dd7aefb3620b7321a8bd0380fc8f8e89",
+      "category": "wallpapers"
+    },
+    "wallpapers/minimal_dark.png": {
+      "size_bytes": 319716,
+      "created_at": "2026-07-29T16:39:28.124361",
+      "dimensions": "3840x2160",
+      "sha256": "ca4310624a4019f02b71ede0bdf9fd73dd7aefb3620b7321a8bd0380fc8f8e89",
+      "category": "wallpapers"
     }
-  },
-  "directories": {
-    "logos": "branding/logos",
-    "icons": "branding/icons",
-    "wallpapers": "branding/wallpapers",
-    "ui": "branding/ui",
-    "splash": "branding/splash",
-    "login": "branding/login",
-    "installer": "branding/installer",
-    "social": "branding/social",
-    "colors": "branding/colors",
-    "mockups": "branding/mockups",
-    "screenshots": "branding/screenshots",
-    "favicon": "branding/favicon",
-    "export": "branding/export"
   }
 }

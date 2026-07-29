@@ -4,5 +4,14 @@
   "surface": "#111827",
   "primary": "#3B82F6",
   "accent": "#00D4FF",
-  "text": "#FFFFFF"
+  "text": "#FFFFFF",
+  "border_radius": "8px",
+  "spacing": "12px",
+  "elevation": "4px",
+  "hover_color": "#1F2937",
+  "pressed_color": "#374151",
+  "disabled_color": "#4B5563",
+  "error": "#EF4444",
+  "warning": "#F59E0B",
+  "success": "#10B981"
 }
