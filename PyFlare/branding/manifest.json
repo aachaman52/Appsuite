@@ -1,6 +1,6 @@
 {
   "name": "PyFlare Branding manifest",
-  "generated_at": "2026-07-29T17:38:49.814345",
+  "generated_at": "2026-07-29T17:40:54.091011",
   "assets": {
     "README.md": {
       "size_bytes": 1224,
@@ -16,9 +16,37 @@
       "sha256": "4c5c9d5751218d3cb2309ac4120dcba6d9cec8bebe1d3d5ddc7a01f6ffae7570",
       "category": "Walkthrough.txt"
     },
+    "animations/boot.gif": {
+      "size_bytes": 8940,
+      "created_at": "2026-07-29T17:40:53.632634",
+      "dimensions": null,
+      "sha256": "3953161b28b33a0aedfca5aeea85d33506f69b5baba61178ad829629da0aae3a",
+      "category": "animations"
+    },
+    "animations/boot.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:40:53.606560",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
     "animations/boot_animation.webp": {
       "size_bytes": 10626,
       "created_at": "2026-07-29T17:38:49.449532",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
+    "animations/error.gif": {
+      "size_bytes": 8940,
+      "created_at": "2026-07-29T17:40:54.041033",
+      "dimensions": null,
+      "sha256": "3953161b28b33a0aedfca5aeea85d33506f69b5baba61178ad829629da0aae3a",
+      "category": "animations"
+    },
+    "animations/error.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:40:54.006686",
       "dimensions": "256x256",
       "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
       "category": "animations"
@@ -30,6 +58,20 @@
       "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
       "category": "animations"
     },
+    "animations/loading.gif": {
+      "size_bytes": 11068,
+      "created_at": "2026-07-29T17:40:53.873035",
+      "dimensions": null,
+      "sha256": "8aa70d23158207b27be5abdd5f94ffed2d499c7399e2319ad4ec3f322fab920d",
+      "category": "animations"
+    },
+    "animations/loading.webp": {
+      "size_bytes": 28318,
+      "created_at": "2026-07-29T17:40:53.839835",
+      "dimensions": "256x256",
+      "sha256": "384015bbf3a4dba4b669f06e6c4983d96a8c3cec341bd8804bd735ba13ae595a",
+      "category": "animations"
+    },
     "animations/loading_animation.webp": {
       "size_bytes": 28318,
       "created_at": "2026-07-29T17:38:49.594849",
@@ -37,9 +79,37 @@
       "sha256": "384015bbf3a4dba4b669f06e6c4983d96a8c3cec341bd8804bd735ba13ae595a",
       "category": "animations"
     },
+    "animations/shutdown.gif": {
+      "size_bytes": 8940,
+      "created_at": "2026-07-29T17:40:53.785994",
+      "dimensions": null,
+      "sha256": "3953161b28b33a0aedfca5aeea85d33506f69b5baba61178ad829629da0aae3a",
+      "category": "animations"
+    },
+    "animations/shutdown.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:40:53.757079",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
     "animations/shutdown_animation.webp": {
       "size_bytes": 10626,
       "created_at": "2026-07-29T17:38:49.527519",
+      "dimensions": "256x256",
+      "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
+      "category": "animations"
+    },
+    "animations/success.gif": {
+      "size_bytes": 8940,
+      "created_at": "2026-07-29T17:40:53.956390",
+      "dimensions": null,
+      "sha256": "3953161b28b33a0aedfca5aeea85d33506f69b5baba61178ad829629da0aae3a",
+      "category": "animations"
+    },
+    "animations/success.webp": {
+      "size_bytes": 10626,
+      "created_at": "2026-07-29T17:40:53.929109",
       "dimensions": "256x256",
       "sha256": "66eb51ba620d63f03ec735028f85aa8024947d1093c331db351e11e18eb10a44",
       "category": "animations"
