@@ -17,13 +17,17 @@ def write_wave_file(path, freqs, duration=0.8, rate=44100):
         for i in range(num_samples):
             t = float(i) / rate
             val = 0
-            for freq in freqs:
-                # Exponential attack-decay envelope (glowing sound feel)
-                envelope = math.exp(-3 * t / duration) * (1.0 - math.exp(-30 * t / duration))
-                val += math.sin(2 * math.pi * freq * t) * envelope
+            for idx, freq in enumerate(freqs):
+                # Arpeggiate by delaying the start of each frequency
+                delay = idx * 0.08
+                if t >= delay:
+                    t_note = t - delay
+                    envelope = math.exp(-6 * t_note / (duration - delay)) * (1.0 - math.exp(-30 * t_note / duration))
+                    val += math.sin(2 * math.pi * freq * t_note) * envelope
             val = val / len(freqs)
             sample = int(val * 32767 * 0.4)
             wav.writeframesraw(struct.pack('<h', sample))
+
 
 def generate_all_sounds(target_root):
     sounds_dir = os.path.join(target_root, "sounds")

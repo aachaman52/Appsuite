@@ -16,6 +16,7 @@ from branding_generator.validator import validate_assets
 from branding_generator.manifest import generate_manifest
 from branding_generator.previews import generate_all_previews
 from branding_generator.docs import generate_documentation_files
+from branding_generator.extras import generate_all_extras
 
 logger = setup_logger()
 
@@ -27,11 +28,14 @@ def cmd_generate(target_root):
     generate_all_sounds(target_root)
     generate_all_animations(target_root)
     generate_all_themes(target_root)
+    generate_all_extras(target_root)
     export_vector_logos(target_root)
     generate_documentation_files(target_root)
+    generate_all_previews(target_root)
     logger.info("Generating assets metadata...")
     generate_manifest(target_root)
     logger.info("Generation workflow completed!")
+
 
 def cmd_validate(target_root):
     success, errors = validate_assets(target_root)

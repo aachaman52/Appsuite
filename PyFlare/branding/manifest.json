@@ -1,6 +1,6 @@
 {
   "name": "PyFlare Branding manifest",
-  "generated_at": "2026-07-29T17:40:54.091011",
+  "generated_at": "2026-07-29T17:44:26.992839",
   "assets": {
     "README.md": {
       "size_bytes": 1224,
@@ -822,115 +822,115 @@
       "category": "animations"
     },
     "badges/ai_powered.png": {
-      "size_bytes": 1360,
+      "size_bytes": 1622,
       "created_at": "2026-07-29T17:34:23.578105",
       "dimensions": "320x80",
-      "sha256": "8b209b76cbf44cff08e2e113b7db46a06062d145c9612fa50d013fb4eb436ed8",
+      "sha256": "3a15fc9ea2c77f1179d1e27a83d49c4a37586864e1f79f1fc88462d8416839cb",
       "category": "badges"
     },
     "badges/ai_powered.svg": {
       "size_bytes": 321,
       "created_at": "2026-07-29T17:34:23.578105",
       "dimensions": null,
-      "sha256": "91094a428f0e7fa4aa891494e02f814e1fbe3a63a63a044cd8e62d461c64aab5",
+      "sha256": "d2b5743cb6533457fb76f8e4d172ed3a2efec679c227cfde488408c390cd8319",
       "category": "badges"
     },
     "badges/alpha.png": {
-      "size_bytes": 764,
+      "size_bytes": 1000,
       "created_at": "2026-07-29T17:34:23.512624",
       "dimensions": "320x80",
-      "sha256": "20c515a822f1cc8abe2ee3a3955cd6f8af6da79efb7b2cbb5e03d4ef11b4f78f",
+      "sha256": "ff7485e15b1b1b8e7d51a0cd72cc8c5adab5a58690b9c0dd1a6c6bae97cacb0f",
       "category": "badges"
     },
     "badges/alpha.svg": {
       "size_bytes": 316,
       "created_at": "2026-07-29T17:34:23.512624",
       "dimensions": null,
-      "sha256": "40ed8cb9cc3a0d776a50c93cdbe16e964867c8cb66439331a6187f2e22270625",
+      "sha256": "f5a9b5a43c6ddb2dda55be1201076f7af558c385481f6825c72b92d6392a151a",
       "category": "badges"
     },
     "badges/beta.png": {
-      "size_bytes": 842,
+      "size_bytes": 1094,
       "created_at": "2026-07-29T17:34:23.553631",
       "dimensions": "320x80",
-      "sha256": "2185e76adfdcbf8f5f77c1bdf10d23cd62998ee9b03ea26497af3cb9c5871a2d",
+      "sha256": "709a96fc72c3092b079dbe54fcd9f24d65f5f328d3b8dea4af46cb286a1d93ec",
       "category": "badges"
     },
     "badges/beta.svg": {
       "size_bytes": 315,
       "created_at": "2026-07-29T17:34:23.521803",
       "dimensions": null,
-      "sha256": "821d3babddb49901dddcb5dd91f36fd9c70519436938de88eac14770211fbd37",
+      "sha256": "b4540b2ebad3302546fe4df531472324a89e0ad560a470587f9b7e3fbf54dfdb",
       "category": "badges"
     },
     "badges/developer_preview.png": {
-      "size_bytes": 1471,
+      "size_bytes": 1770,
       "created_at": "2026-07-29T17:34:23.589104",
       "dimensions": "320x80",
-      "sha256": "12c63af63a99d53112a57b2c659585e45e8811a99dc4b63da3ff6c54bc7c86c8",
+      "sha256": "61817dd0f21a14a74ca1fabce32568876a9865ee5c6c16270d15c2bc2f8bd965",
       "category": "badges"
     },
     "badges/developer_preview.svg": {
       "size_bytes": 328,
       "created_at": "2026-07-29T17:34:23.589104",
       "dimensions": null,
-      "sha256": "e2142777575c6e05f74685aaa9b3e6a8603d9854eba30777ac1042a8ced13289",
+      "sha256": "52fc8b4477ff27c8631e0e30cd5d8ea54a9bd0d231aa340b4ae1e076a91cabff",
       "category": "badges"
     },
     "badges/experimental.png": {
-      "size_bytes": 1333,
+      "size_bytes": 1611,
       "created_at": "2026-07-29T17:34:23.578105",
       "dimensions": "320x80",
-      "sha256": "c7bf4ec20b693f8ffd0e7d2498818b949c0afe0bd488c86f174657d5f53b22b9",
+      "sha256": "08e2cda7570e1e98263379acc9c2e30719d8eea6e56ff841ba878863beb3c054",
       "category": "badges"
     },
     "badges/experimental.svg": {
       "size_bytes": 323,
       "created_at": "2026-07-29T17:34:23.570695",
       "dimensions": null,
-      "sha256": "6e1db84892de25c5fa3f8137e363ed1bae6dd40091285d8cb21d4b86c6619ee6",
+      "sha256": "64110564d31513e7707ee2315fd7ccc5efac3aaee550b8aad83f82b9e4f1f421",
       "category": "badges"
     },
     "badges/nightly.png": {
-      "size_bytes": 958,
+      "size_bytes": 1210,
       "created_at": "2026-07-29T17:34:23.569276",
       "dimensions": "320x80",
-      "sha256": "c80edc8781866b9d1108bca29805e65cb12ccbf263a001bf3c7c4e1f840bcc8f",
+      "sha256": "4b2b351db63d679ca415b4bb27c5a0b7febf5a73cd147b438631e427ad693e0c",
       "category": "badges"
     },
     "badges/nightly.svg": {
       "size_bytes": 318,
       "created_at": "2026-07-29T17:34:23.553631",
       "dimensions": null,
-      "sha256": "020ada32665496b1a21db2db1a4e41f10cb81f5eb21fa5e45069701e7d3db273",
+      "sha256": "eafeb3459d8dba09bc6a30ebcce53620be520d99bbeb89f9eafcd51da2eb4f26",
       "category": "badges"
     },
     "badges/open_source_ready.png": {
-      "size_bytes": 1743,
+      "size_bytes": 2037,
       "created_at": "2026-07-29T17:34:23.589104",
       "dimensions": "320x80",
-      "sha256": "5c5e5c713f46c03f3ec4dd715ade7f990d92c45c93490b75b0909adabf7d8fad",
+      "sha256": "08368e709a4ff44148dfe11fe80cb025eec8b18108b5c830eb56373fb31dc138",
       "category": "badges"
     },
     "badges/open_source_ready.svg": {
       "size_bytes": 328,
       "created_at": "2026-07-29T17:34:23.585933",
       "dimensions": null,
-      "sha256": "d27566eeefc392fb6128eaafdc5f4e9fc87ace8641d97f8e417826329e97b2cf",
+      "sha256": "ba25edcb74fdc3e4d7432a5c275571a6e862ea67e0f3139be9b23814af30c0b4",
       "category": "badges"
     },
     "badges/stable.png": {
-      "size_bytes": 1053,
+      "size_bytes": 1311,
       "created_at": "2026-07-29T17:34:23.570695",
       "dimensions": "320x80",
-      "sha256": "f59ecdc0555f216a15e7f21ace9fdd03e679d6efd3ac462eedf4c025b1728968",
+      "sha256": "5bf873e17e8568a334851b3c65e7e31c94368a3b962911893acc347cfbf8181a",
       "category": "badges"
     },
     "badges/stable.svg": {
       "size_bytes": 317,
       "created_at": "2026-07-29T17:34:23.570695",
       "dimensions": null,
-      "sha256": "904c834cd6f0316ca52e461c83e4752a27438954a3e4eeec0f279babdbc390ae",
+      "sha256": "dcf5cbbc315ac2ea5cf8aaab48b5aef5ab5664f96541d4e0dddb84d4ad9c594c",
       "category": "badges"
     },
     "colors/colors.css": {
@@ -1270,31 +1270,66 @@
       "category": "export"
     },
     "favicon/apple-touch-icon.png": {
-      "size_bytes": 48938,
+      "size_bytes": 4063,
       "created_at": "2026-07-29T17:01:55.273319",
       "dimensions": "180x180",
-      "sha256": "2500c663ae6b09d96f5c3df82f451d8f50c7f56e8b7dde6481bae8bbbdb9f3ec",
+      "sha256": "71efea623524e72d5f359d999e2815adc43f7c39170fdadb196d55ee14a4f4d3",
+      "category": "favicon"
+    },
+    "favicon/favicon-128.png": {
+      "size_bytes": 2772,
+      "created_at": "2026-07-29T17:44:06.550902",
+      "dimensions": "128x128",
+      "sha256": "d1ac9787b2211ff980e2f7f8cc62bf9672e3900c2a0224fc584d8d1fc3574d0a",
       "category": "favicon"
     },
     "favicon/favicon-16.png": {
-      "size_bytes": 655,
+      "size_bytes": 393,
       "created_at": "2026-07-29T17:01:55.246772",
       "dimensions": "16x16",
-      "sha256": "4b72a0db0747186519dd7e02794ca71efcce6b03b72854b3ef1f300575ab8c8d",
+      "sha256": "f5e58dbb8442016bf1e7bf406f3082d71c03ac9a2e38913de7b39850124ae211",
+      "category": "favicon"
+    },
+    "favicon/favicon-256.png": {
+      "size_bytes": 5333,
+      "created_at": "2026-07-29T17:44:06.563459",
+      "dimensions": "256x256",
+      "sha256": "bbd0f1237afd3a4de68f0331e4d59535f92f1f579e2a49c5ffdc9fd892061ffd",
       "category": "favicon"
     },
     "favicon/favicon-32.png": {
-      "size_bytes": 1814,
+      "size_bytes": 757,
       "created_at": "2026-07-29T17:01:55.260134",
       "dimensions": "32x32",
-      "sha256": "a6079dd95adba675a6fafdbdb523afd1487528bedf98ffe779ac9273221c22f0",
+      "sha256": "56dbc0423ce97d1540d1cbf6844f2ec4353be6ed6893ff6b505c1b0c7c3471aa",
+      "category": "favicon"
+    },
+    "favicon/favicon-48.png": {
+      "size_bytes": 1088,
+      "created_at": "2026-07-29T17:44:06.529399",
+      "dimensions": "48x48",
+      "sha256": "1da92303d6150f33cf88b30704ab3d136f3c0c7e956bfd75e6a3a7e5e5ec49d8",
+      "category": "favicon"
+    },
+    "favicon/favicon-512.png": {
+      "size_bytes": 2556,
+      "created_at": "2026-07-29T17:44:06.570188",
+      "dimensions": "512x512",
+      "sha256": "137ba50d4c3913329609ad27b2789336de8f46c5defeba5238817a8c00bac4b6",
+      "category": "favicon"
+    },
+    "favicon/favicon-64.png": {
+      "size_bytes": 1406,
+      "created_at": "2026-07-29T17:44:06.539470",
+      "dimensions": "64x64",
+      "sha256": "83221f01ea19e008cd45ae97f202d5463f3c85c36a28ffde0640f5a1767ae5c7",
       "category": "favicon"
     },
     "favicon/favicon.ico": {
-      "size_bytes": 2506,
+      "size_bytes": 11851,
       "created_at": "2026-07-29T17:01:57.690094",
       "dimensions": null,
-      "sha256": "a067b293ea9e8865ef038dca07248604237267f462756a8dcdb2a6ed00038357",
+      "sha256": "dd00e16887928a75b4c4fbc1adfeb0a040b1fc5e2f2f036c04040eb8d4414b7b",
       "category": "favicon"
     },
     "icons/apps/ai_assistant.png": {
@@ -1711,59 +1746,59 @@
       "category": "icons"
     },
     "installer/error.png": {
-      "size_bytes": 3660,
+      "size_bytes": 4477,
       "created_at": "2026-07-29T17:34:23.299771",
-      "dimensions": "512x512",
-      "sha256": "99646fa9ce6bd68dc1aded1bfc4e996733316adf0124f96ad2e35c5d90c9630f",
+      "dimensions": "800x500",
+      "sha256": "b5ad9e0b8c3d8720a6f9efdde0fd4d6e37221838edde174b50093831231210ab",
       "category": "installer"
     },
     "installer/finish.png": {
-      "size_bytes": 3599,
+      "size_bytes": 4240,
       "created_at": "2026-07-29T17:34:23.287881",
-      "dimensions": "512x512",
-      "sha256": "366067d9166299a40b15ad4af6812fde2850ea71901c2909e2a3132708adef0f",
+      "dimensions": "800x500",
+      "sha256": "6bd6a3655b72b1324a1ac4892d4b0d8b0131f9e25eeec54f59b2b0d228cd47c3",
       "category": "installer"
     },
     "installer/installer_background.png": {
-      "size_bytes": 38748,
+      "size_bytes": 13419,
       "created_at": "2026-07-29T16:54:14.021635",
       "dimensions": "1920x1080",
-      "sha256": "69b6b1bc07ae78cc39c98244aa22b97e14ae5a18776118bec7a2654842fb1138",
+      "sha256": "a3c90c8a1cf729079945706a48c3737efa09ceb5826f4fde4e5f37dadddb252d",
       "category": "installer"
     },
     "installer/installing.png": {
-      "size_bytes": 3654,
+      "size_bytes": 4457,
       "created_at": "2026-07-29T17:34:23.277546",
-      "dimensions": "512x512",
-      "sha256": "da800d60c3df044c65f7a5f2c4e2a939dff88e5da58a9ce7758cd4d29b09e50e",
+      "dimensions": "800x500",
+      "sha256": "527fe13eac881b8c8e5d0f7e37552793f0fead0307c7b3fafb30556ebc5fd3ac",
       "category": "installer"
     },
     "installer/install_progress.png": {
-      "size_bytes": 4032,
+      "size_bytes": 4739,
       "created_at": "2026-07-29T17:34:23.274469",
-      "dimensions": "512x512",
-      "sha256": "fc7b713c1ba2c50fa5075135e56e0b15e529d8d30666478b70e8a29860e2752f",
+      "dimensions": "800x500",
+      "sha256": "550a07590d1eeeafb848a04bd24991df2be3fa303fada1020b1fc4777fac5369",
       "category": "installer"
     },
     "installer/success.png": {
-      "size_bytes": 3956,
+      "size_bytes": 4458,
       "created_at": "2026-07-29T17:34:23.287881",
-      "dimensions": "512x512",
-      "sha256": "030264eceacde7ec8461fcd2ef12a12f6f4beb7ba5c906666ec8289c22cda3a4",
+      "dimensions": "800x500",
+      "sha256": "0fa3099f856b356bc8e47e70a53be98fc74714df52d1068c38e759678e162046",
       "category": "installer"
     },
     "login/guest_avatar.png": {
-      "size_bytes": 1970,
+      "size_bytes": 2445,
       "created_at": "2026-07-29T17:34:23.233133",
       "dimensions": "256x256",
-      "sha256": "af9fa0a3f95f32795af731a9bf86f4ef6c37d86b04c76e29df4fa7d3d5238f2e",
+      "sha256": "cf91c70f22c3d75e2c5b1e4242aa781f655c5c2491416a7794c8c660b642d719",
       "category": "login"
     },
     "login/lockscreen_background.png": {
-      "size_bytes": 74020,
+      "size_bytes": 14057,
       "created_at": "2026-07-29T16:54:14.021635",
-      "dimensions": "3840x2160",
-      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "dimensions": "1920x1080",
+      "sha256": "9f62ce8445c3508f1e177107da9b2352166bdb400c7c2e441ab1af200bcdbf5f",
       "category": "login"
     },
     "login/lock_icon.png": {
@@ -1774,10 +1809,10 @@
       "category": "login"
     },
     "login/login_background.png": {
-      "size_bytes": 74020,
+      "size_bytes": 14006,
       "created_at": "2026-07-29T16:54:14.021635",
-      "dimensions": "3840x2160",
-      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "dimensions": "1920x1080",
+      "sha256": "4bdbfe8bd643046b8e433b7d29556414e67fe4f6fcb89e7126d43d0aee7238c6",
       "category": "login"
     },
     "login/password_icon.png": {
@@ -1795,10 +1830,10 @@
       "category": "login"
     },
     "login/user_avatar.png": {
-      "size_bytes": 1970,
+      "size_bytes": 2445,
       "created_at": "2026-07-29T17:34:23.231022",
       "dimensions": "256x256",
-      "sha256": "af9fa0a3f95f32795af731a9bf86f4ef6c37d86b04c76e29df4fa7d3d5238f2e",
+      "sha256": "cf91c70f22c3d75e2c5b1e4242aa781f655c5c2491416a7794c8c660b642d719",
       "category": "login"
     },
     "logos/png/pyflare_icon.png": {
@@ -2831,87 +2866,108 @@
       "category": "logos"
     },
     "mockups/desktop.png": {
-      "size_bytes": 7405,
+      "size_bytes": 7945,
       "created_at": "2026-07-29T17:01:55.152414",
       "dimensions": "1280x720",
-      "sha256": "f87e32140a890db5cecee4042b69054e1d65a4a0c6276a610b7e134b19e5444f",
+      "sha256": "2bae3965694ef2b8df8d26e4e019f59a841ce9b2775aa653101add7c62f6075e",
       "category": "mockups"
     },
     "mockups/installer.png": {
-      "size_bytes": 7344,
+      "size_bytes": 7872,
       "created_at": "2026-07-29T17:01:55.181987",
       "dimensions": "1280x720",
-      "sha256": "63dcea82a5a86a1d13a1aa7fe4e368dbf0c3b975700a29a213ef46d910d850c9",
+      "sha256": "c74ee4f5d29a5bcd5375319efea66714aa785660fae0d86d90aba235df9131e6",
       "category": "mockups"
     },
     "mockups/store.png": {
-      "size_bytes": 7311,
+      "size_bytes": 7797,
       "created_at": "2026-07-29T17:01:55.212994",
       "dimensions": "1280x720",
-      "sha256": "7116b125e13f25f364937fed1337503020e6e3eac39df2c59ce1c7442da6313f",
+      "sha256": "96f52a2b3736cca2700b6cdb97571bd9246a449dc0ea45a0f367d9e1f41c19a0",
       "category": "mockups"
     },
     "mockups/terminal.png": {
-      "size_bytes": 7267,
+      "size_bytes": 7897,
       "created_at": "2026-07-29T17:01:55.200237",
       "dimensions": "1280x720",
-      "sha256": "e741fafb7cd1aeae5e94b78ab09c925d60da06f284ef247d3eac43438fd0fd41",
+      "sha256": "4ab3315d5ddee7d3d1d6436855cf6be0be0c650d8b62158f2906c6794acc5dd0",
       "category": "mockups"
     },
     "mockups/website.png": {
-      "size_bytes": 7495,
+      "size_bytes": 8060,
       "created_at": "2026-07-29T17:01:55.170599",
       "dimensions": "1280x720",
-      "sha256": "d95677c6245c4c582c069aeeba9f2a2691811345a477dad29513f1ac89ca9f28",
+      "sha256": "b2f344cd8f632882038c46b7e51a9f8e8887fa540c935186e5e6637679b57fb7",
       "category": "mockups"
     },
     "placeholders/missing_asset.png": {
-      "size_bytes": 3116,
+      "size_bytes": 3789,
       "created_at": "2026-07-29T17:34:23.353818",
       "dimensions": "512x512",
-      "sha256": "5423d352fc7b1d828ee11a03b1d5c556cbc6ad5c38f8bc057b9e54e75ea31a8c",
+      "sha256": "97f3fb9ca6abb92e8efe5518def2c7a745825dc2e72cdc6ec676a1b5d6f476ab",
       "category": "placeholders"
     },
     "placeholders/missing_icon.png": {
-      "size_bytes": 3156,
+      "size_bytes": 3867,
       "created_at": "2026-07-29T17:34:23.362876",
       "dimensions": "512x512",
-      "sha256": "b51987d6858a6d4899d7d29cd86ab4cbf84291569d39c1db9652440f5ef22631",
+      "sha256": "fe172f4218578b58d40a0d467667b8d59e66511d7d8d215ae4b16e11ebdf925d",
       "category": "placeholders"
     },
     "placeholders/missing_model.png": {
-      "size_bytes": 3206,
+      "size_bytes": 3932,
       "created_at": "2026-07-29T17:34:23.353818",
       "dimensions": "512x512",
-      "sha256": "6a5ee8f89b54db0fcf10efa17aa79e5f333e7310d16dd5ec8023dfa237df1d14",
+      "sha256": "a0ecf94cea14208eac62b3c916eb5dc99d34208dbfcb0fc6b83fa3c07830e2be",
       "category": "placeholders"
     },
     "placeholders/missing_texture.png": {
-      "size_bytes": 3269,
+      "size_bytes": 3998,
       "created_at": "2026-07-29T17:34:23.347217",
       "dimensions": "512x512",
-      "sha256": "f2a3f8e7fd43faa0372854526f46f5f72bc09fbe4fe1828a8353ef37d0f12edb",
+      "sha256": "a4e945011579e138e97607865a4315c2b964d86b00597793b6af7fb240a8acf5",
       "category": "placeholders"
     },
     "placeholders/unknown_file.png": {
-      "size_bytes": 3512,
+      "size_bytes": 4364,
       "created_at": "2026-07-29T17:34:23.373051",
       "dimensions": "512x512",
-      "sha256": "8a62be66b3983dfbee94a7a5d95330c8a1689b9bee5a88fd0abfac135b4af5d2",
+      "sha256": "dea8a7d1643ce30b17581405aab538faf0a6e966762936408dd71682d4add96e",
       "category": "placeholders"
     },
     "placeholders/unknown_project.png": {
-      "size_bytes": 3772,
+      "size_bytes": 4759,
       "created_at": "2026-07-29T17:34:23.381638",
       "dimensions": "512x512",
-      "sha256": "2123ee3264d74311e30197d6f59ba7d9f038566c4705973b46da58cfa72ea358",
+      "sha256": "8cfc7682e936cec84c0fe9ad0bba95e3858a15320f859842087d3903b79de8bb",
       "category": "placeholders"
     },
+    "previews/badge_preview.png": {
+      "size_bytes": 45612,
+      "created_at": "2026-07-29T17:44:09.109306",
+      "dimensions": "720x360",
+      "sha256": "913f41974204107186734f0f72309144b04bab547571db6abc0404a49e3a37b8",
+      "category": "previews"
+    },
+    "previews/branding_preview.png": {
+      "size_bytes": 36246,
+      "created_at": "2026-07-29T17:44:07.695637",
+      "dimensions": "1024x1024",
+      "sha256": "8e61ca67dcbe115e27770a9ea057baa76fa4523f31ed8328355bc1bcaebcc56d",
+      "category": "previews"
+    },
+    "previews/wallpaper_preview.png": {
+      "size_bytes": 81436,
+      "created_at": "2026-07-29T17:44:08.936814",
+      "dimensions": "1024x1024",
+      "sha256": "28b4c15c64421c28a3fc16b209c1f46e6cef14c5c383bbb97c336789a42b20d2",
+      "category": "previews"
+    },
     "screenshots/desktop_dark.png": {
-      "size_bytes": 0,
+      "size_bytes": 7957,
       "created_at": "2026-07-29T17:01:57.716615",
-      "dimensions": null,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dimensions": "1280x720",
+      "sha256": "8e4d02ad7fbf0657adb04850a3ad518fc5bb747f7887cadfd3f18f4f575cb02f",
       "category": "screenshots"
     },
     "screenshots/desktop_light.png": {
@@ -2922,10 +2978,10 @@
       "category": "screenshots"
     },
     "screenshots/installer.png": {
-      "size_bytes": 0,
+      "size_bytes": 7676,
       "created_at": "2026-07-29T17:01:57.716615",
-      "dimensions": null,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dimensions": "1280x720",
+      "sha256": "2294065f83892ea766021ddfb17255d65cf5ca33800d51c9c1f6c43be92ecca8",
       "category": "screenshots"
     },
     "screenshots/launcher.png": {
@@ -2935,81 +2991,95 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "category": "screenshots"
     },
+    "screenshots/store.png": {
+      "size_bytes": 7723,
+      "created_at": "2026-07-29T17:44:07.511370",
+      "dimensions": "1280x720",
+      "sha256": "75fd659c3915a3fa476c060391a8ca646874545d1793e9afa666ec5189736579",
+      "category": "screenshots"
+    },
     "screenshots/terminal.png": {
-      "size_bytes": 0,
+      "size_bytes": 7798,
       "created_at": "2026-07-29T17:01:57.716615",
-      "dimensions": null,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "dimensions": "1280x720",
+      "sha256": "ea91474b5061d485f5e9a1ff166e04afa4e45995e41e7249c080598051da9005",
+      "category": "screenshots"
+    },
+    "screenshots/website.png": {
+      "size_bytes": 7950,
+      "created_at": "2026-07-29T17:44:07.581904",
+      "dimensions": "1280x720",
+      "sha256": "87d8aa3d48bcc31d5a396cd353153d1a19fe85ddb769322e77206977aa6fae75",
       "category": "screenshots"
     },
     "social/community_banner.png": {
-      "size_bytes": 38900,
+      "size_bytes": 5153,
       "created_at": "2026-07-29T16:54:14.021635",
-      "dimensions": "1920x600",
-      "sha256": "313330d2faae02256476f8f361cd801c0ac0bca81c8563a09866356e9a43aaf9",
+      "dimensions": "1200x400",
+      "sha256": "9fceb4fd7a7036b2d1ad1dac9c172ebf948f2a39e7c4869b5da233af491be645",
       "category": "social"
     },
     "social/discord_banner.png": {
-      "size_bytes": 44505,
+      "size_bytes": 5490,
       "created_at": "2026-07-29T16:57:55.794374",
-      "dimensions": "1920x1080",
-      "sha256": "6a911bc9670b853c2780980e22a733ad66bd0a5adc30816049ca23620d2b306a",
+      "dimensions": "960x540",
+      "sha256": "75e37e8d3f8e849d24d7447ab2ea07a81c713bd8bd39c894aff418a0dc7d917a",
       "category": "social"
     },
     "social/github_banner.png": {
-      "size_bytes": 41800,
+      "size_bytes": 8884,
       "created_at": "2026-07-29T16:54:14.021635",
       "dimensions": "1920x640",
-      "sha256": "f83a996927e6bb72310a9d80017c9c7eaf1f6836ec6a5e3a608acc408b23494f",
+      "sha256": "aae472281595ca200f71a1832757f70a7a4b4626471235fffec2d1dd0b5cf687",
       "category": "social"
     },
     "social/launch_poster.png": {
-      "size_bytes": 55078,
+      "size_bytes": 15557,
       "created_at": "2026-07-29T16:57:55.797487",
-      "dimensions": "2160x3840",
-      "sha256": "56449238732595ff9a42a02e7693f0a518ad4b7739c161ca69ced3a9317b173d",
+      "dimensions": "1080x1920",
+      "sha256": "927d574ce065ac4dff46e6e437096ab267838a2df21a707428d9c0bd65a9b6bc",
       "category": "social"
     },
     "social/linkedin_banner.png": {
-      "size_bytes": 25824,
+      "size_bytes": 5673,
       "created_at": "2026-07-29T16:57:55.786903",
       "dimensions": "1584x396",
-      "sha256": "0d4b1e5c3836e02935db5d3b7cac53f57f6a24ded6aa983a1081e55d50feae72",
+      "sha256": "8bac8948b873fafd9cae627ea597598d61683ecb243dbc080c23888c167c662a",
       "category": "social"
     },
     "social/open_graph.png": {
-      "size_bytes": 26754,
+      "size_bytes": 6630,
       "created_at": "2026-07-29T16:54:14.021635",
       "dimensions": "1200x630",
-      "sha256": "88f35116173cd5375db32cfc51d71fd1745fac4259dc5409301ca038a8bfb84f",
+      "sha256": "bcc2d344dd4f3191974090d36985bcc135656429e94cdc7b48c37abfdc382e8d",
       "category": "social"
     },
     "social/profile_header.png": {
-      "size_bytes": 44505,
+      "size_bytes": 6394,
       "created_at": "2026-07-29T16:57:55.794374",
-      "dimensions": "1920x1080",
-      "sha256": "6a911bc9670b853c2780980e22a733ad66bd0a5adc30816049ca23620d2b306a",
+      "dimensions": "1200x600",
+      "sha256": "ccf9953da2f575d08dc33adf55fa80ef438de385668d9572fd82781ff9789c04",
       "category": "social"
     },
     "social/reddit_banner.png": {
-      "size_bytes": 31913,
+      "size_bytes": 4860,
       "created_at": "2026-07-29T16:57:55.794374",
-      "dimensions": "1920x384",
-      "sha256": "87dfad20737a370e4f09ecd964eaf2fdf9aa58ea4fa0b1a41b173a38c2d645bd",
+      "dimensions": "1200x400",
+      "sha256": "a783dd8365eaf9ceaaa1b8584b700e72b319119aedc3304e9a8f676ab497fe2d",
       "category": "social"
     },
     "social/website_hero.png": {
-      "size_bytes": 74020,
+      "size_bytes": 13575,
       "created_at": "2026-07-29T16:54:14.021635",
-      "dimensions": "3840x2160",
-      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "dimensions": "1920x1080",
+      "sha256": "95ee5b022b406a318fe0552976b924c9050c9a282875adc4e203841bf67c0cf4",
       "category": "social"
     },
     "social/x_banner.png": {
-      "size_bytes": 29799,
+      "size_bytes": 6319,
       "created_at": "2026-07-29T16:57:55.786903",
       "dimensions": "1500x500",
-      "sha256": "f9c4d53fcd659a91451a12fde98e43e9a83e2c3d13ba075770b093796bd947d0",
+      "sha256": "541efa3eb814f87b3f7392e4ae10f4fc24ebe2c9382d6dfeaaa017cab90881ff",
       "category": "social"
     },
     "social/youtube_banner.png": {
@@ -3023,70 +3093,70 @@
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:23.072769",
       "dimensions": null,
-      "sha256": "2ba8055bf321a81e8c275b5024ec3c129376145613d496a7ac28729a391b6f07",
+      "sha256": "27f00d7417348986d142c6614ddc660a9155b42d5c9d44d55ad11da33bec0708",
       "category": "sounds"
     },
     "sounds/error.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.856294",
       "dimensions": null,
-      "sha256": "32b33af6f0b0a4bf669a43b6c2a6e159da290617c784f956208f16e7afb2779e",
+      "sha256": "63357756dd1bdbc8546f80e1c194caee8485d935617929951f0e7797384c4d08",
       "category": "sounds"
     },
     "sounds/login.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.936232",
       "dimensions": null,
-      "sha256": "6dddf6672a04882965ef5cc23f18ba018af890b099ca98c59f25d5acccf8e859",
+      "sha256": "4c87bec142f61db47569d7743a5aaa299b095b8615c84a738fcc639f7b4661e9",
       "category": "sounds"
     },
     "sounds/logout.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.986729",
       "dimensions": null,
-      "sha256": "6dddf6672a04882965ef5cc23f18ba018af890b099ca98c59f25d5acccf8e859",
+      "sha256": "e446e8ba8de91cd2a463fd46d620290e2c3fe47cbc78960af013334f03db18db",
       "category": "sounds"
     },
     "sounds/notification.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.772977",
       "dimensions": null,
-      "sha256": "d5651e1c123e9a400363e51fbd5c41e2c3c9c69de46331e8c2bb57ecaeec1162",
+      "sha256": "66777c8674f947e2e369a6e9687613c043db6a79bf9e6171c69f7ebf10d95c86",
       "category": "sounds"
     },
     "sounds/recycle.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:23.039169",
       "dimensions": null,
-      "sha256": "9b67f45722c5cee16f00b0145b578faa04dd0f34025ac48d6d8d6855a9ce5b22",
+      "sha256": "acfd559652d84899cb29249452e78c9c5b48899fdc7afb9ced83da85925429c4",
       "category": "sounds"
     },
     "sounds/shutdown.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.705485",
       "dimensions": null,
-      "sha256": "d6975b2116a5d027ddc88f82b46e88db656f97f4e27da15cb6dcea397d753576",
+      "sha256": "af5f1fc33204fbe6450679e4f7029ed2e8e05b81a9ba13b204534211f0569ce5",
       "category": "sounds"
     },
     "sounds/startup.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.620754",
       "dimensions": null,
-      "sha256": "d6975b2116a5d027ddc88f82b46e88db656f97f4e27da15cb6dcea397d753576",
+      "sha256": "73fe05904af208547cd33d08d095738c2d426b9972213a4b6966d92b39d5478b",
       "category": "sounds"
     },
     "sounds/success.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.806216",
       "dimensions": null,
-      "sha256": "a8cfea79d67e1b7cab2db5820b7421a5107bc233f3a45dbcdb3801e9600d434f",
+      "sha256": "6ed57e673f0aa36dec93bdac22795c68b3d9c394b1737287c8935d6017b84abf",
       "category": "sounds"
     },
     "sounds/warning.wav": {
       "size_bytes": 70604,
       "created_at": "2026-07-29T17:34:22.892300",
       "dimensions": null,
-      "sha256": "2ab63bf52457ff86bfbe2afcb58043657a4311e04fb19ea6190fde4bb254777e",
+      "sha256": "1ead29d22e27b2a62782dd5ac775ceab58b400de8fa1c13154b4ac4b2e5dec15",
       "category": "sounds"
     },
     "splash/boot_splash.png": {
@@ -3097,59 +3167,59 @@
       "category": "splash"
     },
     "store/application_placeholder.png": {
-      "size_bytes": 3774,
+      "size_bytes": 3559,
       "created_at": "2026-07-29T17:34:23.315587",
-      "dimensions": "800x450",
-      "sha256": "1938de4690dc659d8fb732b61b71a4fe5f46b161fc2b99500bc60802ce6d79b3",
+      "dimensions": "600x400",
+      "sha256": "bcd8a195d93b8479e04e9d5cb52f27e3d9e3f8dea039d6b450efa0d2db86b0c5",
       "category": "store"
     },
     "store/featured_banner.png": {
-      "size_bytes": 3380,
+      "size_bytes": 4969,
       "created_at": "2026-07-29T17:34:23.303861",
-      "dimensions": "800x450",
-      "sha256": "811620dbe25a227c2bbe12d2a57789369e38050d91a4f096bb7db2056717ee72",
+      "dimensions": "1200x500",
+      "sha256": "4a193086bc51f145ddd2223e19076eddc7f9124023d0c99403c291a42d1d3d0c",
       "category": "store"
     },
     "store/game_placeholder.png": {
-      "size_bytes": 3841,
+      "size_bytes": 3632,
       "created_at": "2026-07-29T17:34:23.329559",
-      "dimensions": "800x450",
-      "sha256": "0b1422881bdc1660efde81acfadc74254797ad3d9bf288fa969541b7593e4771",
+      "dimensions": "600x400",
+      "sha256": "e949f3da39d638f4e8ed16d70acb2bc8c998c056949659b758d9fe46ea72bb40",
       "category": "store"
     },
     "store/plugin_placeholder.png": {
-      "size_bytes": 3801,
+      "size_bytes": 3620,
       "created_at": "2026-07-29T17:34:23.320318",
-      "dimensions": "800x450",
-      "sha256": "583750e6ef943ced28b71ec13be6d25ea49ecd95f105ce29edcbd6f74385e40f",
+      "dimensions": "600x400",
+      "sha256": "c930b11138b72710a37e99b8cfcd4c626350e2b5e680de98c486c7471b4bfa5d",
       "category": "store"
     },
     "store/categories/development.png": {
-      "size_bytes": 1500,
+      "size_bytes": 2350,
       "created_at": "2026-07-29T17:34:23.337226",
       "dimensions": "256x256",
-      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "sha256": "25fe4f0c0436531574eec5de37768b30e02d2b3e0ad6a1866f63b418fe98f4b2",
       "category": "store"
     },
     "store/categories/games.png": {
-      "size_bytes": 1500,
+      "size_bytes": 2172,
       "created_at": "2026-07-29T17:34:23.337226",
       "dimensions": "256x256",
-      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "sha256": "831c374d4f5ca6a464b0f880d5ca8326d1a11bbb345f1002638e406fa6153229",
       "category": "store"
     },
     "store/categories/personalization.png": {
-      "size_bytes": 1500,
+      "size_bytes": 2481,
       "created_at": "2026-07-29T17:34:23.337226",
       "dimensions": "256x256",
-      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "sha256": "12d987a8ad67e324c64ca00dc958680509818d852589549ef487c326de192dbd",
       "category": "store"
     },
     "store/categories/utilities.png": {
-      "size_bytes": 1500,
+      "size_bytes": 1769,
       "created_at": "2026-07-29T17:34:23.331296",
       "dimensions": "256x256",
-      "sha256": "a75b1964c25d254d50598fa69398db60f8db2cc51ba71d0d1e1f92180066b951",
+      "sha256": "ceb7dc6ce0128af2ff08edfddcc7ddfa1e22558b637e47ac74d9a78609729e5b",
       "category": "store"
     },
     "themes/color_definitions.json": {
@@ -3195,59 +3265,59 @@
       "category": "themes"
     },
     "ui/about_banner.png": {
-      "size_bytes": 40877,
+      "size_bytes": 3529,
       "created_at": "2026-07-29T16:54:14.021635",
-      "dimensions": "1920x600",
-      "sha256": "b802844ee3e9f3bd7ce5759c11085600bca23e4b0b292330de2418275013ef63",
+      "dimensions": "800x300",
+      "sha256": "9185041464ffd44a9cd26f1e8b9ab4b6f7b042fa5dae3718a606d8fff8592e11",
       "category": "ui"
     },
     "ui/dashboard_background.png": {
-      "size_bytes": 80852,
+      "size_bytes": 14072,
       "created_at": "2026-07-29T16:57:55.801363",
-      "dimensions": "3840x2160",
-      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "dimensions": "1920x1080",
+      "sha256": "824f6f711d6b11e66d2b93d93be49fba1bb81665c98302d64081849ca26e693d",
       "category": "ui"
     },
     "ui/settings_background.png": {
-      "size_bytes": 80852,
+      "size_bytes": 14025,
       "created_at": "2026-07-29T16:57:55.802933",
-      "dimensions": "3840x2160",
-      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "dimensions": "1920x1080",
+      "sha256": "386e231aeb00da1685cb91e1c612751c1c5ff5d26b2a7ed78a358c35ff199ea3",
       "category": "ui"
     },
     "ui/store_background.png": {
-      "size_bytes": 80852,
+      "size_bytes": 13981,
       "created_at": "2026-07-29T16:57:55.802933",
-      "dimensions": "3840x2160",
-      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "dimensions": "1920x1080",
+      "sha256": "b170e136a57f28942feb47c5db9c50f163446e14aeaed6c598439168eb41b96e",
       "category": "ui"
     },
     "ui/terminal_background.png": {
-      "size_bytes": 80852,
+      "size_bytes": 14125,
       "created_at": "2026-07-29T16:57:55.806170",
-      "dimensions": "3840x2160",
-      "sha256": "3a43a0d69fbe56f94cb2b90ed371aca2a4607568ca2141604b5c9562d20d535b",
+      "dimensions": "1920x1080",
+      "sha256": "241ac2582484c66162254bd604ffdd18e78f39d5f5a85b0f00ce9e70c15b69c8",
       "category": "ui"
     },
     "ui/welcome_background.png": {
-      "size_bytes": 74020,
+      "size_bytes": 14344,
       "created_at": "2026-07-29T16:54:14.021635",
-      "dimensions": "3840x2160",
-      "sha256": "7b539ded584e0140372502b52927b55c005a240fdeebd0984b129b2d4410b74f",
+      "dimensions": "1920x1080",
+      "sha256": "413f5f401767d4063110a0d27bdda851221d60863da033edd32283ee64111ac7",
       "category": "ui"
     },
     "wallpapers/abstract_blue.png": {
-      "size_bytes": 319716,
+      "size_bytes": 95661,
       "created_at": "2026-07-29T16:39:28.121571",
       "dimensions": "3840x2160",
-      "sha256": "ca4310624a4019f02b71ede0bdf9fd73dd7aefb3620b7321a8bd0380fc8f8e89",
+      "sha256": "62022c9c16b57e4fc98a564d0d7f0b92c106dc1ee856a1d1156d6f794dfecb4f",
       "category": "wallpapers"
     },
     "wallpapers/aurora.png": {
-      "size_bytes": 319716,
+      "size_bytes": 322033,
       "created_at": "2026-07-29T16:39:28.111576",
       "dimensions": "3840x2160",
-      "sha256": "ca4310624a4019f02b71ede0bdf9fd73dd7aefb3620b7321a8bd0380fc8f8e89",
+      "sha256": "474f0992d13bf5c4da65a1974422371bad71894f0505a071e3cdf32532586e41",
       "category": "wallpapers"
     },
     "wallpapers/default_dark.png": {
@@ -3258,10 +3328,10 @@
       "category": "wallpapers"
     },
     "wallpapers/minimal_dark.png": {
-      "size_bytes": 319716,
+      "size_bytes": 56490,
       "created_at": "2026-07-29T16:39:28.124361",
       "dimensions": "3840x2160",
-      "sha256": "ca4310624a4019f02b71ede0bdf9fd73dd7aefb3620b7321a8bd0380fc8f8e89",
+      "sha256": "c448b65c14fedcb9d0188ad018ba76d9028bea5733a410b1dc4e8b489e3ac73e",
       "category": "wallpapers"
     }
   }
