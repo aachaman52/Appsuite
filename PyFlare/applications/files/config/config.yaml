@@ -1,0 +1,17 @@
+# PyFlare Files — default configuration
+# dev.pyflare.Files
+
+app:
+  id: "dev.pyflare.Files"
+  name: "PyFlare Files"
+  version: "1.0.0"
+
+ui:
+  theme: system
+  language: system
+  scale: 1.0
+
+general:
+  autostart: false
+  minimize_to_tray: false
+  check_updates: true

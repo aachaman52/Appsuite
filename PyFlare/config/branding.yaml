@@ -1,0 +1,125 @@
+# PyFlare OS — Branding Configuration
+# config/branding.yaml
+# Single source of truth for all product identity strings.
+# Referenced by branding_generator, installer, documentation, and packaging.
+
+product:
+  name: "PyFlare OS"
+  short_name: "PyFlare"
+  codename: "Ember"
+  version: "1.0.0"
+  series: "1.x"
+  release_date: "2026-07-30"
+
+company:
+  name: "Aachman Studios"
+  short: "Aachman"
+  website: "https://aachmanstudios.dev"
+  support: "https://aachmanstudios.dev/support"
+  email: "hello@aachmanstudios.dev"
+
+urls:
+  homepage:       "https://pyflare.dev"
+  documentation:  "https://docs.pyflare.dev"
+  source_code:    "https://github.com/aachman-studios/pyflare-os"
+  bug_tracker:    "https://github.com/aachman-studios/pyflare-os/issues"
+  releases:       "https://github.com/aachman-studios/pyflare-os/releases"
+  store:          "https://store.pyflare.dev"
+  updates_api:    "https://updates.pyflare.dev"
+  privacy_policy: "https://aachmanstudios.dev/privacy"
+  terms:          "https://aachmanstudios.dev/terms"
+
+# ── Sub-products ─────────────────────────────────────────────
+applications:
+  engine:
+    name: "PyFlare Engine"
+    id: "dev.pyflare.Engine"
+    description: "The AI-native runtime and service orchestrator"
+    version: "1.0.0"
+
+  appsuite:
+    name: "AppSuite"
+    id: "dev.pyflare.AppSuite"
+    description: "Integrated development and productivity suite"
+    version: "1.0.0"
+
+  terminal:
+    name: "PyFlare Terminal"
+    id: "dev.pyflare.Terminal"
+    description: "GPU-accelerated terminal with AI command assist"
+    version: "1.0.0"
+
+  browser:
+    name: "PyFlare Browser"
+    id: "dev.pyflare.Browser"
+    description: "Privacy-focused web browser"
+    version: "1.0.0"
+
+  files:
+    name: "PyFlare Files"
+    id: "dev.pyflare.Files"
+    description: "Modern file manager with AI search"
+    version: "1.0.0"
+
+  store:
+    name: "PyFlare Store"
+    id: "dev.pyflare.Store"
+    description: "Application and extension marketplace"
+    version: "1.0.0"
+
+  settings:
+    name: "PyFlare Settings"
+    id: "dev.pyflare.Settings"
+    description: "System configuration and preferences"
+    version: "1.0.0"
+
+  package_manager:
+    name: "Package Manager"
+    id: "dev.pyflare.PackageManager"
+    description: "Unified APT, Flatpak, and Snap manager"
+    version: "1.0.0"
+
+  plugin_manager:
+    name: "Plugin Manager"
+    id: "dev.pyflare.PluginManager"
+    description: "Manage PyFlare Engine plugins and extensions"
+    version: "1.0.0"
+
+  launcher:
+    name: "PyFlare Launcher"
+    id: "dev.pyflare.Launcher"
+    description: "Application launcher with AI suggestions"
+    version: "1.0.0"
+
+  ai_assistant:
+    name: "AI Assistant"
+    id: "dev.pyflare.AIAssistant"
+    description: "On-device AI assistant powered by Ollama"
+    version: "1.0.0"
+
+# ── Taglines ─────────────────────────────────────────────────
+taglines:
+  primary: "The AI-Native Linux Distribution"
+  short: "AI-Native Linux"
+  installer: "Welcome to PyFlare OS"
+  login: "PyFlare OS — by Aachman Studios"
+  about: "Intelligent. Fast. Open."
+
+# ── Base System ──────────────────────────────────────────────
+base:
+  distro: "Ubuntu"
+  version: "24.04 LTS"
+  codename: "Noble Numbat"
+  kernel: "linux-generic-hwe-24.04"
+  init: "systemd"
+  desktop: "GNOME"
+  display_manager: "GDM3"
+
+# ── ISO Metadata ─────────────────────────────────────────────
+iso:
+  filename: "pyflare-os-1.0.0-ember-amd64.iso"
+  label: "PyFlare-OS-1.0"
+  publisher: "Aachman Studios"
+  application: "PyFlare OS Live/Install DVD"
+  architecture: "amd64"
+  compression: "xz"

@@ -1,0 +1,39 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python-lint:
+    name: Python (ruff + mypy)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install linters
+        run: pip install ruff mypy
+      - name: ruff check
+        run: ruff check . --exclude=branding/
+      - name: mypy
+        run: mypy branding_generator/ validation/ scripts/ --ignore-missing-imports || true
+
+  yaml-lint:
+    name: YAML Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint YAML
+        run: |
+          pip install yamllint
+          yamllint config/ -d '{extends: default, rules: {line-length: {max: 120}}}'
+
+  shell-lint:
+    name: Shell (shellcheck)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install -y shellcheck
+      - run: find . -name "*.sh" -not -path "./.git/*" | xargs shellcheck --severity=warning

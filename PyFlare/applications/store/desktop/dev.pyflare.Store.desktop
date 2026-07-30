@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Store
+Comment=Application and extension marketplace
+Icon=dev.pyflare.Store
+Exec=/opt/pyflare/apps/store/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Store
+Categories=PyFlare;
+Keywords=pyflare;aachman;

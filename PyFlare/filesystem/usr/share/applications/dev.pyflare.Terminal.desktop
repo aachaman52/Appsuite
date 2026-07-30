@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Terminal
+Comment=GPU-accelerated AI terminal
+GenericName=PyFlare Terminal
+Icon=dev.pyflare.Terminal
+Exec=/opt/pyflare/apps/terminal/terminal
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Terminal
+Categories=System;TerminalEmulator;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.Terminal

@@ -1,0 +1,17 @@
+# PyFlare Terminal — default configuration
+# dev.pyflare.Terminal
+
+app:
+  id: "dev.pyflare.Terminal"
+  name: "PyFlare Terminal"
+  version: "1.0.0"
+
+ui:
+  theme: system
+  language: system
+  scale: 1.0
+
+general:
+  autostart: false
+  minimize_to_tray: false
+  check_updates: true

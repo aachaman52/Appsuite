@@ -1,0 +1,8 @@
+[PlymouthTheme]
+Name=PyFlare
+Description=PyFlare OS boot splash — indigo/cyan gradient with animated flame logo
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/pyflare
+ScriptFile=/usr/share/plymouth/themes/pyflare/pyflare.script

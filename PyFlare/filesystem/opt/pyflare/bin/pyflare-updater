@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# PyFlare OS updater script
+set -euo pipefail
+echo "PyFlare OS Updater v1.0.0"
+apt-get update -q
+apt-get upgrade -y -q
+flatpak update -y --noninteractive 2>/dev/null || true
+/opt/pyflare/bin/pyflare-engine --self-update 2>/dev/null || true
+echo "Update complete."

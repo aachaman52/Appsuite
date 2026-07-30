@@ -1,0 +1,24 @@
+# PyFlare OS system-wide environment variables
+# /etc/environment
+
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/pyflare/bin"
+LANG="en_US.UTF-8"
+LANGUAGE="en_US:en"
+LC_ALL="en_US.UTF-8"
+
+# PyFlare specific
+PYFLARE_HOME="/opt/pyflare"
+PYFLARE_VERSION="1.0.0"
+PYFLARE_CODENAME="Ember"
+PYFLARE_DATA="/var/lib/pyflare"
+PYFLARE_CONFIG="/etc/pyflare"
+PYFLARE_LOG="/var/log/pyflare"
+
+# GTK / GNOME
+GTK_THEME="PyFlare-Dark"
+ICON_THEME="PyFlare-Icons"
+CURSOR_THEME="PyFlare"
+
+# XDG Base Directories
+XDG_DATA_DIRS="/usr/local/share:/usr/share:/opt/pyflare/share"
+XDG_CONFIG_DIRS="/etc/xdg:/etc/pyflare/xdg"

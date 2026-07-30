@@ -1,2 +1,10 @@
-pyyaml==6.0.2
-colorama==0.4.6
+Pillow>=10.0.0
+cairosvg>=2.7.0
+tqdm>=4.66.0
+colorama>=0.4.6
+pyyaml>=6.0.2
+requests>=2.31.0
+numpy>=1.26.0
+imageio>=2.33.0
+imageio-ffmpeg>=0.4.9
+icnsutil>=1.1.0

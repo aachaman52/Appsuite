@@ -1,0 +1,62 @@
+/* PyFlare OS GTK3 Theme — Aachman Studios */
+@import url("gtk-dark.css");
+
+:root {
+  --bg-base:      #0C0F1E;
+  --bg-elevated:  #0D1117;
+  --bg-surface:   #21262D;
+  --accent:       #3B5BDB;
+  --accent-hover: #748FFC;
+  --text:         #E6EDF3;
+  --text-muted:   #8B949E;
+  --radius:       8px;
+  --border:       1px solid rgba(255,255,255,0.08);
+}
+
+window.background {
+  background-color: #0D1117;
+  color: #E6EDF3;
+}
+
+headerbar {
+  background: linear-gradient(135deg, #0D1117 0%, #161B22 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.4);
+}
+
+headerbar .title { color: #E6EDF3; font-weight: 600; }
+headerbar .subtitle { color: #8B949E; font-size: 0.85em; }
+
+button {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 8px;
+  color: #E6EDF3;
+  transition: all 200ms ease;
+}
+button:hover { background: rgba(59,91,219,0.25); border-color: #3B5BDB; }
+button.suggested-action { background: #3B5BDB; color: #fff; border-color: transparent; }
+button.suggested-action:hover { background: #748FFC; }
+button.destructive-action { background: #F85149; color: #fff; border-color: transparent; }
+
+entry {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 8px;
+  color: #E6EDF3;
+  caret-color: #00BFFF;
+}
+entry:focus { border-color: #3B5BDB; box-shadow: 0 0 0 3px rgba(59,91,219,0.25); }
+
+.sidebar { background: #0D1117; border-right: 1px solid rgba(255,255,255,0.06); }
+.sidebar row:selected { background: rgba(59,91,219,0.3); border-radius: 6px; }
+
+scrollbar { background: transparent; }
+scrollbar slider { background: rgba(255,255,255,0.15); border-radius: 4px; min-width: 6px; min-height: 6px; }
+scrollbar slider:hover { background: rgba(255,255,255,0.3); }
+
+tooltip { background: #21262D; border: 1px solid rgba(255,255,255,0.10); border-radius: 6px; color: #E6EDF3; }
+
+treeview { background: #0D1117; color: #E6EDF3; }
+treeview:selected { background: rgba(59,91,219,0.3); }
+treeview header button { background: #161B22; border: none; border-bottom: 1px solid rgba(255,255,255,0.06); }

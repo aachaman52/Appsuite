@@ -1,0 +1,4 @@
+# This is the SOURCE copy; the build system copies it to
+# filesystem/usr/share/glib-2.0/schemas/ during build.
+# See filesystem/usr/share/glib-2.0/schemas/99-pyflare.gschema.override
+# for the actual deployed file.

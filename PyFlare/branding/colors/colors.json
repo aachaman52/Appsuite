@@ -1,9 +1,80 @@
 {
-  "primary": "#3B82F6",
-  "cyan": "#00D4FF",
-  "indigo": "#5B5FFF",
-  "violet": "#8A5CF5",
-  "background": "#0B0F19",
-  "surface": "#111827",
-  "white": "#FFFFFF"
+  "brand": {
+    "primary": "#3B82F6",
+    "cyan": "#00D4FF",
+    "indigo": "#5B5FFF",
+    "violet": "#8A5CF5",
+    "magenta": "#EC4899",
+    "background": "#0B0F19",
+    "surface": "#111827",
+    "border": "#1F2937",
+    "white": "#FFFFFF",
+    "black": "#000000"
+  },
+  "gradients": {
+    "primary_gradient": {
+      "type": "linear",
+      "angle": 135,
+      "stops": [
+        {
+          "offset": "0%",
+          "color": "#5B5FFF"
+        },
+        {
+          "offset": "50%",
+          "color": "#3B82F6"
+        },
+        {
+          "offset": "100%",
+          "color": "#00D4FF"
+        }
+      ]
+    },
+    "violet_gradient": {
+      "type": "linear",
+      "angle": 135,
+      "stops": [
+        {
+          "offset": "0%",
+          "color": "#8A5CF5"
+        },
+        {
+          "offset": "100%",
+          "color": "#5B5FFF"
+        }
+      ]
+    },
+    "warm_gradient": {
+      "type": "linear",
+      "angle": 90,
+      "stops": [
+        {
+          "offset": "0%",
+          "color": "#EC4899"
+        },
+        {
+          "offset": "100%",
+          "color": "#8A5CF5"
+        }
+      ]
+    },
+    "surface_glow": {
+      "type": "radial",
+      "stops": [
+        {
+          "offset": "0%",
+          "color": "#1F2937"
+        },
+        {
+          "offset": "100%",
+          "color": "#0B0F19"
+        }
+      ]
+    }
+  },
+  "typography": {
+    "primary": "Inter",
+    "headings": "Space Grotesk",
+    "monospace": "JetBrains Mono"
+  }
 }

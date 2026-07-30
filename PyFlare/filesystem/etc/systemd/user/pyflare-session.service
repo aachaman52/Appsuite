@@ -1,0 +1,13 @@
+[Unit]
+Description=PyFlare User Session Service
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/opt/pyflare/bin/pyflare-session
+Restart=on-failure
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=graphical-session.target

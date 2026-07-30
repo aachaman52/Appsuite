@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+# PyFlare Engine — entry point stub
+# Real implementation lives in applications/engine/src/
+import sys
+import os
+sys.path.insert(0, '/opt/pyflare/lib')
+print("PyFlare Engine 1.0.0 — starting...")
+# TODO: import and run real engine

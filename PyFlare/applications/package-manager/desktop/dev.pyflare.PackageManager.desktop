@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Package Manager
+Comment=Unified APT, Flatpak, and Snap manager
+Icon=dev.pyflare.PackageManager
+Exec=/opt/pyflare/apps/package-manager/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.PackageManager
+Categories=PyFlare;
+Keywords=pyflare;aachman;

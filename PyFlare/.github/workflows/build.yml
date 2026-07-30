@@ -1,0 +1,38 @@
+name: Build Validation
+
+on:
+  push:
+    branches: [main, develop, release/*]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  validate-tree:
+    name: Validate Source Tree
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate branding assets
+        run: python -m branding_generator.main generate
+
+      - name: Run validators
+        run: python validation/run_all.py
+
+      - name: Check filesystem completeness
+        run: python validation/validate_filesystem.py
+
+      - name: Archive branding preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: branding-previews
+          path: branding/previews/
+          retention-days: 14

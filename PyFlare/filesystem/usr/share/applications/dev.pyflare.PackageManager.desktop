@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Package Manager
+Comment=Manage APT, Flatpak, and Snap
+GenericName=Package Manager
+Icon=dev.pyflare.PackageManager
+Exec=/opt/pyflare/apps/package-manager/pm
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.PackageManager
+Categories=System;PackageManager;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.PackageManager

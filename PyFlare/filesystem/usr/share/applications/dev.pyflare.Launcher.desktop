@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Launcher
+Comment=Application launcher
+GenericName=PyFlare Launcher
+Icon=dev.pyflare.Launcher
+Exec=/opt/pyflare/apps/launcher/launcher
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Launcher
+Categories=Utility;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.Launcher

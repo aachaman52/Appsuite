@@ -1,0 +1,46 @@
+# PyFlare Plymouth boot script
+# /usr/share/plymouth/themes/pyflare/pyflare.script
+
+# ── Colours ──────────────────────────────────────────────────
+Window.SetBackgroundTopColor(0.047, 0.059, 0.118);
+Window.SetBackgroundBottomColor(0.024, 0.031, 0.063);
+
+# ── Logo ─────────────────────────────────────────────────────
+logo.image = Image("logo.png");
+logo.sprite = Sprite(logo.image);
+logo.sprite.SetX(Window.GetWidth()  / 2 - logo.image.GetWidth()  / 2);
+logo.sprite.SetY(Window.GetHeight() / 2 - logo.image.GetHeight() / 2 - 60);
+logo.sprite.SetOpacity(1);
+
+# ── Tagline ───────────────────────────────────────────────────
+tagline.image  = Image.Text("PyFlare OS", 1.0, 1.0, 1.0, 1, "Space Grotesk Bold 16");
+tagline.sprite = Sprite(tagline.image);
+tagline.sprite.SetX(Window.GetWidth()  / 2 - tagline.image.GetWidth()  / 2);
+tagline.sprite.SetY(Window.GetHeight() / 2 + 40);
+
+# ── Progress bar ──────────────────────────────────────────────
+progress_bar.image    = Image("progress_bar.png");
+progress_bar.sprite   = Sprite();
+progress_bar.sprite.SetX((Window.GetWidth() - 400) / 2);
+progress_bar.sprite.SetY(Window.GetHeight() / 2 + 90);
+progress_bar.width    = 400;
+progress_bar.height   = 4;
+
+fun ProgressCallback(duration, progress)
+{
+    scaled.image  = progress_bar.image.Scale(Math.Int(progress_bar.width * progress), progress_bar.height);
+    progress_bar.sprite.SetImage(scaled.image);
+}
+Plymouth.SetBootProgressFunction(ProgressCallback);
+
+# ── Pulse animation ───────────────────────────────────────────
+pulse_angle = 0;
+
+fun RefreshCallback()
+{
+    pulse_angle = pulse_angle + 3;
+    if (pulse_angle >= 360) { pulse_angle = 0; }
+    alpha = 0.5 + Math.Sin(pulse_angle * 3.14159 / 180.0) * 0.5;
+    logo.sprite.SetOpacity(0.7 + alpha * 0.3);
+}
+Plymouth.SetRefreshFunction(RefreshCallback);

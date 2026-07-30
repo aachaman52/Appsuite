@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=AppSuite
+Comment=Integrated development suite
+GenericName=AppSuite
+Icon=dev.pyflare.AppSuite
+Exec=/opt/pyflare/apps/appsuite/appsuite
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.AppSuite
+Categories=Development;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.AppSuite

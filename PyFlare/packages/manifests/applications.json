@@ -1,0 +1,61 @@
+{
+  "schema": "pyflare-package-manifest/1.0",
+  "description": "PyFlare OS bundled applications",
+  "applications": [
+    {
+      "id": "dev.pyflare.Engine",
+      "package": "pyflare-engine",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.AppSuite",
+      "package": "pyflare-appsuite",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.Terminal",
+      "package": "pyflare-terminal",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.Browser",
+      "package": "pyflare-browser",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.Files",
+      "package": "pyflare-files",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.Store",
+      "package": "pyflare-store",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.Settings",
+      "package": "pyflare-settings",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.PackageManager",
+      "package": "pyflare-package-manager",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.PluginManager",
+      "package": "pyflare-plugin-manager",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.Launcher",
+      "package": "pyflare-launcher",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dev.pyflare.AIAssistant",
+      "package": "pyflare-ai-assistant",
+      "version": "1.0.0"
+    }
+  ]
+}

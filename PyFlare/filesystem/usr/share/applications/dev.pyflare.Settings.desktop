@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Settings
+Comment=System configuration
+GenericName=PyFlare Settings
+Icon=dev.pyflare.Settings
+Exec=/opt/pyflare/apps/settings/settings
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Settings
+Categories=Settings;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.Settings

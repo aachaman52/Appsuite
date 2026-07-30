@@ -1,0 +1,5 @@
+# PyFlare OS — scheduled cleanup tasks
+# Purge old logs weekly (Sunday 03:00)
+0 3 * * 0 root find /var/log/pyflare -name "*.log" -mtime +30 -delete
+# Clear package cache monthly
+0 4 1 * * root apt-get clean -q

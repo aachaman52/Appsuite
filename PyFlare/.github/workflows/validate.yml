@@ -1,0 +1,50 @@
+name: Asset Validation
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 2 * * 1'   # Weekly Monday 02:00 UTC
+
+jobs:
+  validate:
+    name: Run All Validators
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y libcairo2-dev
+          pip install -r requirements.txt
+
+      - name: Validate branding
+        run: python validation/validate_branding.py
+
+      - name: Validate desktop entries
+        run: python validation/validate_desktop.py
+
+      - name: Validate JSON files
+        run: python validation/validate_json.py
+
+      - name: Validate SVG files
+        run: python validation/validate_svg.py
+
+      - name: Validate configs
+        run: python validation/validate_configs.py
+
+      - name: Validate packages
+        run: python validation/validate_packages.py
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: reports/
+          retention-days: 7

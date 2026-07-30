@@ -1,0 +1,16 @@
+[Unit]
+Description=PyFlare OS First-Run Setup
+After=network.target gdm.service
+Wants=network.target
+ConditionPathExists=!/var/lib/pyflare/.firstrun-complete
+
+[Service]
+Type=oneshot
+ExecStart=/opt/pyflare/bin/pyflare-firstrun
+ExecStartPost=/bin/sh -c "mkdir -p /var/lib/pyflare && touch /var/lib/pyflare/.firstrun-complete"
+RemainAfterExit=yes
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

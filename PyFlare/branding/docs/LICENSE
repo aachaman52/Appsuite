@@ -1,18 +1,17 @@
-PyFlare Proprietary Design License
-Version 1.0
+PyFlare OS Proprietary Design License
+Version 1.0.0 — 2026-07-30
 
-Copyright (c) 2026 PyFlare Project. All rights reserved.
+Copyright (c) 2026 Aachman Studios. All rights reserved.
 
-The logos, branding, wallpapers, icons, illustrations, sounds, animations, and other visual assets contained in this repository are proprietary property of the PyFlare Project.
+All branding designs, logos, wallpapers, icons, cursors, sounds, animations,
+and other visual assets in this repository are the proprietary property of
+Aachman Studios unless explicitly documented otherwise.
 
-Permission is granted only to use these assets as part of the official PyFlare software and related services.
+Permission is granted to use these assets as part of official PyFlare OS builds
+and related open-source projects under Aachman Studios maintainership.
 
-You may not:
-- Copy or redistribute these assets outside the official PyFlare software.
-- Modify or create derivative works for commercial use without written permission.
-- Use the PyFlare name, logo, or branding to imply endorsement or affiliation.
-- Sell, sublicense, or repackage these assets.
+Permission is NOT granted to copy, modify, redistribute, sublicense, or sell
+these branding assets for external commercial products or derivative distributions
+without prior written permission.
 
-This license does not grant any rights to the PyFlare source code, trademarks, patents, or other intellectual property unless explicitly stated.
-
-Unauthorized use may violate applicable copyright and trademark laws.
+THE ASSETS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.

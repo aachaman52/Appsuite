@@ -1,28 +1,64 @@
 os:
-  iso_name: "appsuite-os-1.0.0-beta.iso"
+  name: "PyFlare OS"
+  codename: "Ember"
   version: "1.0.0"
-  build_number: "20260726"
-  ubuntu_major_version: "24.04"
+  build_number: "20260730"
+  iso_name: "pyflare-os-1.0.0-ember-amd64.iso"
+  base: "ubuntu"
+  base_version: "24.04"
+  base_codename: "noble"
   iso_flavor: "live-server-amd64"
+  architecture: "amd64"
   fallback_mirrors:
     - "https://releases.ubuntu.com"
     - "https://mirror.math.princeton.edu/pub/ubuntu-iso"
     - "https://mirrors.kernel.org/ubuntu-releases"
+    - "https://ftp.halifax.rwth-aachen.de/ubuntu-releases"
 
 system:
-  desktop_environment: "gnome"
-  hostname: "appsuite-os"
-  username: "appsuite"
+  hostname: "pyflare"
+  default_user: "pyflare"
+  default_password_hash: "$6$rounds=65536$pyflare$CHANGEME"
   locale: "en_US.UTF-8"
-  timezone: "Etc/UTC"
   language: "en"
+  timezone: "Etc/UTC"
+  keyboard_layout: "us"
+  keyboard_variant: ""
+  desktop_environment: "gnome"
+  display_manager: "gdm3"
   kernel: "linux-generic-hwe-24.04"
+  init: "systemd"
+
+desktop:
+  session: "gnome"
+  theme: "PyFlare-Dark"
+  icon_theme: "PyFlare-Icons"
+  cursor_theme: "PyFlare"
+  font_ui: "Inter 11"
+  font_heading: "Space Grotesk 12"
+  font_mono: "JetBrains Mono 11"
+  wallpaper: "/usr/share/backgrounds/pyflare/default_dark_4K.png"
+  plymouth_theme: "pyflare"
+
+branding:
+  os_name: "PyFlare OS"
+  os_codename: "Ember"
+  vendor: "Aachman Studios"
+  vendor_url: "https://aachmanstudios.dev"
+  support_url: "https://aachmanstudios.dev/support"
+  bug_url: "https://github.com/aachman-studios/pyflare-os/issues"
+  privacy_url: "https://aachmanstudios.dev/privacy"
+  documentation_url: "https://docs.pyflare.dev"
 
 build:
-  compression: "gzip"
+  compression: "xz"
+  compression_level: 9
   output_folder: "output"
   work_folder: "build"
-  # On Linux/WSL the build dir MUST be on a native Linux filesystem (ext4/tmpfs)
-  # to support device nodes and hard links that unsquashfs requires.
-  # /home is on /dev/sdd (ext4, ~949GB free) — safe for large squashfs extractions.
-  linux_work_dir: "/home/appsuite-build"
+  linux_work_dir: "/home/pyflare-build"
+  iso_label: "PyFlare-OS-1.0"
+  iso_publisher: "PyFlare Project"
+  iso_application: "PyFlare OS Live/Install DVD"
+  efi_boot: true
+  legacy_bios: true
+  secure_boot: false

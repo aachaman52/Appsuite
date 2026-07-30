@@ -1,0 +1,8 @@
+[Sound Theme]
+Name=PyFlare
+Comment=PyFlare OS sound theme by Aachman Studios
+Inherits=freedesktop
+Directories=stereo
+
+[stereo]
+OutputProfile=stereo

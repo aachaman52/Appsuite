@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Store
+Comment=Application marketplace
+GenericName=PyFlare Store
+Icon=dev.pyflare.Store
+Exec=/opt/pyflare/apps/store/store
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Store
+Categories=System;PackageManager;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.Store

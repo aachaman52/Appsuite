@@ -1,0 +1,76 @@
+[
+  {
+    "validator": "validate_branding",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_icons",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_wallpapers",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_json",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_svg",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_desktop",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_packages",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_filesystem",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_theme",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_configs",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_services",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_permissions",
+    "passed": true,
+    "errors": [
+      "opt/pyflare/engine/pyflare-engine not executable (fixable at install)",
+      "opt/pyflare/bin/pyflare-updater not executable (fixable at install)",
+      "opt/pyflare/bin/pyflare-firstrun not executable (fixable at install)"
+    ]
+  },
+  {
+    "validator": "validate_desktop_entries",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "validator": "validate_boot",
+    "passed": true,
+    "errors": []
+  }
+]

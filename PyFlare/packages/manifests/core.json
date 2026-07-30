@@ -1,0 +1,46 @@
+{
+  "schema": "pyflare-package-manifest/1.0",
+  "generated": "2026-07-30",
+  "vendor": "Aachman Studios",
+  "packages": {
+    "pyflare-engine": {
+      "version": "1.0.0",
+      "description": "PyFlare Engine runtime and daemon",
+      "architecture": "all",
+      "section": "misc",
+      "priority": "required",
+      "depends": [
+        "python3 (>= 3.12)",
+        "python3-gi",
+        "dbus",
+        "systemd"
+      ],
+      "install_path": "/opt/pyflare/engine",
+      "service": "pyflare-engine.service"
+    },
+    "pyflare-desktop": {
+      "version": "1.0.0",
+      "description": "PyFlare OS desktop integration and theming",
+      "architecture": "all",
+      "section": "x11",
+      "priority": "standard",
+      "depends": [
+        "gnome-shell",
+        "gdm3",
+        "pyflare-engine"
+      ],
+      "install_path": "/usr/share/themes/PyFlare-Dark"
+    },
+    "pyflare-apps": {
+      "version": "1.0.0",
+      "description": "PyFlare OS bundled applications meta-package",
+      "architecture": "all",
+      "section": "misc",
+      "priority": "optional",
+      "depends": [
+        "pyflare-engine",
+        "pyflare-desktop"
+      ]
+    }
+  }
+}

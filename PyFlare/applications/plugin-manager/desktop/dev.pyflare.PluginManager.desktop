@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Plugin Manager
+Comment=Manage PyFlare Engine plugins
+Icon=dev.pyflare.PluginManager
+Exec=/opt/pyflare/apps/plugin-manager/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.PluginManager
+Categories=PyFlare;
+Keywords=pyflare;aachman;
