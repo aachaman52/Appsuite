@@ -1,0 +1,19 @@
+[Version]
+Signature="$Windows NT$"
+[DefaultInstall]
+CopyFiles=Scheme.Cur
+[Scheme.Cur]
+default.cur
+pointer.cur
+hand.cur
+text.cur
+busy.cur
+working.cur
+move.cur
+crosshair.cur
+forbidden.cur
+resize_horizontal.cur
+resize_vertical.cur
+resize_diagonal_nw.cur
+resize_diagonal_ne.cur
+precision_select.cur

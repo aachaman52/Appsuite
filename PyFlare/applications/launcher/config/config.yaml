@@ -1,0 +1,17 @@
+# PyFlare Launcher — default configuration
+# dev.pyflare.Launcher
+
+app:
+  id: "dev.pyflare.Launcher"
+  name: "PyFlare Launcher"
+  version: "1.0.0"
+
+ui:
+  theme: system
+  language: system
+  scale: 1.0
+
+general:
+  autostart: false
+  minimize_to_tray: false
+  check_updates: true

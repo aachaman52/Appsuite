@@ -1,0 +1,470 @@
+{
+  "product": "PyFlare OS",
+  "version": "1.0.0",
+  "codename": "Ember",
+  "vendor": "Aachman Studios",
+  "timestamp": "2026-07-30T13:21:00.433354+00:00Z",
+  "total_duration_seconds": 1.17,
+  "host_platform": "Windows-11-10.0.26200-SP0",
+  "python_version": "3.13.14",
+  "status": "SUCCESS",
+  "stage_results": {
+    "Validation Suite": {
+      "success": true,
+      "message": "All 14 validators passed cleanly",
+      "elapsed": 0.16504502296447754,
+      "details": {
+        "timestamp": "2026-07-30T13:20:59.546566+00:00Z",
+        "total": 14,
+        "passed": 14,
+        "failed": 0,
+        "results": [
+          {
+            "validator": "validate_branding",
+            "label": "Branding assets",
+            "passed": true,
+            "errors": [],
+            "duration": 0.002508878707885742
+          },
+          {
+            "validator": "validate_icons",
+            "label": "Icon theme",
+            "passed": true,
+            "errors": [],
+            "duration": 0.0008771419525146484
+          },
+          {
+            "validator": "validate_wallpapers",
+            "label": "Wallpapers",
+            "passed": true,
+            "errors": [],
+            "duration": 0.00043892860412597656
+          },
+          {
+            "validator": "validate_json",
+            "label": "JSON files",
+            "passed": true,
+            "errors": [],
+            "duration": 0.04672122001647949
+          },
+          {
+            "validator": "validate_svg",
+            "label": "SVG files",
+            "passed": true,
+            "errors": [],
+            "duration": 0.0535430908203125
+          },
+          {
+            "validator": "validate_desktop",
+            "label": "Desktop entries",
+            "passed": true,
+            "errors": [],
+            "duration": 0.004357337951660156
+          },
+          {
+            "validator": "validate_packages",
+            "label": "Package manifests",
+            "passed": true,
+            "errors": [],
+            "duration": 0.002470731735229492
+          },
+          {
+            "validator": "validate_filesystem",
+            "label": "Filesystem overlay",
+            "passed": true,
+            "errors": [],
+            "duration": 0.0007607936859130859
+          },
+          {
+            "validator": "validate_theme",
+            "label": "GTK/GNOME theme",
+            "passed": true,
+            "errors": [],
+            "duration": 0.0005702972412109375
+          },
+          {
+            "validator": "validate_configs",
+            "label": "Config files",
+            "passed": true,
+            "errors": [],
+            "duration": 0.04168105125427246
+          },
+          {
+            "validator": "validate_services",
+            "label": "Systemd services",
+            "passed": true,
+            "errors": [],
+            "duration": 0.006544828414916992
+          },
+          {
+            "validator": "validate_permissions",
+            "label": "File permissions",
+            "passed": true,
+            "errors": [
+              "opt/pyflare/engine/pyflare-engine not executable (fixable at install)",
+              "opt/pyflare/bin/pyflare-updater not executable (fixable at install)",
+              "opt/pyflare/bin/pyflare-firstrun not executable (fixable at install)"
+            ],
+            "duration": 0.0008816719055175781
+          },
+          {
+            "validator": "validate_desktop_entries",
+            "label": "Desktop entry syntax",
+            "passed": true,
+            "errors": [],
+            "duration": 0.000637054443359375
+          },
+          {
+            "validator": "validate_boot",
+            "label": "Boot configuration",
+            "passed": true,
+            "errors": [],
+            "duration": 0.0005168914794921875
+          }
+        ]
+      }
+    },
+    "Root Filesystem Preparation": {
+      "success": true,
+      "message": "Prepared rootfs hierarchy with 19 root dirs and 59 files",
+      "elapsed": 0.3044564723968506,
+      "details": {
+        "rootfs_path": "C:\\Users\\91629\\OneDrive\\\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\\Desktop\\Appsuite\\PyFlare\\build\\rootfs",
+        "directories": [
+          "etc",
+          "usr",
+          "var",
+          "opt",
+          "home",
+          "root",
+          "tmp",
+          "boot",
+          "lib",
+          "lib64",
+          "bin",
+          "sbin",
+          "media",
+          "mnt",
+          "srv",
+          "run",
+          "proc",
+          "sys",
+          "dev"
+        ],
+        "total_files": 59
+      }
+    },
+    "Package Preparation": {
+      "success": true,
+      "message": "Package manifest staged (150 APT packages). Host package installation skipped on Windows/non-root.",
+      "elapsed": 0.012323141098022461,
+      "details": {
+        "schema": "pyflare-package-manifest/1.0",
+        "generated": "2026-07-30T13:20:59.861145+00:00Z",
+        "vendor": "Aachman Studios",
+        "package_categories": {
+          "base": [
+            "ubuntu-standard",
+            "ubuntu-minimal",
+            "linux-generic-hwe-24.04",
+            "linux-headers-generic-hwe-24.04",
+            "initramfs-tools",
+            "grub-pc",
+            "grub-efi-amd64",
+            "grub-efi-amd64-signed",
+            "shim-signed",
+            "efibootmgr",
+            "os-prober",
+            "systemd",
+            "systemd-resolved",
+            "systemd-timesyncd",
+            "udev",
+            "dbus",
+            "polkit",
+            "udisks2",
+            "upower",
+            "acpid"
+          ],
+          "desktop": [
+            "gnome-shell",
+            "gnome-session",
+            "gnome-control-center",
+            "gnome-tweaks",
+            "gnome-shell-extensions",
+            "gdm3",
+            "gvfs",
+            "gvfs-backends",
+            "nautilus",
+            "nautilus-extension-gnome-terminal",
+            "gnome-terminal",
+            "gnome-disk-utility",
+            "gnome-system-monitor",
+            "gnome-calculator",
+            "gnome-text-editor",
+            "gnome-screenshot",
+            "gnome-keyring",
+            "libpam-gnome-keyring",
+            "seahorse",
+            "baobab",
+            "evince",
+            "eog",
+            "file-roller",
+            "gedit",
+            "cheese",
+            "totem",
+            "rhythmbox",
+            "simple-scan"
+          ],
+          "graphics": [
+            "xorg",
+            "xserver-xorg-core",
+            "xserver-xorg-input-libinput",
+            "mesa-utils",
+            "libgl1-mesa-dri",
+            "libgles2-mesa",
+            "vulkan-tools",
+            "libvulkan1",
+            "nvidia-driver-535",
+            "amdgpu-pro",
+            "intel-media-va-driver"
+          ],
+          "plymouth": [
+            "plymouth",
+            "plymouth-themes",
+            "plymouth-theme-spinner"
+          ],
+          "audio": [
+            "pipewire",
+            "pipewire-alsa",
+            "pipewire-pulse",
+            "pipewire-jack",
+            "wireplumber",
+            "pavucontrol",
+            "alsa-utils"
+          ],
+          "networking": [
+            "network-manager",
+            "network-manager-gnome",
+            "network-manager-openvpn",
+            "network-manager-openvpn-gnome",
+            "wireless-tools",
+            "wpasupplicant",
+            "curl",
+            "wget",
+            "openssh-client",
+            "openssh-server",
+            "nftables",
+            "ufw",
+            "avahi-daemon"
+          ],
+          "fonts": [
+            "fonts-noto",
+            "fonts-noto-cjk",
+            "fonts-noto-color-emoji",
+            "fonts-liberation",
+            "fonts-ubuntu",
+            "fonts-freefont-ttf",
+            "fontconfig"
+          ],
+          "printing": [
+            "cups",
+            "system-config-printer",
+            "printer-driver-gutenprint"
+          ],
+          "development": [
+            "git",
+            "git-lfs",
+            "python3",
+            "python3-pip",
+            "python3-venv",
+            "python3-dev",
+            "python3-setuptools",
+            "python3-wheel",
+            "build-essential",
+            "cmake",
+            "make",
+            "gcc",
+            "g++",
+            "clang",
+            "lldb",
+            "gdb",
+            "valgrind",
+            "strace",
+            "pkg-config",
+            "libssl-dev",
+            "libffi-dev",
+            "libsqlite3-dev",
+            "jq",
+            "tree",
+            "tmux",
+            "htop",
+            "neofetch",
+            "unzip",
+            "zip",
+            "p7zip-full"
+          ],
+          "containers": [
+            "docker.io",
+            "docker-compose",
+            "containerd",
+            "flatpak",
+            "gnome-software-plugin-flatpak"
+          ],
+          "pyflare": [
+            "python3-pil",
+            "python3-numpy",
+            "python3-requests",
+            "python3-yaml",
+            "python3-gi",
+            "gir1.2-gtk-4.0",
+            "gir1.2-adw-1",
+            "libadwaita-1-dev"
+          ],
+          "utilities": [
+            "vim",
+            "nano",
+            "less",
+            "man-db",
+            "bash-completion",
+            "command-not-found",
+            "software-properties-common",
+            "apt-transport-https",
+            "ca-certificates",
+            "gnupg",
+            "lsb-release",
+            "debconf-utils",
+            "gdebi",
+            "synaptic",
+            "timeshift"
+          ]
+        },
+        "snaps": [
+          {
+            "name": "firefox",
+            "channel": "stable"
+          },
+          {
+            "name": "code",
+            "channel": "stable",
+            "classic": true
+          }
+        ],
+        "flatpaks": [
+          "org.mozilla.firefox",
+          "com.visualstudio.code",
+          "org.gimp.GIMP",
+          "org.inkscape.Inkscape",
+          "io.github.flattool.Warehouse"
+        ],
+        "custom_installs": [
+          {
+            "description": "Install Ollama",
+            "command": "curl -fsSL https://ollama.com/install.sh | sh",
+            "condition": "network"
+          },
+          {
+            "description": "Install PyFlare Python dependencies",
+            "command": "pip3 install Pillow cairosvg tqdm colorama numpy requests pyyaml imageio svglib reportlab",
+            "condition": "always"
+          }
+        ]
+      }
+    },
+    "Branding Deployment": {
+      "success": true,
+      "message": "Deployed branding (176 assets across 5 categories)",
+      "elapsed": 0.22983551025390625,
+      "details": {
+        "timestamp": "2026-07-30T13:21:00.094062+00:00Z",
+        "categories": [
+          "logos/svg",
+          "logos/png",
+          "wallpapers",
+          "cursors",
+          "fonts"
+        ],
+        "deployed_files_count": 176,
+        "missing_required_assets": [],
+        "status": "PASS"
+      }
+    },
+    "Application Packaging": {
+      "success": true,
+      "message": "Packaged 11 applications into /opt/pyflare/apps/",
+      "elapsed": 0.2190239429473877,
+      "details": {
+        "timestamp": "2026-07-30T13:21:00.313080+00:00Z",
+        "total_apps": 11,
+        "applications": [
+          "ai-assistant",
+          "appsuite",
+          "browser",
+          "engine",
+          "files",
+          "launcher",
+          "package-manager",
+          "plugin-manager",
+          "settings",
+          "store",
+          "terminal"
+        ],
+        "apps_directory": "opt\\pyflare\\apps"
+      }
+    },
+    "Desktop Integration": {
+      "success": true,
+      "message": "Integrated 11 desktop launchers & GNOME overrides",
+      "elapsed": 0.0008387565612792969,
+      "details": {
+        "desktop_launchers": 11,
+        "gsettings_overrides": 1,
+        "icon_theme_present": true,
+        "schemas_compiled": false
+      }
+    },
+    "Boot Configuration": {
+      "success": true,
+      "message": "Boot params, GRUB, Plymouth, and 4 systemd services configured",
+      "elapsed": 0.009084701538085938,
+      "details": {
+        "grub_configured": true,
+        "plymouth_configured": true,
+        "hostname_configured": true,
+        "os_release_configured": true,
+        "enabled_services": [
+          "pyflare-engine.service",
+          "pyflare-firstrun.service",
+          "pyflare-update.service",
+          "pyflare-update.timer"
+        ]
+      }
+    },
+    "Filesystem Manifest & Checksums": {
+      "success": true,
+      "message": "Manifest generated for 362 files (3.31 MB)",
+      "elapsed": 0.10735154151916504,
+      "details": {
+        "file_count": 362,
+        "total_mb": 3.31
+      }
+    },
+    "SquashFS Creation": {
+      "success": true,
+      "message": "[SKIP] Windows host detected \u2014 mksquashfs skipped. Rootfs is fully prepared in build/rootfs/.",
+      "elapsed": 6.866455078125e-05,
+      "details": {
+        "skipped": true,
+        "reason": "non-linux-host"
+      }
+    },
+    "ISO Creation": {
+      "success": true,
+      "message": "[SKIP] Windows environment detected \u2014 xorriso/ISO creation requires Linux host (or WSL2). Rootfs and source tree are 100% build-ready.",
+      "elapsed": 3.3855438232421875e-05,
+      "details": {
+        "skipped": true,
+        "reason": "non-linux-host"
+      }
+    }
+  }
+}

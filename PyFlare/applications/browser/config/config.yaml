@@ -1,0 +1,17 @@
+# PyFlare Browser — default configuration
+# dev.pyflare.Browser
+
+app:
+  id: "dev.pyflare.Browser"
+  name: "PyFlare Browser"
+  version: "1.0.0"
+
+ui:
+  theme: system
+  language: system
+  scale: 1.0
+
+general:
+  autostart: false
+  minimize_to_tray: false
+  check_updates: true

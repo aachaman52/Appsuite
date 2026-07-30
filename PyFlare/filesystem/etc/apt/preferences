@@ -1,0 +1,9 @@
+# PyFlare OS — APT preferences
+# Pin Ubuntu packages above Flatpak / external repos
+Package: *
+Pin: release o=Ubuntu
+Pin-Priority: 500
+
+Package: *
+Pin: release o=LP-PPA-*
+Pin-Priority: 400

@@ -1,0 +1,33 @@
+{
+  "schema": "pyflare-package-manifest/1.0",
+  "description": "PyFlare OS desktop packages",
+  "packages": {
+    "pyflare-theme-dark": {
+      "version": "1.0.0",
+      "files": [
+        "/usr/share/themes/PyFlare-Dark/",
+        "/usr/share/icons/PyFlare-Icons/",
+        "/usr/share/cursors/xorg-x11/PyFlare/"
+      ]
+    },
+    "pyflare-wallpapers": {
+      "version": "1.0.0",
+      "files": [
+        "/usr/share/backgrounds/pyflare/"
+      ]
+    },
+    "pyflare-sounds": {
+      "version": "1.0.0",
+      "files": [
+        "/usr/share/sounds/pyflare/"
+      ]
+    },
+    "pyflare-fonts": {
+      "version": "1.0.0",
+      "files": [
+        "/usr/share/fonts/pyflare/",
+        "/etc/fonts/local.conf"
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Engine
+Comment=AI-native runtime and daemon
+Icon=dev.pyflare.Engine
+Exec=/opt/pyflare/apps/engine/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Engine
+Categories=PyFlare;
+Keywords=pyflare;aachman;

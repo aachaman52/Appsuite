@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=AI Assistant
+Comment=On-device AI powered by Ollama
+GenericName=AI Assistant
+Icon=dev.pyflare.AIAssistant
+Exec=/opt/pyflare/apps/ai-assistant/ai
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.AIAssistant
+Categories=Utility;Education;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.AIAssistant

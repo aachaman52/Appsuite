@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-07-30T13:21:00.313080+00:00Z",
+  "total_apps": 11,
+  "applications": [
+    "ai-assistant",
+    "appsuite",
+    "browser",
+    "engine",
+    "files",
+    "launcher",
+    "package-manager",
+    "plugin-manager",
+    "settings",
+    "store",
+    "terminal"
+  ],
+  "apps_directory": "opt\\pyflare\\apps"
+}

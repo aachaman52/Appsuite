@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=PyFlare Welcome
+Comment=Welcome screen shown on first login
+Exec=/opt/pyflare/apps/settings/settings --welcome
+Icon=dev.pyflare.Settings
+Terminal=false
+Hidden=false
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Phase=Application
+X-GNOME-AutoRestart=false
+OnlyShowIn=GNOME;

@@ -1,0 +1,34 @@
+---
+componentName: pyflare
+
+# Visible strings
+strings:
+  productName:      PyFlare OS
+  shortProductName: PyFlare
+  version:          1.0.0 Ember
+  shortVersion:     1.0.0
+  versionedName:    PyFlare OS 1.0.0 (Ember)
+  bootloaderEntryName: PyFlare OS
+  productUrl:       https://pyflare.dev
+  supportUrl:       https://aachmanstudios.dev/support
+  knownIssuesUrl:   https://github.com/aachman-studios/pyflare-os/issues
+  releaseNotesUrl:  https://pyflare.dev/release-notes/1.0.0
+  donateUrl:        ""
+
+# Branding images (relative to this file)
+images:
+  productLogo:       "pyflare-logo.png"
+  productIcon:       "pyflare-icon.png"
+  productWelcome:    "pyflare-welcome.png"
+  productBanner:     "pyflare-banner.png"
+
+# Slideshow
+slideshow:             "show.qml"
+slideshowAPI:          2
+
+# Colours (Qt palette)
+style:
+  sidebarBackground:   "#0D1117"
+  sidebarText:         "#E6EDF3"
+  sidebarTextSelect:   "#FFFFFF"
+  sidebarTextHighlight:"#3B5BDB"

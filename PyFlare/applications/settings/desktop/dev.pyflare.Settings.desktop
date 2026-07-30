@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Settings
+Comment=System configuration and preferences
+Icon=dev.pyflare.Settings
+Exec=/opt/pyflare/apps/settings/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Settings
+Categories=PyFlare;
+Keywords=pyflare;aachman;

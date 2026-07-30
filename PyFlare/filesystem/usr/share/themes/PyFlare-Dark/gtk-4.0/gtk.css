@@ -1,0 +1,21 @@
+/* PyFlare OS GTK4 Theme — Aachman Studios */
+@define-color accent_color #3B5BDB;
+@define-color accent_bg_color #3B5BDB;
+@define-color accent_fg_color #ffffff;
+@define-color window_bg_color #0D1117;
+@define-color window_fg_color #E6EDF3;
+@define-color view_bg_color #0C0F1E;
+@define-color view_fg_color #E6EDF3;
+@define-color headerbar_bg_color #0D1117;
+@define-color headerbar_fg_color #E6EDF3;
+@define-color headerbar_border_color rgba(255,255,255,0.06);
+@define-color sidebar_bg_color #0D1117;
+@define-color card_bg_color #161B22;
+@define-color card_fg_color #E6EDF3;
+@define-color dialog_bg_color #161B22;
+@define-color popover_bg_color #21262D;
+@define-color shade_color rgba(0,0,0,0.4);
+@define-color scrollbar_outline_color rgba(255,255,255,0.05);
+@define-color success_color #2EA043;
+@define-color warning_color #D29922;
+@define-color error_color #F85149;

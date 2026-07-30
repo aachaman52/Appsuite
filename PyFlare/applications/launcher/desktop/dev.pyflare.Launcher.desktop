@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Launcher
+Comment=Application launcher with AI suggestions
+Icon=dev.pyflare.Launcher
+Exec=/opt/pyflare/apps/launcher/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Launcher
+Categories=PyFlare;
+Keywords=pyflare;aachman;

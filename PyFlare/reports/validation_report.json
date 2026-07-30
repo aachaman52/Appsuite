@@ -1,0 +1,110 @@
+{
+  "timestamp": "2026-07-30T13:20:59.546566+00:00Z",
+  "total": 14,
+  "passed": 14,
+  "failed": 0,
+  "results": [
+    {
+      "validator": "validate_branding",
+      "label": "Branding assets",
+      "passed": true,
+      "errors": [],
+      "duration": 0.002508878707885742
+    },
+    {
+      "validator": "validate_icons",
+      "label": "Icon theme",
+      "passed": true,
+      "errors": [],
+      "duration": 0.0008771419525146484
+    },
+    {
+      "validator": "validate_wallpapers",
+      "label": "Wallpapers",
+      "passed": true,
+      "errors": [],
+      "duration": 0.00043892860412597656
+    },
+    {
+      "validator": "validate_json",
+      "label": "JSON files",
+      "passed": true,
+      "errors": [],
+      "duration": 0.04672122001647949
+    },
+    {
+      "validator": "validate_svg",
+      "label": "SVG files",
+      "passed": true,
+      "errors": [],
+      "duration": 0.0535430908203125
+    },
+    {
+      "validator": "validate_desktop",
+      "label": "Desktop entries",
+      "passed": true,
+      "errors": [],
+      "duration": 0.004357337951660156
+    },
+    {
+      "validator": "validate_packages",
+      "label": "Package manifests",
+      "passed": true,
+      "errors": [],
+      "duration": 0.002470731735229492
+    },
+    {
+      "validator": "validate_filesystem",
+      "label": "Filesystem overlay",
+      "passed": true,
+      "errors": [],
+      "duration": 0.0007607936859130859
+    },
+    {
+      "validator": "validate_theme",
+      "label": "GTK/GNOME theme",
+      "passed": true,
+      "errors": [],
+      "duration": 0.0005702972412109375
+    },
+    {
+      "validator": "validate_configs",
+      "label": "Config files",
+      "passed": true,
+      "errors": [],
+      "duration": 0.04168105125427246
+    },
+    {
+      "validator": "validate_services",
+      "label": "Systemd services",
+      "passed": true,
+      "errors": [],
+      "duration": 0.006544828414916992
+    },
+    {
+      "validator": "validate_permissions",
+      "label": "File permissions",
+      "passed": true,
+      "errors": [
+        "opt/pyflare/engine/pyflare-engine not executable (fixable at install)",
+        "opt/pyflare/bin/pyflare-updater not executable (fixable at install)",
+        "opt/pyflare/bin/pyflare-firstrun not executable (fixable at install)"
+      ],
+      "duration": 0.0008816719055175781
+    },
+    {
+      "validator": "validate_desktop_entries",
+      "label": "Desktop entry syntax",
+      "passed": true,
+      "errors": [],
+      "duration": 0.000637054443359375
+    },
+    {
+      "validator": "validate_boot",
+      "label": "Boot configuration",
+      "passed": true,
+      "errors": [],
+      "duration": 0.0005168914794921875
+    }
+  ]
+}

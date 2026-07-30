@@ -1,0 +1,9 @@
+# PyFlare OS udev rules
+# GPU power management
+SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TAG+="uaccess"
+# USB input devices
+SUBSYSTEM=="input", GROUP="input", MODE="0664"
+# Webcam
+SUBSYSTEM=="video4linux", GROUP="video", MODE="0664"
+# PyFlare Engine socket
+SUBSYSTEM=="misc", KERNEL=="pyflare*", MODE="0660", GROUP="pyflare"

@@ -1,0 +1,27 @@
+{
+  "schemes": [
+    {
+      "name": "PyFlare Dark",
+      "background": "#0B0F19",
+      "foreground": "#F9FAFB",
+      "black": "#1E293B",
+      "red": "#EF4444",
+      "green": "#10B981",
+      "yellow": "#F59E0B",
+      "blue": "#3B82F6",
+      "purple": "#8A5CF5",
+      "cyan": "#00D4FF",
+      "white": "#F9FAFB",
+      "brightBlack": "#334155",
+      "brightRed": "#F87171",
+      "brightGreen": "#34D399",
+      "brightYellow": "#FCD34D",
+      "brightBlue": "#60A5FA",
+      "brightPurple": "#A78BFA",
+      "brightCyan": "#38BDF8",
+      "brightWhite": "#F8FAFC",
+      "cursorColor": "#3B82F6",
+      "selectionBackground": "#1E3A5F"
+    }
+  ]
+}

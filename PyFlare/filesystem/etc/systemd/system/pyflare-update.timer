@@ -1,0 +1,11 @@
+[Unit]
+Description=PyFlare OS daily update check timer
+Requires=pyflare-update.service
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=3600
+
+[Install]
+WantedBy=timers.target

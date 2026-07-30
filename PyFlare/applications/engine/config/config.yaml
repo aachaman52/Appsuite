@@ -1,0 +1,17 @@
+# PyFlare Engine — default configuration
+# dev.pyflare.Engine
+
+app:
+  id: "dev.pyflare.Engine"
+  name: "PyFlare Engine"
+  version: "1.0.0"
+
+ui:
+  theme: system
+  language: system
+  scale: 1.0
+
+general:
+  autostart: false
+  minimize_to_tray: false
+  check_updates: true

@@ -1,0 +1,20 @@
+[Unit]
+Description=PyFlare Engine Background Service
+After=network.target dbus.service
+Wants=network.target
+
+[Service]
+Type=dbus
+BusName=dev.pyflare.Engine
+ExecStart=/opt/pyflare/engine/pyflare-engine --daemon
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pyflare-engine
+Environment=PYFLARE_HOME=/opt/pyflare
+Environment=PYFLARE_DATA=/var/lib/pyflare
+
+[Install]
+WantedBy=multi-user.target

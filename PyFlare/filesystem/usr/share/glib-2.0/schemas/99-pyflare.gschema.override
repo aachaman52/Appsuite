@@ -1,0 +1,67 @@
+[org.gnome.desktop.interface]
+gtk-theme='PyFlare-Dark'
+icon-theme='PyFlare-Icons'
+cursor-theme='PyFlare'
+cursor-size=24
+font-name='Inter 11'
+document-font-name='Inter 11'
+monospace-font-name='JetBrains Mono 11'
+color-scheme='prefer-dark'
+accent-color='blue'
+enable-animations=true
+show-battery-percentage=true
+clock-show-weekday=true
+clock-format='12h'
+
+[org.gnome.desktop.background]
+picture-uri='file:///usr/share/backgrounds/pyflare/default_dark_4K.png'
+picture-uri-dark='file:///usr/share/backgrounds/pyflare/default_dark_4K.png'
+picture-options='zoom'
+primary-color='#0C0F1E'
+secondary-color='#0D1117'
+
+[org.gnome.desktop.screensaver]
+picture-uri='file:///usr/share/backgrounds/pyflare/minimal_dark_4K.png'
+primary-color='#0C0F1E'
+lock-delay=uint32 30
+
+[org.gnome.shell]
+enabled-extensions=['dash-to-dock@micxgx.gmail.com','user-theme@gnome-shell-extensions.gcampax.github.com','blur-my-shell@aunetx']
+favorite-apps=['dev.pyflare.Files.desktop','dev.pyflare.Terminal.desktop','dev.pyflare.Browser.desktop','dev.pyflare.Store.desktop','dev.pyflare.Settings.desktop','dev.pyflare.AIAssistant.desktop']
+had-bluetooth-devices-setup=false
+welcome-dialog-last-shown-version='99.0'
+
+[org.gnome.shell.extensions.dash-to-dock]
+dock-position='BOTTOM'
+dash-max-icon-size=48
+show-trash=false
+show-mounts=false
+transparency-mode='FIXED'
+background-opacity=0.85
+custom-background-color=true
+background-color='#0D1117'
+running-indicator-style='DOTS'
+animate-show-apps=true
+
+[org.gnome.desktop.wm.preferences]
+button-layout='appmenu:minimize,maximize,close'
+theme='PyFlare-Dark'
+num-workspaces=4
+focus-mode='click'
+
+[org.gnome.mutter]
+dynamic-workspaces=true
+edge-tiling=true
+workspaces-only-on-primary=true
+
+[org.gnome.desktop.session]
+idle-delay=uint32 300
+
+[org.gnome.settings-daemon.plugins.color]
+night-light-enabled=true
+night-light-schedule-automatic=true
+night-light-temperature=uint32 3500
+
+[org.gnome.software]
+allow-updates=false
+download-updates=false

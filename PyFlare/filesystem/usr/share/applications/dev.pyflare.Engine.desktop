@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Engine
+Comment=The AI-native runtime
+GenericName=PyFlare Engine
+Icon=dev.pyflare.Engine
+Exec=/opt/pyflare/engine/pyflare-engine
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Engine
+Categories=Utility;System;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.Engine

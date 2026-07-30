@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+# PyFlare OS first-run wizard — stub
+# Runs once after first boot.
+import os
+import sys
+print("Welcome to PyFlare OS!")
+print("First-run setup complete.")

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=PyFlare Launcher
+Exec=/opt/pyflare/apps/launcher/launcher
+Icon=dev.pyflare.Launcher
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

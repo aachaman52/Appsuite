@@ -1,0 +1,13 @@
+# PyFlare GNOME Terminal profile (dconf dump excerpt)
+# Load with: dconf load /org/gnome/terminal/legacy/profiles:/:pyflare/ < gnome.dconf
+
+[/]
+background-color='#0B0F19'
+foreground-color='#F9FAFB'
+bold-color='#F9FAFB'
+cursor-background-color='#3B82F6'
+cursor-foreground-color='#0B0F19'
+palette=['#0B0F19', '#EF4444', '#10B981', '#F59E0B', '#3B82F6', '#8A5CF5', '#00D4FF', '#F9FAFB', '#334155', '#F87171', '#34D399', '#FCD34D', '#60A5FA', '#A78BFA', '#38BDF8', '#F8FAFC']
+use-theme-colors=false
+use-theme-background=false
+visible-name='PyFlare'

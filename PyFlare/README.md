@@ -1,38 +1,75 @@
-# AppSuite OS
+# PyFlare OS
 
-AppSuite OS is a custom Linux distribution based on **Ubuntu 24.04 LTS**. It is designed to act as the native environment for AppSuite autonomous engineering systems, providing a tightly integrated, highly optimized, and aesthetically pleasing operating system for AI-assisted software development.
+<div align="center">
+  <img src="branding/logos/svg/pyflare.svg" width="120" alt="PyFlare Logo">
+  <h3>PyFlare OS — The AI-Native Linux Distribution</h3>
+  <p>Ubuntu 24.04.2 LTS base · GNOME Desktop · Built for developers and AI systems</p>
+</div>
 
-## Project Structure
+---
 
-* **`build/`**: Working directory for ISO generation (not tracked in Git).
-* **`config/`**: Configuration files for the OS, including preinstalled packages and system settings.
-* **`branding/`**: Custom themes, wallpapers, icons, and boot splash screens.
-* **`docs/`**: Comprehensive documentation on architecture and customization.
-* **`scripts/`**: Core shell scripts that drive the ISO build process.
-* **`build.py`**: The primary Python orchestrator script to build the OS.
+## Overview
 
-## Getting Started
+**PyFlare OS** is a custom Linux distribution based on Ubuntu 24.04.2 LTS. It provides a tightly integrated, AI-native operating system designed for the PyFlare ecosystem — featuring a custom desktop environment, purpose-built applications, and a procedurally generated visual identity system.
 
-Building a custom ISO requires a Linux environment (or WSL2) with `root` privileges.
+## Repository Structure
 
-### Requirements
+```
+PyFlare/
+├── branding/              Generated assets (logos, icons, wallpapers, themes, cursors)
+├── branding_generator/    Python pipeline that generates all branding assets
+├── config/                OS build configuration (packages, settings, GRUB)
+├── filesystem/            Linux filesystem source tree (etc/, usr/, opt/)
+├── desktop/               Desktop environment overrides (GNOME gsettings, dock, menus)
+├── packages/              Package manifests, metadata, and dependency definitions
+├── installer/             Calamares installer branding, config, and slides
+├── applications/          Bundled application stubs (launchers, configs, assets)
+├── validation/            Automated validators for all asset categories
+├── scripts/               Build orchestration shell scripts
+├── docs/                  Full documentation suite
+└── tests/                 Automated test suite
+```
 
+## Quick Start
+
+### Prerequisites
 ```bash
+# Ubuntu/Debian Linux build environment
 sudo apt update
-sudo apt install -y squashfs-tools xorriso grub-pc-bin grub-efi-amd64-bin mtools dosfstools python3 python3-pip
+sudo apt install -y squashfs-tools xorriso grub-pc-bin grub-efi-amd64-bin \
+  mtools dosfstools python3 python3-pip libcairo2-dev
 pip install -r requirements.txt
 ```
 
-### Build the ISO
-
-Run the build orchestrator (must be run as root to handle chroot environments):
-
+### Generate Branding Assets
 ```bash
-sudo python3 build.py
+python -m branding_generator.main generate
+python -m branding_generator.main validate
 ```
 
-## Architecture
+### Run Validators
+```bash
+python validation/run_all.py
+```
 
-This project does **not** create a new Linux kernel or custom package manager. It leverages standard Debian/Ubuntu build paradigms (chroot, unsquashfs, mksquashfs) to remaster the official Ubuntu 24.04 LTS minimal ISO into a fully customized AppSuite OS.
+### Build ISO (Linux only)
+```bash
+sudo python3 build.py --config config/default.yaml
+```
 
-For more information, see the [Documentation](docs/).
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [BUILD.md](docs/BUILD.md) | ISO build process and requirements |
+| [DEVELOPMENT.md](docs/DEVELOPMENT.md) | Development workflow and tooling |
+| [BRANDING.md](docs/BRANDING.md) | Visual identity system |
+| [PACKAGING.md](docs/PACKAGING.md) | Package structure and manifests |
+| [INSTALLER.md](docs/INSTALLER.md) | Calamares installer configuration |
+| [DIRECTORY_STRUCTURE.md](docs/DIRECTORY_STRUCTURE.md) | Full tree reference |
+| [CONTRIBUTING.md](docs/CONTRIBUTING.md) | How to contribute |
+
+## License
+
+PyFlare OS is distributed under the [PyFlare Proprietary License](LICENSE).  
+Component licenses (Ubuntu, GNOME, GTK, etc.) remain with their respective owners.

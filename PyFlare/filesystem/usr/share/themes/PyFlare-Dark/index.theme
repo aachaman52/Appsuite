@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=PyFlare-Dark
+Comment=PyFlare OS dark GTK theme by Aachman Studios
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=PyFlare-Dark
+MetacityTheme=PyFlare-Dark
+IconTheme=PyFlare-Icons
+CursorTheme=PyFlare
+ButtonLayout=appmenu:minimize,maximize,close

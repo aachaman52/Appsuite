@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Browser
+Comment=Privacy-focused web browser
+GenericName=PyFlare Browser
+Icon=dev.pyflare.Browser
+Exec=/opt/pyflare/apps/browser/browser
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Browser
+Categories=Network;WebBrowser;PyFlare;
+Keywords=pyflare;aachman;
+X-GNOME-UsesNotifications=true
+X-Flatpak=dev.pyflare.Browser

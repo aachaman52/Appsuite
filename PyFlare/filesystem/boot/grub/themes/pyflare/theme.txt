@@ -1,0 +1,54 @@
+# PyFlare OS GRUB theme
+# /boot/grub/themes/pyflare/theme.txt
+
+title-text: ""
+desktop-color: "#0C0F1E"
+desktop-image: "background.png"
+
++ boot_menu {
+  left = 25%
+  top = 35%
+  width = 50%
+  height = 40%
+  item_font = "Inter Regular 14"
+  item_color = "#C9D1D9"
+  selected_item_color = "#00BFFF"
+  item_height = 36
+  item_spacing = 8
+  item_padding = 20
+  selected_item_pixmap_style = "select_*.png"
+  scrollbar = false
+}
+
++ label {
+  top = 15%
+  left = 0
+  width = 100%
+  align = "center"
+  id = "__title__"
+  text = "PyFlare OS 1.0.0 Ember"
+  font = "Space Grotesk Bold 24"
+  color = "#00BFFF"
+}
+
++ label {
+  top = 22%
+  left = 0
+  width = 100%
+  align = "center"
+  text = "The AI-Native Linux Distribution"
+  font = "Inter Regular 14"
+  color = "#6E7681"
+}
+
++ hbox {
+  left = 30%
+  top = 82%
+  width = 40%
+
+  + label {
+    text = "Use ↑↓ to select, ENTER to boot, e to edit"
+    font = "Inter Regular 11"
+    color = "#484F58"
+  }
+}

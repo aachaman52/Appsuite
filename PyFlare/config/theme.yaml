@@ -1,0 +1,114 @@
+# PyFlare OS — Theme Configuration
+# config/theme.yaml
+# Controls the complete visual identity applied during build.
+
+identity:
+  os_name: "PyFlare OS"
+  codename: "Ember"
+  vendor: "Aachman Studios"
+  tagline: "The AI-Native Linux Distribution"
+
+# ── Color Palette ────────────────────────────────────────────
+colors:
+  # Primary
+  indigo:        "#3B5BDB"
+  indigo_dark:   "#1C3AA9"
+  indigo_light:  "#748FFC"
+
+  # Accent
+  cyan:          "#00BFFF"
+  cyan_dark:     "#0096CC"
+  cyan_light:    "#70D7FF"
+
+  violet:        "#7C3AED"
+  violet_dark:   "#5B21B6"
+  violet_light:  "#A78BFA"
+
+  # Neutral / Dark mode backgrounds
+  bg_base:       "#0C0F1E"
+  bg_elevated:   "#0D1117"
+  bg_overlay:    "#161B22"
+  bg_surface:    "#21262D"
+  bg_muted:      "#30363D"
+
+  # Text
+  text_primary:  "#E6EDF3"
+  text_secondary: "#8B949E"
+
+  text_muted:    "#6E7681"
+  text_disabled: "#484F58"
+
+  # Semantic
+  success:       "#2EA043"
+  warning:       "#D29922"
+  error:         "#F85149"
+  info:          "#388BFD"
+
+  # Gradient stops (primary brand gradient)
+  grad_start:    "#3B5BDB"
+  grad_mid:      "#7C3AED"
+  grad_end:      "#00BFFF"
+
+# ── Typography ───────────────────────────────────────────────
+fonts:
+  ui:
+    family: "Inter"
+    size: 11
+    weight: "regular"
+  heading:
+    family: "Space Grotesk"
+    size: 14
+    weight: "semibold"
+  mono:
+    family: "JetBrains Mono"
+    size: 11
+    weight: "regular"
+  display:
+    family: "Space Grotesk"
+    size: 24
+    weight: "bold"
+
+# ── GTK Theme ───────────────────────────────────────────────
+gtk:
+  theme: "PyFlare-Dark"
+  variant: "dark"
+  rounding: 8           # border-radius in px
+  border_width: 1
+  shadow_opacity: 0.3
+  animation_duration: 200   # ms
+
+# ── Icon Theme ───────────────────────────────────────────────
+icons:
+  theme: "PyFlare-Icons"
+  fallback: "Adwaita"
+  size_default: 48
+  size_small: 16
+  size_large: 256
+
+# ── Cursor Theme ─────────────────────────────────────────────
+cursor:
+  theme: "PyFlare"
+  size: 24
+  fallback: "Adwaita"
+
+# ── Desktop ──────────────────────────────────────────────────
+desktop:
+  wallpaper_default: "/usr/share/backgrounds/pyflare/default_dark_4K.png"
+  wallpaper_light:   "/usr/share/backgrounds/pyflare/minimal_light_4K.png"
+  wallpaper_oled:    "/usr/share/backgrounds/pyflare/geometric_dark_4K.png"
+  color_scheme: "prefer-dark"
+  accent_color: "blue"
+
+# ── GRUB ─────────────────────────────────────────────────────
+grub:
+  theme_dir: "/boot/grub/themes/pyflare"
+  background: "background.png"
+  gfxmode: "1920x1080,auto"
+  timeout: 5
+
+# ── Plymouth ─────────────────────────────────────────────────
+plymouth:
+  theme: "pyflare"
+  bg_top:    [0.047, 0.059, 0.118]
+  bg_bottom: [0.024, 0.031, 0.063]
+  logo: "/usr/share/plymouth/themes/pyflare/logo.png"

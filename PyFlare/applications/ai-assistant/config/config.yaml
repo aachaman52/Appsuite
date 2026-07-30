@@ -1,0 +1,17 @@
+# AI Assistant — default configuration
+# dev.pyflare.AIAssistant
+
+app:
+  id: "dev.pyflare.AIAssistant"
+  name: "AI Assistant"
+  version: "1.0.0"
+
+ui:
+  theme: system
+  language: system
+  scale: 1.0
+
+general:
+  autostart: false
+  minimize_to_tray: false
+  check_updates: true

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=PyFlare Files
+Comment=AI-powered file manager
+Icon=dev.pyflare.Files
+Exec=/opt/pyflare/apps/files/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.Files
+Categories=PyFlare;
+Keywords=pyflare;aachman;

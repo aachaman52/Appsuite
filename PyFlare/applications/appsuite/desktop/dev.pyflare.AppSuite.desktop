@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=AppSuite
+Comment=Integrated development and productivity suite
+Icon=dev.pyflare.AppSuite
+Exec=/opt/pyflare/apps/appsuite/src/main.py
+Terminal=false
+StartupNotify=true
+StartupWMClass=dev.pyflare.AppSuite
+Categories=PyFlare;
+Keywords=pyflare;aachman;

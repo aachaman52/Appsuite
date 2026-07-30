@@ -1,0 +1,12 @@
+[Unit]
+Description=PyFlare OS Update Check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/pyflare/bin/pyflare-updater --check
+User=root
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pyflare-update

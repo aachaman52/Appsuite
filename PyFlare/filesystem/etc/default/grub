@@ -1,0 +1,11 @@
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=5
+GRUB_TIMEOUT_STYLE=countdown
+GRUB_DISTRIBUTOR="PyFlare OS"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 vt.global_cursor_default=0 plymouth.enable=1"
+GRUB_CMDLINE_LINUX=""
+GRUB_BACKGROUND="/usr/share/grub/themes/pyflare/background.png"
+GRUB_THEME="/boot/grub/themes/pyflare/theme.txt"
+GRUB_GFXMODE="1920x1080,auto"
+GRUB_GFXPAYLOAD_LINUX="keep"
+GRUB_DISABLE_OS_PROBER=false
