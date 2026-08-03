@@ -1,55 +1,55 @@
 {
-  "timestamp": "2026-07-30T13:21:00.433012+00:00Z",
-  "total_duration_seconds": 1.17,
+  "timestamp": "2026-08-02T14:40:37.460536+00:00Z",
+  "total_duration_seconds": 632.0,
   "stages": {
     "Validation Suite": {
       "stage": 1,
-      "duration_seconds": 0.165,
+      "duration_seconds": 3.596,
       "status": "PASS"
     },
     "Root Filesystem Preparation": {
       "stage": 2,
-      "duration_seconds": 0.304,
+      "duration_seconds": 28.424,
       "status": "PASS"
     },
     "Package Preparation": {
       "stage": 3,
-      "duration_seconds": 0.012,
+      "duration_seconds": 35.41,
       "status": "PASS"
     },
     "Branding Deployment": {
       "stage": 4,
-      "duration_seconds": 0.23,
+      "duration_seconds": 2.461,
       "status": "PASS"
     },
     "Application Packaging": {
       "stage": 5,
-      "duration_seconds": 0.219,
+      "duration_seconds": 2.337,
       "status": "PASS"
     },
     "Desktop Integration": {
       "stage": 6,
-      "duration_seconds": 0.001,
+      "duration_seconds": 0.023,
       "status": "PASS"
     },
     "Boot Configuration": {
       "stage": 7,
-      "duration_seconds": 0.009,
+      "duration_seconds": 0.001,
       "status": "PASS"
     },
     "Filesystem Manifest & Checksums": {
       "stage": 8,
-      "duration_seconds": 0.107,
+      "duration_seconds": 3.951,
       "status": "PASS"
     },
     "SquashFS Creation": {
       "stage": 9,
-      "duration_seconds": 0.0,
+      "duration_seconds": 449.594,
       "status": "PASS"
     },
     "ISO Creation": {
       "stage": 10,
-      "duration_seconds": 0.0,
+      "duration_seconds": 106.081,
       "status": "PASS"
     }
   }
