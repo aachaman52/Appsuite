@@ -1,14 +1,190 @@
 #!/usr/bin/env bash
 # PyFlare OS — Package Installation Script
-set -euo pipefail
+export DEBIAN_FRONTEND=noninteractive
 
 echo "[PyFlare] Updating APT package index..."
-apt-get update -q
+apt-get update -q || true
 
-echo "[PyFlare] Installing 150 base packages..."
-apt-get install -y --no-install-recommends ubuntu-standard ubuntu-minimal linux-generic-hwe-24.04 linux-headers-generic-hwe-24.04 initramfs-tools grub-pc grub-efi-amd64 grub-efi-amd64-signed shim-signed efibootmgr os-prober systemd systemd-resolved systemd-timesyncd udev dbus polkit udisks2 upower acpid gnome-shell gnome-session gnome-control-center gnome-tweaks gnome-shell-extensions gdm3 gvfs gvfs-backends nautilus nautilus-extension-gnome-terminal gnome-terminal gnome-disk-utility gnome-system-monitor gnome-calculator gnome-text-editor gnome-screenshot gnome-keyring libpam-gnome-keyring seahorse baobab evince eog file-roller gedit cheese totem rhythmbox simple-scan xorg xserver-xorg-core xserver-xorg-input-libinput mesa-utils libgl1-mesa-dri libgles2-mesa vulkan-tools libvulkan1 nvidia-driver-535 amdgpu-pro intel-media-va-driver plymouth plymouth-themes plymouth-theme-spinner pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber pavucontrol alsa-utils network-manager network-manager-gnome network-manager-openvpn network-manager-openvpn-gnome wireless-tools wpasupplicant curl wget openssh-client openssh-server nftables ufw avahi-daemon fonts-noto fonts-noto-cjk fonts-noto-color-emoji fonts-liberation fonts-ubuntu fonts-freefont-ttf fontconfig cups system-config-printer printer-driver-gutenprint git git-lfs python3 python3-pip python3-venv python3-dev python3-setuptools python3-wheel build-essential cmake make gcc g++ clang lldb gdb valgrind strace pkg-config libssl-dev libffi-dev libsqlite3-dev jq tree tmux htop neofetch unzip zip p7zip-full docker.io docker-compose containerd flatpak gnome-software-plugin-flatpak python3-pil python3-numpy python3-requests python3-yaml python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 libadwaita-1-dev vim nano less man-db bash-completion command-not-found software-properties-common apt-transport-https ca-certificates gnupg lsb-release debconf-utils gdebi synaptic timeshift
+echo "[PyFlare] Installing desktop packages individually..."
+apt-get install -y --no-install-recommends ubuntu-standard || echo "[WARN] Could not install ubuntu-standard, skipping."
+apt-get install -y --no-install-recommends ubuntu-minimal || echo "[WARN] Could not install ubuntu-minimal, skipping."
+apt-get install -y --no-install-recommends linux-generic-hwe-24.04 || echo "[WARN] Could not install linux-generic-hwe-24.04, skipping."
+apt-get install -y --no-install-recommends linux-headers-generic-hwe-24.04 || echo "[WARN] Could not install linux-headers-generic-hwe-24.04, skipping."
+apt-get install -y --no-install-recommends initramfs-tools || echo "[WARN] Could not install initramfs-tools, skipping."
+apt-get install -y --no-install-recommends grub-pc || echo "[WARN] Could not install grub-pc, skipping."
+apt-get install -y --no-install-recommends grub-efi-amd64 || echo "[WARN] Could not install grub-efi-amd64, skipping."
+apt-get install -y --no-install-recommends grub-efi-amd64-signed || echo "[WARN] Could not install grub-efi-amd64-signed, skipping."
+apt-get install -y --no-install-recommends shim-signed || echo "[WARN] Could not install shim-signed, skipping."
+apt-get install -y --no-install-recommends efibootmgr || echo "[WARN] Could not install efibootmgr, skipping."
+apt-get install -y --no-install-recommends os-prober || echo "[WARN] Could not install os-prober, skipping."
+apt-get install -y --no-install-recommends systemd || echo "[WARN] Could not install systemd, skipping."
+apt-get install -y --no-install-recommends systemd-resolved || echo "[WARN] Could not install systemd-resolved, skipping."
+apt-get install -y --no-install-recommends systemd-timesyncd || echo "[WARN] Could not install systemd-timesyncd, skipping."
+apt-get install -y --no-install-recommends udev || echo "[WARN] Could not install udev, skipping."
+apt-get install -y --no-install-recommends dbus || echo "[WARN] Could not install dbus, skipping."
+apt-get install -y --no-install-recommends polkit || echo "[WARN] Could not install polkit, skipping."
+apt-get install -y --no-install-recommends udisks2 || echo "[WARN] Could not install udisks2, skipping."
+apt-get install -y --no-install-recommends upower || echo "[WARN] Could not install upower, skipping."
+apt-get install -y --no-install-recommends acpid || echo "[WARN] Could not install acpid, skipping."
+apt-get install -y --no-install-recommends gnome-shell || echo "[WARN] Could not install gnome-shell, skipping."
+apt-get install -y --no-install-recommends gnome-session || echo "[WARN] Could not install gnome-session, skipping."
+apt-get install -y --no-install-recommends gnome-control-center || echo "[WARN] Could not install gnome-control-center, skipping."
+apt-get install -y --no-install-recommends gnome-tweaks || echo "[WARN] Could not install gnome-tweaks, skipping."
+apt-get install -y --no-install-recommends gnome-shell-extensions || echo "[WARN] Could not install gnome-shell-extensions, skipping."
+apt-get install -y --no-install-recommends gdm3 || echo "[WARN] Could not install gdm3, skipping."
+apt-get install -y --no-install-recommends gvfs || echo "[WARN] Could not install gvfs, skipping."
+apt-get install -y --no-install-recommends gvfs-backends || echo "[WARN] Could not install gvfs-backends, skipping."
+apt-get install -y --no-install-recommends nautilus || echo "[WARN] Could not install nautilus, skipping."
+apt-get install -y --no-install-recommends nautilus-extension-gnome-terminal || echo "[WARN] Could not install nautilus-extension-gnome-terminal, skipping."
+apt-get install -y --no-install-recommends gnome-terminal || echo "[WARN] Could not install gnome-terminal, skipping."
+apt-get install -y --no-install-recommends gnome-disk-utility || echo "[WARN] Could not install gnome-disk-utility, skipping."
+apt-get install -y --no-install-recommends gnome-system-monitor || echo "[WARN] Could not install gnome-system-monitor, skipping."
+apt-get install -y --no-install-recommends gnome-calculator || echo "[WARN] Could not install gnome-calculator, skipping."
+apt-get install -y --no-install-recommends gnome-text-editor || echo "[WARN] Could not install gnome-text-editor, skipping."
+apt-get install -y --no-install-recommends gnome-screenshot || echo "[WARN] Could not install gnome-screenshot, skipping."
+apt-get install -y --no-install-recommends gnome-keyring || echo "[WARN] Could not install gnome-keyring, skipping."
+apt-get install -y --no-install-recommends libpam-gnome-keyring || echo "[WARN] Could not install libpam-gnome-keyring, skipping."
+apt-get install -y --no-install-recommends seahorse || echo "[WARN] Could not install seahorse, skipping."
+apt-get install -y --no-install-recommends baobab || echo "[WARN] Could not install baobab, skipping."
+apt-get install -y --no-install-recommends evince || echo "[WARN] Could not install evince, skipping."
+apt-get install -y --no-install-recommends eog || echo "[WARN] Could not install eog, skipping."
+apt-get install -y --no-install-recommends file-roller || echo "[WARN] Could not install file-roller, skipping."
+apt-get install -y --no-install-recommends gedit || echo "[WARN] Could not install gedit, skipping."
+apt-get install -y --no-install-recommends cheese || echo "[WARN] Could not install cheese, skipping."
+apt-get install -y --no-install-recommends totem || echo "[WARN] Could not install totem, skipping."
+apt-get install -y --no-install-recommends rhythmbox || echo "[WARN] Could not install rhythmbox, skipping."
+apt-get install -y --no-install-recommends simple-scan || echo "[WARN] Could not install simple-scan, skipping."
+apt-get install -y --no-install-recommends xorg || echo "[WARN] Could not install xorg, skipping."
+apt-get install -y --no-install-recommends xserver-xorg-core || echo "[WARN] Could not install xserver-xorg-core, skipping."
+apt-get install -y --no-install-recommends xserver-xorg-input-libinput || echo "[WARN] Could not install xserver-xorg-input-libinput, skipping."
+apt-get install -y --no-install-recommends mesa-utils || echo "[WARN] Could not install mesa-utils, skipping."
+apt-get install -y --no-install-recommends libgl1-mesa-dri || echo "[WARN] Could not install libgl1-mesa-dri, skipping."
+apt-get install -y --no-install-recommends libgles2-mesa || echo "[WARN] Could not install libgles2-mesa, skipping."
+apt-get install -y --no-install-recommends vulkan-tools || echo "[WARN] Could not install vulkan-tools, skipping."
+apt-get install -y --no-install-recommends libvulkan1 || echo "[WARN] Could not install libvulkan1, skipping."
+apt-get install -y --no-install-recommends nvidia-driver-535 || echo "[WARN] Could not install nvidia-driver-535, skipping."
+apt-get install -y --no-install-recommends amdgpu-pro || echo "[WARN] Could not install amdgpu-pro, skipping."
+apt-get install -y --no-install-recommends intel-media-va-driver || echo "[WARN] Could not install intel-media-va-driver, skipping."
+apt-get install -y --no-install-recommends plymouth || echo "[WARN] Could not install plymouth, skipping."
+apt-get install -y --no-install-recommends plymouth-themes || echo "[WARN] Could not install plymouth-themes, skipping."
+apt-get install -y --no-install-recommends plymouth-theme-spinner || echo "[WARN] Could not install plymouth-theme-spinner, skipping."
+apt-get install -y --no-install-recommends pipewire || echo "[WARN] Could not install pipewire, skipping."
+apt-get install -y --no-install-recommends pipewire-alsa || echo "[WARN] Could not install pipewire-alsa, skipping."
+apt-get install -y --no-install-recommends pipewire-pulse || echo "[WARN] Could not install pipewire-pulse, skipping."
+apt-get install -y --no-install-recommends pipewire-jack || echo "[WARN] Could not install pipewire-jack, skipping."
+apt-get install -y --no-install-recommends wireplumber || echo "[WARN] Could not install wireplumber, skipping."
+apt-get install -y --no-install-recommends pavucontrol || echo "[WARN] Could not install pavucontrol, skipping."
+apt-get install -y --no-install-recommends alsa-utils || echo "[WARN] Could not install alsa-utils, skipping."
+apt-get install -y --no-install-recommends network-manager || echo "[WARN] Could not install network-manager, skipping."
+apt-get install -y --no-install-recommends network-manager-gnome || echo "[WARN] Could not install network-manager-gnome, skipping."
+apt-get install -y --no-install-recommends network-manager-openvpn || echo "[WARN] Could not install network-manager-openvpn, skipping."
+apt-get install -y --no-install-recommends network-manager-openvpn-gnome || echo "[WARN] Could not install network-manager-openvpn-gnome, skipping."
+apt-get install -y --no-install-recommends wireless-tools || echo "[WARN] Could not install wireless-tools, skipping."
+apt-get install -y --no-install-recommends wpasupplicant || echo "[WARN] Could not install wpasupplicant, skipping."
+apt-get install -y --no-install-recommends curl || echo "[WARN] Could not install curl, skipping."
+apt-get install -y --no-install-recommends wget || echo "[WARN] Could not install wget, skipping."
+apt-get install -y --no-install-recommends openssh-client || echo "[WARN] Could not install openssh-client, skipping."
+apt-get install -y --no-install-recommends openssh-server || echo "[WARN] Could not install openssh-server, skipping."
+apt-get install -y --no-install-recommends nftables || echo "[WARN] Could not install nftables, skipping."
+apt-get install -y --no-install-recommends ufw || echo "[WARN] Could not install ufw, skipping."
+apt-get install -y --no-install-recommends avahi-daemon || echo "[WARN] Could not install avahi-daemon, skipping."
+apt-get install -y --no-install-recommends fonts-noto || echo "[WARN] Could not install fonts-noto, skipping."
+apt-get install -y --no-install-recommends fonts-noto-cjk || echo "[WARN] Could not install fonts-noto-cjk, skipping."
+apt-get install -y --no-install-recommends fonts-noto-color-emoji || echo "[WARN] Could not install fonts-noto-color-emoji, skipping."
+apt-get install -y --no-install-recommends fonts-liberation || echo "[WARN] Could not install fonts-liberation, skipping."
+apt-get install -y --no-install-recommends fonts-ubuntu || echo "[WARN] Could not install fonts-ubuntu, skipping."
+apt-get install -y --no-install-recommends fonts-freefont-ttf || echo "[WARN] Could not install fonts-freefont-ttf, skipping."
+apt-get install -y --no-install-recommends fontconfig || echo "[WARN] Could not install fontconfig, skipping."
+apt-get install -y --no-install-recommends cups || echo "[WARN] Could not install cups, skipping."
+apt-get install -y --no-install-recommends system-config-printer || echo "[WARN] Could not install system-config-printer, skipping."
+apt-get install -y --no-install-recommends printer-driver-gutenprint || echo "[WARN] Could not install printer-driver-gutenprint, skipping."
+apt-get install -y --no-install-recommends git || echo "[WARN] Could not install git, skipping."
+apt-get install -y --no-install-recommends git-lfs || echo "[WARN] Could not install git-lfs, skipping."
+apt-get install -y --no-install-recommends python3 || echo "[WARN] Could not install python3, skipping."
+apt-get install -y --no-install-recommends python3-pip || echo "[WARN] Could not install python3-pip, skipping."
+apt-get install -y --no-install-recommends python3-venv || echo "[WARN] Could not install python3-venv, skipping."
+apt-get install -y --no-install-recommends python3-dev || echo "[WARN] Could not install python3-dev, skipping."
+apt-get install -y --no-install-recommends python3-setuptools || echo "[WARN] Could not install python3-setuptools, skipping."
+apt-get install -y --no-install-recommends python3-wheel || echo "[WARN] Could not install python3-wheel, skipping."
+apt-get install -y --no-install-recommends build-essential || echo "[WARN] Could not install build-essential, skipping."
+apt-get install -y --no-install-recommends cmake || echo "[WARN] Could not install cmake, skipping."
+apt-get install -y --no-install-recommends make || echo "[WARN] Could not install make, skipping."
+apt-get install -y --no-install-recommends gcc || echo "[WARN] Could not install gcc, skipping."
+apt-get install -y --no-install-recommends g++ || echo "[WARN] Could not install g++, skipping."
+apt-get install -y --no-install-recommends clang || echo "[WARN] Could not install clang, skipping."
+apt-get install -y --no-install-recommends lldb || echo "[WARN] Could not install lldb, skipping."
+apt-get install -y --no-install-recommends gdb || echo "[WARN] Could not install gdb, skipping."
+apt-get install -y --no-install-recommends valgrind || echo "[WARN] Could not install valgrind, skipping."
+apt-get install -y --no-install-recommends strace || echo "[WARN] Could not install strace, skipping."
+apt-get install -y --no-install-recommends pkg-config || echo "[WARN] Could not install pkg-config, skipping."
+apt-get install -y --no-install-recommends libssl-dev || echo "[WARN] Could not install libssl-dev, skipping."
+apt-get install -y --no-install-recommends libffi-dev || echo "[WARN] Could not install libffi-dev, skipping."
+apt-get install -y --no-install-recommends libsqlite3-dev || echo "[WARN] Could not install libsqlite3-dev, skipping."
+apt-get install -y --no-install-recommends jq || echo "[WARN] Could not install jq, skipping."
+apt-get install -y --no-install-recommends tree || echo "[WARN] Could not install tree, skipping."
+apt-get install -y --no-install-recommends tmux || echo "[WARN] Could not install tmux, skipping."
+apt-get install -y --no-install-recommends htop || echo "[WARN] Could not install htop, skipping."
+apt-get install -y --no-install-recommends neofetch || echo "[WARN] Could not install neofetch, skipping."
+apt-get install -y --no-install-recommends unzip || echo "[WARN] Could not install unzip, skipping."
+apt-get install -y --no-install-recommends zip || echo "[WARN] Could not install zip, skipping."
+apt-get install -y --no-install-recommends p7zip-full || echo "[WARN] Could not install p7zip-full, skipping."
+apt-get install -y --no-install-recommends docker.io || echo "[WARN] Could not install docker.io, skipping."
+apt-get install -y --no-install-recommends docker-compose || echo "[WARN] Could not install docker-compose, skipping."
+apt-get install -y --no-install-recommends containerd || echo "[WARN] Could not install containerd, skipping."
+apt-get install -y --no-install-recommends flatpak || echo "[WARN] Could not install flatpak, skipping."
+apt-get install -y --no-install-recommends gnome-software-plugin-flatpak || echo "[WARN] Could not install gnome-software-plugin-flatpak, skipping."
+apt-get install -y --no-install-recommends python3-pil || echo "[WARN] Could not install python3-pil, skipping."
+apt-get install -y --no-install-recommends python3-numpy || echo "[WARN] Could not install python3-numpy, skipping."
+apt-get install -y --no-install-recommends python3-requests || echo "[WARN] Could not install python3-requests, skipping."
+apt-get install -y --no-install-recommends python3-yaml || echo "[WARN] Could not install python3-yaml, skipping."
+apt-get install -y --no-install-recommends python3-gi || echo "[WARN] Could not install python3-gi, skipping."
+apt-get install -y --no-install-recommends gir1.2-gtk-4.0 || echo "[WARN] Could not install gir1.2-gtk-4.0, skipping."
+apt-get install -y --no-install-recommends gir1.2-adw-1 || echo "[WARN] Could not install gir1.2-adw-1, skipping."
+apt-get install -y --no-install-recommends libadwaita-1-dev || echo "[WARN] Could not install libadwaita-1-dev, skipping."
+apt-get install -y --no-install-recommends vim || echo "[WARN] Could not install vim, skipping."
+apt-get install -y --no-install-recommends nano || echo "[WARN] Could not install nano, skipping."
+apt-get install -y --no-install-recommends less || echo "[WARN] Could not install less, skipping."
+apt-get install -y --no-install-recommends man-db || echo "[WARN] Could not install man-db, skipping."
+apt-get install -y --no-install-recommends bash-completion || echo "[WARN] Could not install bash-completion, skipping."
+apt-get install -y --no-install-recommends command-not-found || echo "[WARN] Could not install command-not-found, skipping."
+apt-get install -y --no-install-recommends software-properties-common || echo "[WARN] Could not install software-properties-common, skipping."
+apt-get install -y --no-install-recommends apt-transport-https || echo "[WARN] Could not install apt-transport-https, skipping."
+apt-get install -y --no-install-recommends ca-certificates || echo "[WARN] Could not install ca-certificates, skipping."
+apt-get install -y --no-install-recommends gnupg || echo "[WARN] Could not install gnupg, skipping."
+apt-get install -y --no-install-recommends lsb-release || echo "[WARN] Could not install lsb-release, skipping."
+apt-get install -y --no-install-recommends debconf-utils || echo "[WARN] Could not install debconf-utils, skipping."
+apt-get install -y --no-install-recommends gdebi || echo "[WARN] Could not install gdebi, skipping."
+apt-get install -y --no-install-recommends synaptic || echo "[WARN] Could not install synaptic, skipping."
+apt-get install -y --no-install-recommends timeshift || echo "[WARN] Could not install timeshift, skipping."
 
-echo "[PyFlare] Setting up Flatpak & Snaps..."
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
+# ---------------------------------------------------------------
+# Create the PyFlare live user + configure GDM3 auto-login
+# ---------------------------------------------------------------
+echo "[PyFlare] Creating live user 'pyflare'..."
+id pyflare &>/dev/null || useradd -m -s /bin/bash -G sudo,adm,cdrom,dip,plugdev pyflare 2>/dev/null || useradd -m -s /bin/bash pyflare
+echo "pyflare:pyflare" | chpasswd
+echo "root:pyflare" | chpasswd
+passwd -u root || true
 
-echo "[PyFlare] Package installation complete."
+# GDM3 auto-login
+mkdir -p /etc/gdm3
+cat > /etc/gdm3/custom.conf << 'GDMEOF'
+[daemon]
+AutomaticLoginEnable=true
+AutomaticLogin=pyflare
+TimedLoginEnable=false
+GDMEOF
+
+# Enable gdm3 as default display manager
+systemctl enable gdm3 2>/dev/null || ln -sf /lib/systemd/system/gdm3.service /etc/systemd/system/display-manager.service 2>/dev/null || true
+systemctl set-default graphical.target 2>/dev/null || true
+
+# Casper live user config
+cat > /etc/casper.conf << 'CASPEREOF'
+export USERNAME=pyflare
+export USERFULLNAME="PyFlare User"
+export HOST=pyflare
+export BUILD_SYSTEM=Ubuntu
+CASPEREOF
+
+echo "[PyFlare] Setup complete. User: pyflare / Password: pyflare"

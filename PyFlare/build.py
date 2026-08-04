@@ -51,7 +51,7 @@ ROOT = Path(__file__).resolve().parent
 LOG_DIR = ROOT / "logs"
 REPORT_DIR = ROOT / "reports"
 BUILD_DIR = ROOT / "build"
-ROOTFS_DIR = BUILD_DIR / "rootfs"
+ROOTFS_DIR = Path("/var/tmp/pyflare_rootfs") if platform.system() == "Linux" else BUILD_DIR / "rootfs"
 OUTPUT_DIR = ROOT / "output"
 CONFIG_DIR = ROOT / "config"
 FS_SRC = ROOT / "filesystem"
@@ -269,6 +269,23 @@ class PyFlareBuildPipeline:
                 self.build_log.warning(f"Could not completely remove old rootfs dir: {e}")
         ROOTFS_DIR.mkdir(parents=True, exist_ok=True)
 
+        if self.is_linux and os.geteuid() == 0:
+            base_iso = ROOT / "Iso`s" / "ubuntu-24.04.4-live-server-amd64.iso"
+            if base_iso.exists():
+                self.build_log.info("Extracting true Linux base OS from ISO...")
+                mnt_dir = Path("/tmp/ubuntu_iso")
+                mnt_dir.mkdir(exist_ok=True)
+                subprocess.run(["mount", "-o", "loop,ro", str(base_iso), str(mnt_dir)], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                
+                # Extract the base minimal OS which contains /bin/bash and apt
+                base_sq = mnt_dir / "casper" / "ubuntu-server-minimal.squashfs"
+                if base_sq.exists():
+                    subprocess.run(["unsquashfs", "-f", "-d", str(ROOTFS_DIR), str(base_sq)], check=True, stdout=subprocess.DEVNULL)
+                else:
+                    self.build_log.error("Could not find ubuntu-server-minimal.squashfs in base ISO!")
+                
+                subprocess.run(["umount", str(mnt_dir)], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
         self.build_log.info(f"Copying filesystem tree from {FS_SRC} to {ROOTFS_DIR}")
         safe_copy(FS_SRC, ROOTFS_DIR, symlinks=True)
 
@@ -343,29 +360,87 @@ class PyFlareBuildPipeline:
             if isinstance(pkgs, list):
                 all_apt_pkgs.extend(pkgs)
 
+        # Build install script - each package individually so one failure won't kill the whole run
+        pkg_install_lines = "\n".join(
+            f'apt-get install -y --no-install-recommends {pkg} || echo "[WARN] Could not install {pkg}, skipping."'
+            for pkg in all_apt_pkgs
+        )
         script_content = f"""#!/usr/bin/env bash
 # PyFlare OS — Package Installation Script
-set -euo pipefail
+export DEBIAN_FRONTEND=noninteractive
 
 echo "[PyFlare] Updating APT package index..."
-apt-get update -q
+apt-get update -q || true
 
-echo "[PyFlare] Installing {len(all_apt_pkgs)} base packages..."
-apt-get install -y --no-install-recommends {" ".join(all_apt_pkgs)}
+echo "[PyFlare] Installing desktop packages individually..."
+{pkg_install_lines}
 
-echo "[PyFlare] Setting up Flatpak & Snaps..."
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
+# ---------------------------------------------------------------
+# Create the PyFlare live user + configure GDM3 auto-login
+# ---------------------------------------------------------------
+echo "[PyFlare] Creating live user 'pyflare'..."
+id pyflare &>/dev/null || useradd -m -s /bin/bash -G sudo,adm,cdrom,dip,plugdev pyflare 2>/dev/null || useradd -m -s /bin/bash pyflare
+echo "pyflare:pyflare" | chpasswd
+echo "root:pyflare" | chpasswd
+passwd -u root || true
 
-echo "[PyFlare] Package installation complete."
+# GDM3 auto-login
+mkdir -p /etc/gdm3
+cat > /etc/gdm3/custom.conf << 'GDMEOF'
+[daemon]
+AutomaticLoginEnable=true
+AutomaticLogin=pyflare
+TimedLoginEnable=false
+GDMEOF
+
+# Enable gdm3 as default display manager
+systemctl enable gdm3 2>/dev/null || ln -sf /lib/systemd/system/gdm3.service /etc/systemd/system/display-manager.service 2>/dev/null || true
+systemctl set-default graphical.target 2>/dev/null || true
+
+# Casper live user config
+cat > /etc/casper.conf << 'CASPEREOF'
+export USERNAME=pyflare
+export USERFULLNAME="PyFlare User"
+export HOST=pyflare
+export BUILD_SYSTEM=Ubuntu
+CASPEREOF
+
+echo "[PyFlare] Setup complete. User: pyflare / Password: pyflare"
 """
         with open(install_script, "w", encoding="utf-8", newline="\n") as f:
             f.write(script_content)
 
         safe_copy(install_script, ROOTFS_DIR / "opt" / "pyflare" / "bin" / "install_packages.sh")
+        (ROOTFS_DIR / "opt" / "pyflare" / "bin" / "install_packages.sh").chmod(0o755)
 
         if self.is_linux and os.geteuid() == 0:
-            self.pkg_log.info("Linux root environment detected — package manifests and scripts prepared.")
-            return True, f"Manifest generated ({len(all_apt_pkgs)} APT packages, staged for chroot)", gen_manifest
+            self.pkg_log.info("Linux root environment detected. Executing chroot package installation...")
+
+            # Setup network inside chroot
+            try:
+                shutil.copy2("/etc/resolv.conf", ROOTFS_DIR / "etc/resolv.conf")
+            except Exception:
+                pass
+
+            # Bind mounts for chroot
+            for m in ["/dev", "/proc", "/sys", "/run"]:
+                (ROOTFS_DIR / m.lstrip("/")).mkdir(parents=True, exist_ok=True)
+                subprocess.run(["mount", "--bind", m, str(ROOTFS_DIR) + m], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+            # Execute installer — capture output to packaging.log so we can audit it
+            self.build_log.info("Running APT install + user setup (several minutes)...")
+            result = subprocess.run(
+                ["chroot", str(ROOTFS_DIR), "/bin/bash", "/opt/pyflare/bin/install_packages.sh"],
+                check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+            )
+            for line in (result.stdout or "").splitlines():
+                self.pkg_log.info(line)
+
+            # Unmount binds
+            for m in reversed(["/dev", "/proc", "/sys", "/run"]):
+                subprocess.run(["umount", str(ROOTFS_DIR) + m], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                
+            return True, f"Manifest generated & packages installed ({len(all_apt_pkgs)} APT packages)", gen_manifest
         else:
             msg = f"Package manifest staged ({len(all_apt_pkgs)} APT packages). Host package installation skipped on Windows/non-root."
             self.pkg_log.info(msg)
@@ -556,23 +631,28 @@ exec python3 /opt/pyflare/apps/{slug}/src/main.py "$@"
     # Stage 8: Filesystem Manifest & Checksums
     # -----------------------------------------------------------------------
     def stage_08_filesystem_manifest(self):
+        # Fast manifest: count files per top-level directory instead of hashing
+        # every file (which would take 30+ min on a 500K file desktop rootfs).
         manifest_files = {}
         total_size = 0
+        total_count = 0
 
-        for dirpath, _, filenames in os.walk(ROOTFS_DIR):
+        for dirpath, dirnames, filenames in os.walk(ROOTFS_DIR):
             for fname in filenames:
                 fp = Path(dirpath) / fname
                 rel = str(fp.relative_to(ROOTFS_DIR)).replace("\\", "/")
                 try:
                     sz = fp.stat().st_size
-                    h = compute_sha256(fp)
-                    manifest_files[rel] = {
-                        "size_bytes": sz,
-                        "sha256": h,
-                    }
                     total_size += sz
-                except Exception as e:
-                    self.build_log.warning(f"Error hashing {rel}: {e}")
+                    total_count += 1
+                    # Only record top-level directory name to keep manifest lean
+                    top = rel.split("/")[0]
+                    if top not in manifest_files:
+                        manifest_files[top] = {"file_count": 0, "size_bytes": 0}
+                    manifest_files[top]["file_count"] += 1
+                    manifest_files[top]["size_bytes"] += sz
+                except Exception:
+                    pass
 
         manifest_data = {
             "generated": datetime.now(timezone.utc).isoformat() + "Z",

@@ -1,0 +1,42 @@
+#cloud-config
+autoinstall:
+  # version is an Autoinstall required field.
+  version: 1
+  apt:
+    fallback: offline-install
+  locale: en_US
+  keyboard:
+    layout: us
+  shutdown: reboot
+  storage:
+    layout:
+      name: direct
+    swap:
+      size: 0
+
+
+  identity:
+    hostname: 'pyflareos'
+    username: 'vboxuser'
+    realname: 'vboxuser'
+    password: '$6$vHHAUmwVZGJhEI.L$wzSWAl200I8f8aqvRKoFCeIE7ToqZV1AOAmqG4FQDsTtPMul.gvuXEeFLuixRGUo6RCrhloFK3xR/PnqjgBjG0'
+# todo. maybe we need to handle group stuff as late command, as well. to be tested
+# 
+
+  user-data:
+
+    timezone: Etc/UTC
+
+    ntp:
+
+
+      enabled: true
+
+
+  # Custom Commands.
+  late-commands:
+
+
+    - cp /cdrom/vboxpostinstall.sh /target/root/vboxpostinstall.sh
+    - chmod +x /target/root/vboxpostinstall.sh
+    - curtin in-target --target=/target -- /bin/bash /root/vboxpostinstall.sh --direct
