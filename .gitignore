@@ -18,7 +18,7 @@ __pycache__/
 Thumbs.db
 desktop.ini
 
-# Environments
+# Environments and Secrets
 .env
 .env.local
 .env.development
@@ -33,20 +33,39 @@ ENV/
 env.bak/
 venv.bak/
 
-# Project caches and logs
+# Project caches, coverage and logs
 *.log
+output/logs/
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
+crash_reports/
 
-# AppSuite specific temporary files, caches, and checkpoints
-*download_cache/
-*dag_checkpoint.json
-benchmark_report.json
-pipeline_reliability_v3.json
+# PyFlare runtime output, workspaces, caches and databases
+output/
+workspace/
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/*.json
+!config/providers.json
+!config/templates.json
+!config/config.schema.json
 
-# Godot-specific files
+# Temporary / Generated Media & Video
+*.mp4
+*.avi
+*.mov
+*.wav
+*.mp3
+*.viso
+*.vbox
+*.vbox-prev
+
+# Godot & Blender export artifacts
 .godot/
 .import/
 export_presets.cfg

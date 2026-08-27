@@ -1,0 +1,2 @@
+"""Compatibility mirror for appsuite.core.provider_manager -> pyflare.core.provider_manager"""
+from pyflare.core.provider_manager import *
