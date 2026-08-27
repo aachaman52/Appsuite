@@ -2,11 +2,22 @@
 from __future__ import annotations
 
 import concurrent.futures
+import threading
 import time
 from typing import Any, Callable, Dict, List, Optional, Set
 from pydantic import BaseModel, Field
 
-from pyflare.router.adapters import AdapterUnavailableError, ExecutionTimeoutError, create_rule_engine_adapter
+from pyflare.router.adapters import (
+    AdapterUnavailableError,
+    ExecutionTimeoutError,
+    ProviderExecutionError,
+    RouterExecutionError,
+    UnsupportedTaskError,
+    WorkerExecutionError,
+    WorkerValidationError,
+    create_rule_engine_adapter,
+    sanitize_error_message,
+)
 from pyflare.router.history import RouterHistoryTracker
 from pyflare.router.models import (
     HardwareTier,
@@ -41,7 +52,7 @@ class RouterExecutor:
     """
     Executes a RouteDecision, orchestrating primary execution and ordered fallbacks
     with loop prevention, non-retryable failure detection, real hardware tier tracking,
-    timeout enforcement, and history recording.
+    subprocess & in-process timeout enforcement, workspace locking, and history recording.
     """
 
     def __init__(
@@ -55,16 +66,27 @@ class RouterExecutor:
         self.max_retries_per_candidate = max_retries_per_candidate
         self.default_timeout_seconds = default_timeout_seconds
         self.adapters: Dict[str, Callable[[TaskSpec, RouteCandidate], Any]] = adapters or {}
+        self._workspace_locks: Dict[str, threading.Lock] = {}
+        self._locks_mutex = threading.Lock()
 
         # Register default built-in deterministic rule engine adapter if not provided
         if "local-fallback-rules" not in self.adapters:
-            self.adapters["local-fallback-rules"] = create_rule_engine_adapter()
-        if "local_rules" not in self.adapters:
-            self.adapters["local_rules"] = create_rule_engine_adapter()
+            rule_adp = create_rule_engine_adapter()
+            self.adapters["local-fallback-rules"] = rule_adp
+            self.adapters["local_rules"] = rule_adp
 
     def register_adapter(self, key: str, handler: Callable[[TaskSpec, RouteCandidate], Any]) -> None:
         """Register a custom execution callable for a specific candidate ID or provider type."""
         self.adapters[key] = handler
+
+    def _get_workspace_lock(self, workspace_path: Optional[str]) -> Optional[threading.Lock]:
+        """Get or create a thread lock for a designated workspace directory."""
+        if not workspace_path:
+            return None
+        with self._locks_mutex:
+            if workspace_path not in self._workspace_locks:
+                self._workspace_locks[workspace_path] = threading.Lock()
+            return self._workspace_locks[workspace_path]
 
     def execute(self, task: TaskSpec, decision: RouteDecision) -> RouteExecutionResult:
         """
@@ -94,7 +116,10 @@ class RouterExecutor:
                 total_duration_seconds=time.time() - start_time,
             )
 
-        # Build ordered sequence of candidates to try
+        # Acquire workspace lock if applicable to prevent concurrent corruption
+        ws_path = task.metadata.get("project_path")
+        ws_lock = self._get_workspace_lock(ws_path)
+
         candidates_to_try: List[RouteCandidate] = [decision.selected_candidate] + decision.fallback_candidates
         total_cost = 0.0
 
@@ -121,7 +146,12 @@ class RouterExecutor:
             for attempt_idx in range(1, self.max_retries_per_candidate + 2):
                 t0 = time.time()
                 try:
-                    output = self._run_candidate_with_timeout(task, candidate)
+                    if ws_lock:
+                        with ws_lock:
+                            output = self._run_candidate_with_timeout(task, candidate)
+                    else:
+                        output = self._run_candidate_with_timeout(task, candidate)
+
                     dur = time.time() - t0
                     total_cost += candidate.estimated_cost_usd
 
@@ -158,7 +188,7 @@ class RouterExecutor:
 
                 except Exception as exc:
                     dur = time.time() - t0
-                    err_msg = str(exc)
+                    err_msg = sanitize_error_message(str(exc))
                     is_retryable = self._is_retryable_error(exc)
 
                     attempts.append(CandidateExecutionAttempt(
@@ -200,17 +230,24 @@ class RouterExecutor:
         )
 
     def _run_candidate_with_timeout(self, task: TaskSpec, candidate: RouteCandidate) -> Any:
-        """Run candidate enforcing timeout constraint."""
+        """
+        Run candidate enforcing timeout constraint.
+        For in-process Python calls, shuts down the pool without blocking if timeout expires.
+        """
         timeout = task.preferred_latency_seconds or self.default_timeout_seconds
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-            future = pool.submit(self._run_candidate, task, candidate)
-            try:
-                return future.result(timeout=timeout)
-            except concurrent.futures.TimeoutError:
-                raise ExecutionTimeoutError(
-                    f"Candidate '{candidate.candidate_id}' execution timed out after {timeout:.1f}s"
-                )
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+        future = pool.submit(self._run_candidate, task, candidate)
+        try:
+            return future.result(timeout=timeout)
+        except concurrent.futures.TimeoutError:
+            # Non-blocking shutdown: Python threads cannot be killed, so cancel pending futures and return immediately
+            pool.shutdown(wait=False, cancel_futures=True)
+            raise ExecutionTimeoutError(
+                f"Candidate '{candidate.candidate_id}' execution timed out after {timeout:.1f}s (background thread could not be force-terminated)",
+                is_retryable=True,
+            )
+        finally:
+            pool.shutdown(wait=False, cancel_futures=True)
 
     def _run_candidate(self, task: TaskSpec, candidate: RouteCandidate) -> Any:
         """Dispatch task to registered adapter; raise AdapterUnavailableError if missing."""
@@ -222,14 +259,17 @@ class RouterExecutor:
         if candidate.provider_type in self.adapters:
             return self.adapters[candidate.provider_type](task, candidate)
 
-        # 3. No adapter exists -> Raise typed error (NO fake default success)
+        # 3. No adapter exists -> Raise typed error
         raise AdapterUnavailableError(
             f"No execution adapter available for candidate '{candidate.candidate_id}' (provider_type='{candidate.provider_type}')"
         )
 
     def _is_retryable_error(self, exc: Exception) -> bool:
         """Determine if an exception is transient (retryable) vs permanent."""
-        if isinstance(exc, AdapterUnavailableError):
+        if isinstance(exc, RouterExecutionError):
+            return exc.is_retryable
+
+        if isinstance(exc, (AdapterUnavailableError, UnsupportedTaskError, WorkerValidationError, PermissionError)):
             return False
 
         msg = str(exc).lower()
@@ -244,8 +284,6 @@ class RouterExecutor:
             "policy violation",
             "permission denied",
             "validation error",
-            "valueerror",
-            "adapterunavailableerror",
         ]
         for kw in non_retryable_keywords:
             if kw in msg:

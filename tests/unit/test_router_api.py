@@ -105,3 +105,24 @@ def test_router_history_requires_auth(api_client, monkeypatch):
     )
     assert resp_auth.status_code == 200
     assert isinstance(resp_auth.json(), list)
+
+
+@pytest.mark.unit
+def test_router_api_execute_wired_adapters(api_client, monkeypatch):
+    """Verify /router/execute executes through wired adapters on the real app."""
+    monkeypatch.setenv("PYFLARE_REQUIRE_AUTH", "false")
+
+    task_payload = {
+        "prompt": "Create player character controller",
+        "task_type": "code_generation",
+        "allow_cloud": False,
+        "privacy_level": "internal",
+    }
+
+    resp = api_client.post("/router/execute", json=task_payload)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["success"] is True
+    assert data["final_candidate_id"] in ("code-worker", "local-fallback-rules")
+    assert len(data["attempts"]) >= 1
+

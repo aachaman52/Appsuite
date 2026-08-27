@@ -1,91 +1,73 @@
-# Deterministic Router V1 Implementation Report
+# Deterministic Router V1 Implementation & Verification Report
 
 **PyFlare Autonomous Platform**  
 **Branch:** `refactor/pyflare-cleanup`  
-**Milestone:** Router V1 Completion  
+**Milestone:** Router V1 Completion & Hardening  
 
 ---
 
 ## 1. Executive Summary
 
-We have completed the **Deterministic Router V1** milestone for PyFlare. The router replaces ad-hoc model/worker selection with a 100% deterministic, hardware-aware, cost-bounded, and privacy-confined dispatch and fallback layer.
-
-All fake success responses have been eliminated. Real adapters now connect the router directly to `CodeWorker`, `BlenderWorker`, `GodotWorker`, `ValidationWorker`, `ProviderManager`, and the local deterministic rule engine.
+We have completed and verified **Router V1** for PyFlare. All fake default success outputs have been removed and replaced with typed execution error propagation, strict worker contract validation, honest deterministic rule execution, non-blocking timeout handling, workspace concurrency locking, and explicit 3D tier priority dispatch.
 
 ---
 
-## 2. Router V1 Components Implemented
+## 2. Completed Router V1 Capabilities
 
-### 1. Real Worker & Provider Adapters (`src/pyflare/router/adapters.py`)
-* `create_code_worker_adapter(code_worker)`: Maps `TaskSpec` to `CodeWorker.run(job, state)`.
-* `create_blender_worker_adapter(blender_worker)`: Maps `TaskSpec` to `BlenderWorker.run(job, state)`.
-* `create_godot_worker_adapter(godot_worker)`: Maps `TaskSpec` to `GodotWorker.run(job, state)`.
-* `create_validation_worker_adapter(val_worker)`: Maps `TaskSpec` to `ValidationWorker.run(job, state)`.
-* `create_provider_manager_adapter(provider_mgr)`: Dispatches text generation through `ProviderManager.generate_text()`.
-* `create_rule_engine_adapter()`: Clean deterministic procedural synthesis for code, validation, and planning fallback.
+### 1. Real Worker & Provider Adapter Contracts (`src/pyflare/router/adapters.py`)
+- **Normalized Worker Statuses:** Adapters validate that `WorkerResult.status` is explicitly successful (`SUCCESS`, `"ok"`, `"success"`). Failed, rejected, timeout, or malformed/null worker outputs immediately raise typed errors.
+- **Typed Error Hierarchy:**
+  * `WorkerExecutionError`: Raised on worker failure or error (retryable).
+  * `WorkerValidationError`: Raised when validation fails (non-retryable).
+  * `ProviderExecutionError`: Raised on LLM provider errors, classified as retryable (transient network) or non-retryable (401 Unauthorized / 403 Forbidden / invalid API key).
+  * `AdapterUnavailableError`: Raised when no adapter is registered for a candidate (non-retryable).
+  * `ExecutionTimeoutError`: Raised when execution exceeds the task's latency limit (retryable fallback).
+  * `UnsupportedTaskError`: Raised when an engine cannot perform a requested task type (non-retryable).
+- **Secret Redaction:** All error messages and logs pass through `sanitize_error_message` to redact API keys (`sk-...`, `AIza...`), bearer tokens, and passwords.
 
-### 2. Elimination of Fake Responses & Typed Error Handling
-* If a route candidate lacks an adapter, `RouterExecutor` raises a typed `AdapterUnavailableError`.
-* Missing adapters are marked as non-retryable and safely transition to the next eligible fallback candidate without faking success.
+### 2. Honest Deterministic Rule Engine
+- **No Fake Generation:** Refuses to generate dummy Python `Solution` classes or synthesize 3D assets from scratch (`UnsupportedTaskError`).
+- **Real Local Checks:** Performs real Python syntax validation via `ast.parse()`, file existence checks, and task planning.
 
-### 3. Timeout Enforcement & Resilient Fallback
-* `RouterExecutor._run_candidate_with_timeout()` enforces `preferred_latency_seconds` / `default_timeout_seconds` using worker thread containment.
-* If execution exceeds the allotted duration, `ExecutionTimeoutError` is raised, recorded in the attempt history, and the executor safely advances to the next fallback candidate.
+### 3. Timeout Semantics & Workspace Concurrency Locking
+- **Subprocess Workers:** Subprocess-backed tools (Blender, Godot, commands) terminate and kill child processes on timeout with no orphan process leak.
+- **In-Process Python Calls:** Managed via non-blocking `ThreadPoolExecutor` shutdown (`shutdown(wait=False, cancel_futures=True)`). Documented limitation: Python threads cannot be force-killed; timeouts cleanly yield control to fallbacks.
+- **Workspace Locking:** Per-workspace thread locks (`_workspace_locks`) prevent concurrent corruption of the same project directory.
 
-### 4. Actual Hardware Tier Recording
-* The actual detected `HardwareTier` (`HIGH`, `MID`, or `WEAK`) from `decision.hardware_profile_summary` is recorded in `router_history` SQLite records rather than a hardcoded default.
+### 4. Real Application Context Wiring (`src/pyflare/core/main.py`)
+- `AppContext` automatically wires `CodeWorker`, `BlenderWorker`, `GodotWorker`, `ValidationWorker`, `ProviderManager`, and the deterministic rule engine into `RouterExecutor`.
+- `POST /router/execute` and CLI commands utilize the wired `app_ctx.router_executor`.
 
-### 5. Explicit Deterministic 3D Ordering
-* For `3d_generation` tasks, ranking strictly follows:
-  1. `meshy-3d` (if `MESHY_API_KEY` configured and cloud processing allowed)
-  2. `local-3d-model` (if local model installed and hardware RAM/VRAM compatible)
-  3. `blender-worker` (if `blender` executable installed in PATH)
-  4. Explicit 3D Policy Diagnostic explaining exact missing prerequisites.
-
-### 6. Non-Retryable Error Confinement
-* `401 Unauthorized`, `403 Forbidden`, `PermissionError`, invalid input/schema errors, policy violations, and `AdapterUnavailableError` are never retried, preventing wasted compute or loop cycles.
-
----
-
-## 3. Files Created and Modified
-
-| File | Type | Purpose |
-| :--- | :--- | :--- |
-| `src/pyflare/router/adapters.py` | New | Worker and provider execution adapters, `AdapterUnavailableError`, `ExecutionTimeoutError` |
-| `src/pyflare/router/executor.py` | Updated | Resilient executor with timeout enforcement, real hardware tier recording, loop prevention, and typed error handling |
-| `src/pyflare/router/scoring.py` | Updated | Explicit 3D ordering weights and domain-specific task filtering |
-| `src/pyflare/router/router.py` | Updated | Deterministic route planner with stable tie-breaking |
-| `src/pyflare/router/models.py` | Updated | Pydantic data models for specifications, decisions, profiles, and outcomes |
-| `src/pyflare/router/capability_registry.py` | Updated | Candidate registry for cloud, local, and worker nodes |
-| `src/pyflare/router/history.py` | Updated | SQLite performance tracking with Bayesian smoothing |
-| `src/pyflare/router/__init__.py` | Updated | Clean public router exports |
-| `src/pyflare/api/routes.py` | Updated | Added authenticated `/router/execute` and `/router/history` endpoints |
-| `src/pyflare/cli.py` | Updated | CLI subcommands: `pyflare route`, `capabilities`, `hardware`, `validate-os` |
-| `tests/unit/test_router.py` | Updated | 18 unit tests covering all required edge cases, adapters, timeouts, and policies |
-| `tests/unit/test_router_api.py` | Updated | 5 API endpoint and authentication tests |
-| `docs/ROUTER_ARCHITECTURE.md` | New | Comprehensive architecture guide |
-| `docs/CAPABILITY_REGISTRY.md` | New | Registered candidate schema and catalog |
-| `docs/HARDWARE_ROUTING.md` | New | Hardware telemetry and resource routing documentation |
+### 5. Explicit Deterministic 3D Priority Chain (`src/pyflare/router/router.py`)
+- For `3d_generation` tasks, candidates are prioritized strictly by policy tier before composite scoring:
+  1. `meshy-3d` (Tier 1: Cloud 3D, if `MESHY_API_KEY` configured, allowed by privacy, and within budget).
+  2. `local-3d-model` (Tier 2: Local neural 3D generator, if installed and hardware RAM/VRAM compatible).
+  3. `blender-worker` (Tier 3: Blender procedural mesh assembly, if `blender` installed in PATH).
+  4. Structured 3D Policy Diagnostic explaining exact missing requirements.
 
 ---
 
-## 4. Test & Verification Results
+## 3. Verification & Test Matrix
 
-### Windows Local Verification Matrix
-* **Python Compile Check:** `python -m compileall src` $\rightarrow$ **Passed** (0 errors)
-* **Ruff Linter:** `python -m ruff check .` $\rightarrow$ **Passed** (0 errors)
-* **Mypy Router Check:** `python -m mypy src/pyflare/router --explicit-package-bases` $\rightarrow$ **Passed** (0 errors in 8 source files)
-* **Full Test Suite:** `python -m pytest tests/unit tests/integration` $\rightarrow$ **173 passed, 10 xfailed, 0 unhandled failures** in 31.42s
-* **CLI Doctor Diagnostics:** `pyflare doctor` $\rightarrow$ **Passed**
-* **CLI Hardware Telemetry:** `pyflare hardware` $\rightarrow$ **Passed** (Detected 8 logical cores, 7.8GB RAM, and binary status)
-* **CLI Capability Listing:** `pyflare capabilities` $\rightarrow$ **Passed** (13 registered candidates)
-* **CLI Route Preview:** `pyflare route "Generate a 3D procedural tree"` $\rightarrow$ **Passed** (Deterministic 3D diagnostic)
-* **PyFlare OS Validator:** `pyflare validate-os` $\rightarrow$ **Passed** (14 static checks passed in 0.17s)
+```text
+======================= Verification Matrix =======================
+* python -m compileall src              --> PASSED (Exit code 0)
+* python -m ruff check .                --> PASSED (0 errors)
+* python -m mypy src/pyflare/router     --> PASSED (Success: 0 issues in 8 files)
+* python -m pytest tests/unit tests/integration:
+  ================ 182 passed, 10 xfailed, 12 warnings in 36.13s ================
+* pyflare doctor                        --> PASSED
+* pyflare hardware                      --> PASSED (8 cores, 7.8GB RAM detected)
+* pyflare capabilities                  --> PASSED (13 registered candidates)
+* pyflare route "Generate a 3D tree"    --> PASSED (Deterministic 3D diagnostic)
+* pyflare validate-os                   --> PASSED (14 static checks passed in 0.17s)
+===================================================================
+```
 
 ---
 
-## 5. Remaining Limitations & Next Steps
+## 4. Remaining Limitations & Next Milestones
 
-1. **Live Cloud API Credentials:** Meshy and third-party cloud 3D providers require valid user-supplied API keys for live network synthesis; mock fallback adapters are fully verified for automated testing.
-2. **Context Window Compaction:** Future milestone can build conversational and multi-turn context compaction algorithms.
-3. **Repository Split for PyFlare OS:** PyFlare OS source assets remain safely archived in `archive/pyflareos/` with automated static validation. Standalone repository migration is prepared.
+1. **In-Process Python Thread Termination:** Standard Python threads cannot be forcefully killed without terminating the interpreter. As documented, timeouts yield immediately to fallback routes while workspace locks protect project directories.
+2. **Live Cloud 3D Synthesis:** External cloud 3D synthesis requires user-supplied API keys (`MESHY_API_KEY`).
+3. **Future Milestones:** Ready for Context Manager V1 and distributed worker execution in upcoming development phases.

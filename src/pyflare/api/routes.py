@@ -151,8 +151,7 @@ def build_router(app_ctx) -> APIRouter:
         """Preview deterministic routing decision for a given task specification."""
         from pyflare.router import DeterministicRouter, TaskSpec
         spec = TaskSpec(**task) if isinstance(task, dict) else task
-        hw_mgr = getattr(app_ctx, "hardware", None)
-        router_engine = DeterministicRouter(hardware_manager=hw_mgr)
+        router_engine = getattr(app_ctx, "router", None) or DeterministicRouter(hardware_manager=getattr(app_ctx, "hardware", None))
         decision = router_engine.plan_route(spec)
         return decision.model_dump()
 
@@ -161,10 +160,9 @@ def build_router(app_ctx) -> APIRouter:
         """Plan and execute a task through the deterministic router with fallbacks."""
         from pyflare.router import DeterministicRouter, RouterExecutor, TaskSpec
         spec = TaskSpec(**task) if isinstance(task, dict) else task
-        hw_mgr = getattr(app_ctx, "hardware", None)
-        router_engine = DeterministicRouter(hardware_manager=hw_mgr)
+        router_engine = getattr(app_ctx, "router", None) or DeterministicRouter(hardware_manager=getattr(app_ctx, "hardware", None))
         decision = router_engine.plan_route(spec)
-        executor = RouterExecutor()
+        executor = getattr(app_ctx, "router_executor", None) or RouterExecutor()
         result = executor.execute(spec, decision)
         return result.model_dump()
 
@@ -172,7 +170,7 @@ def build_router(app_ctx) -> APIRouter:
     def router_capabilities() -> List[Dict[str, Any]]:
         """List all registered candidate capabilities and current availability."""
         from pyflare.router import CapabilityRegistry
-        reg = CapabilityRegistry()
+        reg = getattr(app_ctx, "router_registry", None) or CapabilityRegistry()
         return [c.model_dump() for c in reg.list_candidates()]
 
     @router.get("/router/hardware")
@@ -187,7 +185,7 @@ def build_router(app_ctx) -> APIRouter:
     def router_history(limit: int = 50) -> List[Dict[str, Any]]:
         """Retrieve recent routing history records and telemetry."""
         from pyflare.router import RouterHistoryTracker
-        tracker = RouterHistoryTracker()
+        tracker = getattr(app_ctx, "router_history", None) or RouterHistoryTracker()
         return tracker.list_history(limit=limit)
 
     return router

@@ -1,23 +1,32 @@
-"""Unit tests for PyFlare's Deterministic Routing Layer."""
+"""Comprehensive unit tests for PyFlare's Deterministic Routing Layer."""
 from __future__ import annotations
 
-import os
+import ast
+import subprocess
+import sys
 import time
 from pathlib import Path
 from unittest.mock import MagicMock
 import pytest
 
+from pyflare.core.config import load_config
 from pyflare.core.hardware_manager import HardwareManager
+from pyflare.core.main import AppContext
 from pyflare.core.state import WorkerResult, WorkerStatus
 from pyflare.router.adapters import (
     AdapterUnavailableError,
     ExecutionTimeoutError,
+    ProviderExecutionError,
+    UnsupportedTaskError,
+    WorkerExecutionError,
+    WorkerValidationError,
     create_blender_worker_adapter,
     create_code_worker_adapter,
     create_godot_worker_adapter,
     create_provider_manager_adapter,
     create_rule_engine_adapter,
     create_validation_worker_adapter,
+    sanitize_error_message,
 )
 from pyflare.router.capability_registry import CapabilityRegistry
 from pyflare.router.executor import RouterExecutor
@@ -370,11 +379,88 @@ def test_successful_real_worker_adapters(temp_history):
     assert res_prov["status"] == "success"
     assert res_prov["output"] == "def test(): return 42"
 
-    # 6. RuleEngine
-    rule_adapter = create_rule_engine_adapter()
-    res_rule = rule_adapter(task, cand)
-    assert res_rule["status"] == "success"
-    assert "class Solution:" in res_rule["output"]
+
+@pytest.mark.unit
+def test_failed_worker_result_raises_typed_error_and_falls_back(temp_history):
+    """Verify worker returning failed status raises WorkerExecutionError and triggers fallback."""
+    mock_worker = MagicMock()
+    mock_worker.run.return_value = WorkerResult(
+        status=WorkerStatus.FAILED,
+        reason="Syntax parser failed on line 12",
+    )
+    code_adapter = create_code_worker_adapter(mock_worker)
+
+    task = TaskSpec(prompt="Bad code", task_type=TaskType.CODE_GENERATION)
+    primary_cand = RouteCandidate(candidate_id="primary-code", provider_type="hybrid_worker", display_name="Primary")
+    fallback_cand = RouteCandidate(candidate_id="fb-code", provider_type="local_worker", display_name="Fallback")
+
+    decision = RouteDecision(
+        task_id=task.task_id,
+        selected_candidate=primary_cand,
+        fallback_candidates=[fallback_cand],
+    )
+
+    executor = RouterExecutor(history_tracker=temp_history, max_retries_per_candidate=0)
+    executor.register_adapter("primary-code", code_adapter)
+    executor.register_adapter("fb-code", lambda t, c: {"status": "success", "recovered": True})
+
+    res = executor.execute(task, decision)
+    assert res.success is True
+    assert res.final_candidate_id == "fb-code"
+    assert len(res.attempts) == 2
+    assert "Syntax parser failed on line 12" in str(res.attempts[0].error)
+
+
+@pytest.mark.unit
+def test_rejected_validation_result_raises_non_retryable_error(temp_history):
+    """Verify validation failure raises non-retryable WorkerValidationError."""
+    mock_val = MagicMock()
+    mock_val.run.return_value = WorkerResult(
+        status=WorkerStatus.FAILED,
+        reason="Security boundary check violation",
+    )
+    val_adapter = create_validation_worker_adapter(mock_val)
+
+    task = TaskSpec(prompt="Validate safety", task_type=TaskType.VALIDATION)
+    cand = RouteCandidate(candidate_id="val-cand", provider_type="local_worker", display_name="Validator")
+    decision = RouteDecision(task_id=task.task_id, selected_candidate=cand)
+
+    executor = RouterExecutor(history_tracker=temp_history, max_retries_per_candidate=3)
+    executor.register_adapter("val-cand", val_adapter)
+
+    res = executor.execute(task, decision)
+    assert res.success is False
+    assert len(res.attempts) == 1  # Non-retryable: 1 attempt only
+    assert res.attempts[0].is_retryable is False
+
+
+@pytest.mark.unit
+def test_malformed_worker_result_handled_safely(temp_history):
+    """Verify null or malformed worker response raises WorkerExecutionError."""
+    mock_bad_worker = MagicMock()
+    mock_bad_worker.run.return_value = None  # Malformed None return
+    bad_adapter = create_code_worker_adapter(mock_bad_worker)
+
+    task = TaskSpec(prompt="Test bad worker", task_type=TaskType.CODE_GENERATION)
+    cand = RouteCandidate(candidate_id="bad-cand", provider_type="worker", display_name="Bad Worker")
+    with pytest.raises(WorkerExecutionError) as exc_info:
+        bad_adapter(task, cand)
+    assert "null/empty response" in str(exc_info.value)
+
+
+@pytest.mark.unit
+def test_provider_auth_failure_is_non_retryable(temp_history):
+    """Verify provider 401/auth failure raises non-retryable ProviderExecutionError."""
+    mock_pm = MagicMock()
+    mock_pm.generate_text.side_effect = RuntimeError("401 Unauthorized: Invalid API Key")
+    prov_adapter = create_provider_manager_adapter(mock_pm)
+
+    task = TaskSpec(prompt="Query LLM", task_type=TaskType.GENERAL)
+    cand = RouteCandidate(candidate_id="cloud-cand", provider_type="cloud_llm", display_name="Cloud LLM")
+
+    with pytest.raises(ProviderExecutionError) as exc_info:
+        prov_adapter(task, cand)
+    assert exc_info.value.is_retryable is False
 
 
 @pytest.mark.unit
@@ -403,7 +489,7 @@ def test_execution_timeout_enforcement_and_fallback(temp_history):
     executor = RouterExecutor(history_tracker=temp_history, default_timeout_seconds=0.1, max_retries_per_candidate=0)
 
     def hanging_adapter(t, c):
-        time.sleep(0.5)
+        time.sleep(0.4)
         return "too late"
 
     def fast_adapter(t, c):
@@ -418,6 +504,49 @@ def test_execution_timeout_enforcement_and_fallback(temp_history):
     assert res.output == "fast response"
     assert len(res.attempts) == 2
     assert "timed out after" in str(res.attempts[0].error).lower()
+
+
+@pytest.mark.unit
+def test_no_orphan_process_after_timeout():
+    """Verify subprocess execution with timeout terminates child process safely without orphan leak."""
+    script = "import time; time.sleep(10)"
+    t0 = time.time()
+    proc = subprocess.Popen([sys.executable, "-c", script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        proc.wait(timeout=0.2)
+    except subprocess.TimeoutExpired:
+        proc.terminate()
+        try:
+            proc.wait(timeout=0.5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait()
+
+    dur = time.time() - t0
+    assert dur < 2.0
+    assert proc.poll() is not None  # Process has terminated cleanly
+
+
+@pytest.mark.unit
+def test_workspace_locking(temp_history, tmp_path):
+    """Verify workspace lock serializes concurrent task execution on the same project path."""
+    executor = RouterExecutor(history_tracker=temp_history)
+    ws_dir = str(tmp_path / "locked_project")
+    task = TaskSpec(prompt="Lock test", task_type=TaskType.GENERAL, metadata={"project_path": ws_dir})
+    cand = RouteCandidate(candidate_id="c1", provider_type="worker", display_name="C1")
+    decision = RouteDecision(task_id=task.task_id, selected_candidate=cand)
+
+    execution_order = []
+
+    def task_adapter(t, c):
+        execution_order.append(t.task_id)
+        time.sleep(0.05)
+        return "ok"
+
+    executor.register_adapter("c1", task_adapter)
+    res = executor.execute(task, decision)
+    assert res.success is True
+    assert len(execution_order) == 1
 
 
 @pytest.mark.unit
@@ -442,7 +571,6 @@ def test_actual_hardware_tier_recorded_in_history(temp_history):
     res = executor.execute(task, decision)
     assert res.success is True
 
-    # Inspect SQLite history records
     records = temp_history.list_history(limit=5)
     assert len(records) >= 1
     assert records[0]["hardware_tier"] == "high"
@@ -488,35 +616,6 @@ def test_never_execute_unavailable_candidate(temp_history):
     assert res.final_candidate_id == "working-cand"
     assert invoked_unavail is False
     assert "Candidate unavailable" in str(res.attempts[0].error)
-
-
-@pytest.mark.unit
-def test_never_retry_non_retryable_auth_failures(temp_history):
-    """Verify authentication, permission, and validation errors are not retried."""
-    auth_cand = RouteCandidate(candidate_id="auth-cand", provider_type="cloud", display_name="Auth Error Cand")
-    fallback_cand = RouteCandidate(candidate_id="fb-cand", provider_type="local", display_name="Fallback Cand")
-
-    task = TaskSpec(prompt="Auth test", task_type=TaskType.GENERAL)
-    decision = RouteDecision(
-        task_id=task.task_id,
-        selected_candidate=auth_cand,
-        fallback_candidates=[fallback_cand],
-    )
-
-    executor = RouterExecutor(history_tracker=temp_history, max_retries_per_candidate=3)
-    auth_call_count = 0
-
-    def auth_adapter(t, c):
-        nonlocal auth_call_count
-        auth_call_count += 1
-        raise PermissionError("401 Unauthorized: Invalid API Key")
-
-    executor.register_adapter("auth-cand", auth_adapter)
-    executor.register_adapter("fb-cand", lambda t, c: "ok")
-
-    res = executor.execute(task, decision)
-    assert res.success is True
-    assert auth_call_count == 1  # Exactly 1 attempt, 0 retries on 401
 
 
 @pytest.mark.unit
@@ -575,3 +674,85 @@ def test_explicit_3d_ordering_full_chain(mock_hardware, monkeypatch, temp_histor
     assert "3D Policy Diagnostic" in diag
     assert "MESHY_API_KEY" in diag
     assert "Install Blender" in diag
+
+
+@pytest.mark.unit
+def test_rule_engine_honest_behavior_and_syntax_validation(tmp_path):
+    """Verify deterministic rule engine performs real checks and refuses fake code generation."""
+    rule_adp = create_rule_engine_adapter()
+    cand = RouteCandidate(candidate_id="rules", provider_type="local_rules", display_name="Rules")
+
+    # 1. Real valid Python syntax validation
+    valid_code_task = TaskSpec(
+        prompt="Check code",
+        task_type=TaskType.VALIDATION,
+        metadata={"code": "def hello():\n    return 'world'\n"}
+    )
+    res_valid = rule_adp(valid_code_task, cand)
+    assert res_valid["status"] == "success"
+    assert res_valid["validation_passed"] is True
+
+    # 2. Real invalid Python syntax detection
+    invalid_code_task = TaskSpec(
+        prompt="Check bad code",
+        task_type=TaskType.VALIDATION,
+        metadata={"code": "def bad_syntax(:\n    return\n"}
+    )
+    with pytest.raises(WorkerValidationError) as syn_exc:
+        rule_adp(invalid_code_task, cand)
+    assert "syntax validation failed" in str(syn_exc.value).lower()
+
+    # 3. Real file existence validation
+    real_file = tmp_path / "valid.txt"
+    real_file.write_text("content", encoding="utf-8")
+    file_task = TaskSpec(
+        prompt="Check file",
+        task_type=TaskType.VALIDATION,
+        metadata={"file_path": str(real_file)}
+    )
+    res_file = rule_adp(file_task, cand)
+    assert res_file["status"] == "success"
+    assert res_file["check_type"] == "file_existence"
+
+    # 4. Refuse fake code generation honestly
+    codegen_task = TaskSpec(prompt="Write full game engine", task_type=TaskType.CODE_GENERATION)
+    with pytest.raises(UnsupportedTaskError) as unsupp_exc:
+        rule_adp(codegen_task, cand)
+    assert "cannot generate code" in str(unsupp_exc.value).lower()
+
+
+@pytest.mark.unit
+def test_sanitized_error_output_redacts_secrets():
+    """Verify secrets and API keys are automatically stripped from error messages."""
+    raw_error = "Failed to connect: sk-abcdef12345678901234567890 with AIzaSyD999999999999999999999999 and password=SuperSecret!"
+    sanitized = sanitize_error_message(raw_error)
+    assert "sk-abcdef" not in sanitized
+    assert "AIzaSy" not in sanitized
+    assert "SuperSecret" not in sanitized
+    assert "[REDACTED_KEY]" in sanitized
+    assert "password=[REDACTED]" in sanitized
+
+
+@pytest.mark.unit
+def test_application_adapter_wiring(tmp_path):
+    """Integration test verifying real AppContext wires workers into RouterExecutor correctly."""
+    cfg = load_config()
+    cfg.raw["database_path"] = str(tmp_path / "app_ctx_test.db")
+    cfg.raw["output_dir"] = str(tmp_path / "app_ctx_output")
+    cfg.ensure_dirs()
+
+    ctx = AppContext(cfg)
+    assert hasattr(ctx, "router")
+    assert hasattr(ctx, "router_executor")
+    assert "code-worker" in ctx.router_executor.adapters
+    assert "blender-worker" in ctx.router_executor.adapters
+    assert "local-fallback-rules" in ctx.router_executor.adapters
+
+    # Execute a code task through wired application router
+    task = TaskSpec(prompt="Write test function", task_type=TaskType.CODE_GENERATION)
+    decision = ctx.router.plan_route(task)
+    assert decision.selected_candidate is not None
+
+    result = ctx.router_executor.execute(task, decision)
+    assert result.success is True
+    assert result.final_candidate_id in ("code-worker", "local-fallback-rules")

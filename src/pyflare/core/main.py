@@ -109,6 +109,56 @@ class AppContext:
             self.db, self.registry, self.memory, self.templates, self.plugins,
             self.workers, config.abs_path("output_dir"),
         )
+
+        # Wire Deterministic Router V1 and RouterExecutor with real adapters
+        from ..router import (
+            CapabilityRegistry,
+            DeterministicRouter,
+            RouterExecutor,
+            RouterHistoryTracker,
+            create_blender_worker_adapter,
+            create_code_worker_adapter,
+            create_godot_worker_adapter,
+            create_provider_manager_adapter,
+            create_rule_engine_adapter,
+            create_validation_worker_adapter,
+        )
+        self.router_registry = CapabilityRegistry()
+        db_path_str = str(config.abs_path("database_path"))
+        router_db_path = db_path_str[:-3] + "_router.db" if db_path_str.endswith(".db") else db_path_str + "_router.db"
+        self.router_history = RouterHistoryTracker(router_db_path)
+        self.router = DeterministicRouter(
+            registry=self.router_registry,
+            hardware_manager=self.hardware,
+            history_tracker=self.router_history,
+        )
+        self.router_executor = RouterExecutor(
+            history_tracker=self.router_history,
+            default_timeout_seconds=float(config.get("router", {}).get("default_timeout_seconds", 30.0)),
+        )
+
+        # Register real worker adapters
+        if "code" in self.workers:
+            self.router_executor.register_adapter("code-worker", create_code_worker_adapter(self.workers["code"]))
+            self.router_executor.register_adapter("hybrid_worker", create_code_worker_adapter(self.workers["code"]))
+        if "blender" in self.workers:
+            self.router_executor.register_adapter("blender-worker", create_blender_worker_adapter(self.workers["blender"]))
+        if "godot" in self.workers:
+            self.router_executor.register_adapter("godot-worker", create_godot_worker_adapter(self.workers["godot"]))
+        if "validation" in self.workers:
+            self.router_executor.register_adapter("validation-worker", create_validation_worker_adapter(self.workers["validation"]))
+        if self.provider_manager:
+            prov_adapter = create_provider_manager_adapter(self.provider_manager)
+            self.router_executor.register_adapter("cloud_llm", prov_adapter)
+            self.router_executor.register_adapter("local_llm", prov_adapter)
+            self.router_executor.register_adapter("openai-cloud", prov_adapter)
+            self.router_executor.register_adapter("gemini-cloud", prov_adapter)
+            self.router_executor.register_adapter("claude-cloud", prov_adapter)
+            self.router_executor.register_adapter("local-llm", prov_adapter)
+
+        rule_adapter = create_rule_engine_adapter()
+        self.router_executor.register_adapter("local-fallback-rules", rule_adapter)
+        self.router_executor.register_adapter("local_rules", rule_adapter)
         self.supervisor = Supervisor(
             self.db, self.jarvis, self.pipeline, self.memory,
             config.scheduler, config.retries, brain=self.brain,

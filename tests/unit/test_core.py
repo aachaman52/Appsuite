@@ -536,13 +536,13 @@ class TestBlenderWorkerSafeScript(unittest.TestCase):
         worker = BlenderWorker({}, {}, {}, output_dir=".")
         layout = {"ground": {}, "lighting": {}, "objects": []}
         # Injected filename attempting Python syntax breaking
-        injected_path = Path('C:\\output\\scene.fbx")\nimport sys\nsys.exit(99)\n#')
+        injected_path = Path('output/scene.fbx")\nimport sys\nsys.exit(99)\n#')
         
         script = worker._render_blender_script(layout, injected_path)
         
         # Check that double quotes are successfully serialized and escaped via json.dumps and repr
         # rather than executed directly as unescaped python code
-        self.assertNotIn('filepath=r"C:\\output\\scene.fbx")\nimport sys\nsys.exit(99)\n#"', script)
+        self.assertNotIn('filepath=r"output/scene.fbx")\nimport sys\nsys.exit(99)\n#"', script)
         self.assertIn('json.loads(', script)
 
 

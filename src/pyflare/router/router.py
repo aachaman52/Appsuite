@@ -62,11 +62,26 @@ class DeterministicRouter:
             scores[candidate.candidate_id] = score
             candidate_rationales[candidate.candidate_id] = reasons
 
-        # 3. Sort deterministically (Score descending, candidate_id ascending for stable tie-breaking)
-        ranked_candidates = sorted(
-            accepted,
-            key=lambda c: (-scores.get(c.candidate_id, 0.0), c.candidate_id)
-        )
+        # 3. Sort deterministically
+        if task.task_type == TaskType.THREE_D_GENERATION:
+            def _3d_policy_tier(cand: RouteCandidate) -> int:
+                if cand.candidate_id == "meshy-3d":
+                    return 1
+                elif cand.candidate_id == "local-3d-model":
+                    return 2
+                elif cand.candidate_id == "blender-worker":
+                    return 3
+                return 4
+
+            ranked_candidates = sorted(
+                accepted,
+                key=lambda c: (_3d_policy_tier(c), -scores.get(c.candidate_id, 0.0), c.candidate_id)
+            )
+        else:
+            ranked_candidates = sorted(
+                accepted,
+                key=lambda c: (-scores.get(c.candidate_id, 0.0), c.candidate_id)
+            )
 
         selected: Optional[RouteCandidate] = ranked_candidates[0] if ranked_candidates else None
         fallbacks: List[RouteCandidate] = ranked_candidates[1:] if len(ranked_candidates) > 1 else []
