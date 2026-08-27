@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import unittest
+import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 import tempfile
@@ -88,7 +89,7 @@ class TestPhase8WorkerIntelligence(unittest.TestCase):
         self.assertTrue(res.data.get("recovered"))
         self.assertTrue(Path(state["fbx_path"]).exists())
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail(reason="[Issue #103] GodotWorker fallback recover stub creation not implemented in baseline")
     def test_godot_worker_contract_and_recovery(self):
         worker = GodotWorker({}, {}, self.context, output_dir=Path(self.temp_dir))
         
@@ -105,7 +106,7 @@ class TestPhase8WorkerIntelligence(unittest.TestCase):
         self.assertTrue(Path(state["godot_project"]).exists())
         self.assertTrue(Path(state["main_scene"]).exists())
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail(reason="[Issue #104] CodeWorker syntax recovery requires mock subprocess runner verification")
     def test_code_worker_contract_and_syntax_recovery(self):
         # Create code worker
         pm = MagicMock()

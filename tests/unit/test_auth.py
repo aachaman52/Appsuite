@@ -7,8 +7,20 @@ from pyflare.api.auth import verify_api_key
 
 
 @pytest.mark.unit
-def test_auth_disabled_allows_request(monkeypatch):
-    """When no API key is configured and require_auth=false, requests pass."""
+def test_auth_enabled_by_default(monkeypatch):
+    """By default, authentication is strictly enabled and unauthenticated access is rejected."""
+    monkeypatch.delenv("PYFLARE_API_KEY", raising=False)
+    monkeypatch.delenv("APPSUITE_API_KEY", raising=False)
+    monkeypatch.delenv("PYFLARE_REQUIRE_AUTH", raising=False)
+
+    with pytest.raises(HTTPException) as exc_info:
+        verify_api_key(x_api_key=None, auth_header=None)
+    assert exc_info.value.status_code == 401
+
+
+@pytest.mark.unit
+def test_auth_disabled_explicitly_allows_request(monkeypatch):
+    """When require_auth=false is explicitly configured, requests pass."""
     monkeypatch.delenv("PYFLARE_API_KEY", raising=False)
     monkeypatch.delenv("APPSUITE_API_KEY", raising=False)
     monkeypatch.setenv("PYFLARE_REQUIRE_AUTH", "false")

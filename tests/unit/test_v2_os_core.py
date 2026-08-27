@@ -15,7 +15,7 @@ from appsuite.workers.validation_worker import ValidationWorker
 from appsuite.core.state import WorkerStatus
 
 
-@pytest.mark.xfail(reason="Agent debate consensus in baseline does not mutate task priority unless conflict occurs")
+@pytest.mark.xfail(reason="[Issue #107] Agent debate consensus in baseline does not mutate task priority unless conflict occurs")
 def test_v2_multi_agent_debate():
     message_bus = MessageBus()
     coordinator = AgentCoordinator(message_bus=message_bus)
@@ -78,7 +78,7 @@ def test_v2_checkpoint_save_and_restore():
     assert loaded["attempt"] == 1
 
 
-@pytest.mark.xfail(reason="Vision subsystem requires actual rendered image file on disk")
+@pytest.mark.xfail(reason="[Issue #108] Vision subsystem requires actual rendered image file on disk")
 def test_v2_vision_inspections():
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)

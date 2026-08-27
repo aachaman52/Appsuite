@@ -18,7 +18,7 @@ def temp_db(tmp_path):
     yield db
     db.close()
 
-@pytest.mark.xfail(reason="JarvisBrain strategy recall memory_hit metadata not set in baseline")
+@pytest.mark.xfail(reason="[Issue #106] JarvisBrain strategy recall memory_hit metadata not propagated in baseline")
 def test_semantic_strategy_reuse_and_avoidance(temp_db, tmp_path):
     # Set up mocks
     provider_mgr = ProviderManager([
@@ -175,7 +175,7 @@ def test_remember_updates_strategy_outcome(temp_db, tmp_path):
     assert rows_after[0]["outcome"] == "failed"
 
 
-@pytest.mark.xfail(reason="JarvisBrain strategy recall memory_hit metadata not set in baseline")
+@pytest.mark.xfail(reason="[Issue #106] JarvisBrain strategy recall memory_hit metadata not propagated in baseline")
 def test_semantic_recall_benchmark(temp_db, tmp_path):
     provider_mgr = ProviderManager([])
     token_banker = TokenBanker({})

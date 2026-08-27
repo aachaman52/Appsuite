@@ -1,4 +1,5 @@
 import unittest
+import pytest
 import os
 import json
 import sqlite3
@@ -25,7 +26,7 @@ class TestMemoryPlanningIntegration(unittest.TestCase):
             except Exception:
                 pass
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail(reason="[Issue #102] Integration memory planner repair action naming convention mismatch")
     def test_end_to_end_planning_with_memory(self):
         # 1. Populate Memory with Failures
         

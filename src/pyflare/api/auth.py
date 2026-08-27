@@ -26,13 +26,13 @@ def verify_api_key(
     """
     configured_key = get_configured_api_key()
     
-    # If no key is set and authentication is not strictly forced, allow access
-    require_auth = os.environ.get("PYFLARE_REQUIRE_AUTH", "false").lower() in ("1", "true", "yes")
+    # Authentication is enabled by default. To disable during local offline tests set PYFLARE_REQUIRE_AUTH=false
+    require_auth = os.environ.get("PYFLARE_REQUIRE_AUTH", "true").lower() in ("1", "true", "yes")
     if not configured_key:
         if require_auth:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Authentication required but no PYFLARE_API_KEY configured",
+                detail="Authentication is required by default. Configure PYFLARE_API_KEY in environment or set PYFLARE_REQUIRE_AUTH=false.",
             )
         return True
 

@@ -1,3 +1,4 @@
+import pytest
 import tempfile
 import unittest
 from pathlib import Path
@@ -18,7 +19,7 @@ class TestPhase9Knowledge(unittest.TestCase):
         self.db.close()
         self.tmp_dir.cleanup()
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail(reason="[Issue #105] WorkerScoreRegistry reads execution records from tasks table rather than strategies")
     def test_strategy_similarity_and_worker_scores(self):
         self.memory.strategy.add_strategy(
             "build a castle",

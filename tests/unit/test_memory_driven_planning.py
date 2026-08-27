@@ -1,4 +1,5 @@
 import unittest
+import pytest
 import json
 from unittest.mock import MagicMock
 from appsuite.core.jarvis_memory import JarvisMemory
@@ -41,7 +42,7 @@ class TestMemoryDrivenPlanning(unittest.TestCase):
         self.assertIn("blender", mem_ctx.failed_workers)
         self.assertEqual(len(mem_ctx.repair_history), 1)
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail(reason="[Issue #102] Memory-driven planner rules expect asset hint source override")
     def test_planner_decisions_based_on_memory(self):
         # Setup context with failures that trigger rules
         ctx = self.intelligence._build_planning_context("Create a car")

@@ -3,7 +3,7 @@ from appsuite.db import Database
 from appsuite.core.bug_hunter import AutonomousBugHunter
 
 
-@pytest.mark.xfail(reason="AutonomousBugHunter requires active LLM provider response to accept patch")
+@pytest.mark.xfail(reason="[Issue #101] AutonomousBugHunter requires live LLM provider response to accept patch")
 def test_bug_hunter_cycle(tmp_path):
     db_file = tmp_path / "test_bh.db"
     db = Database(db_file)
