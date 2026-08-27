@@ -25,6 +25,7 @@ desktop.ini
 .env.test
 .env.production
 .env.*
+!.env.example
 env/
 venv/
 ENV/
