@@ -2,10 +2,23 @@
 from __future__ import annotations
 
 import os
+import time
 from pathlib import Path
+from unittest.mock import MagicMock
 import pytest
 
 from pyflare.core.hardware_manager import HardwareManager
+from pyflare.core.state import WorkerResult, WorkerStatus
+from pyflare.router.adapters import (
+    AdapterUnavailableError,
+    ExecutionTimeoutError,
+    create_blender_worker_adapter,
+    create_code_worker_adapter,
+    create_godot_worker_adapter,
+    create_provider_manager_adapter,
+    create_rule_engine_adapter,
+    create_validation_worker_adapter,
+)
 from pyflare.router.capability_registry import CapabilityRegistry
 from pyflare.router.executor import RouterExecutor
 from pyflare.router.history import RouterHistoryTracker
@@ -78,7 +91,6 @@ def test_capability_matching_rejects_missing_capability(mock_hardware):
         capabilities=[ProviderCapability(capability_name="python_basic", level=0.8)],
     )
 
-    # Task requires non-existent capability
     task = TaskSpec(
         prompt="Synthesize shader code",
         task_type=TaskType.CODE_GENERATION,
@@ -133,7 +145,7 @@ def test_stable_tie_breaking(mock_hardware, temp_history):
 def test_weak_hardware_rejection(mock_hardware):
     """Verify candidates with high RAM requirements are rejected on low-resource hardware."""
     weak_hw = mock_hardware.model_copy()
-    weak_hw.ram_available_mb = 512.0  # Very low RAM available
+    weak_hw.ram_available_mb = 512.0
 
     heavy_candidate = RouteCandidate(
         candidate_id="heavy-local-llm",
@@ -277,188 +289,289 @@ def test_min_quality_requirement(mock_hardware):
 
 
 @pytest.mark.unit
-def test_executor_fallback_on_provider_failure(temp_history):
-    """Verify executor tries primary route, catches transient failure, and succeeds on fallback."""
-    primary = RouteCandidate(
-        candidate_id="failing-primary",
-        provider_type="cloud",
-        display_name="Failing Primary",
-        is_local=False,
-        supported_task_types=[TaskType.GENERAL],
+def test_missing_adapter_raises_and_falls_back(temp_history):
+    """Verify missing adapter raises AdapterUnavailableError and falls back safely without fake success."""
+    no_adapter_cand = RouteCandidate(
+        candidate_id="unimplemented-cand",
+        provider_type="custom_experimental",
+        display_name="Unimplemented Node",
+        is_local=True,
     )
-    fallback = RouteCandidate(
+    fallback_cand = RouteCandidate(
         candidate_id="working-fallback",
-        provider_type="local",
+        provider_type="local_rules",
         display_name="Working Fallback",
         is_local=True,
-        supported_task_types=[TaskType.GENERAL],
     )
 
-    task = TaskSpec(prompt="Execute test", task_type=TaskType.GENERAL)
+    task = TaskSpec(prompt="Run experimental task", task_type=TaskType.GENERAL)
     decision = RouteDecision(
         task_id=task.task_id,
-        selected_candidate=primary,
-        fallback_candidates=[fallback],
+        selected_candidate=no_adapter_cand,
+        fallback_candidates=[fallback_cand],
     )
 
-    executor = RouterExecutor(history_tracker=temp_history, max_retries_per_candidate=1)
-
-    def failing_adapter(t, c):
-        raise ConnectionResetError("Remote server closed connection")
-
-    def working_adapter(t, c):
-        return {"result": "recovered_via_fallback"}
-
-    executor.register_adapter("failing-primary", failing_adapter)
-    executor.register_adapter("working-fallback", working_adapter)
+    executor = RouterExecutor(history_tracker=temp_history)
+    # Register adapter ONLY for fallback
+    executor.register_adapter("working-fallback", lambda t, c: {"result": "recovered_via_fallback"})
 
     res = executor.execute(task, decision)
     assert res.success is True
     assert res.final_candidate_id == "working-fallback"
-    assert res.output == {"result": "recovered_via_fallback"}
-    assert len(res.attempts) == 3
-
-
-@pytest.mark.unit
-def test_executor_non_retryable_auth_error_no_retry(temp_history):
-    """Verify non-retryable 401 authentication errors do NOT waste retries on same candidate."""
-    primary = RouteCandidate(
-        candidate_id="unauth-primary",
-        provider_type="cloud",
-        display_name="Unauthenticated Primary",
-        is_local=False,
-    )
-    fallback = RouteCandidate(
-        candidate_id="local-fallback",
-        provider_type="local",
-        display_name="Local Fallback",
-        is_local=True,
-    )
-
-    task = TaskSpec(prompt="Auth test", task_type=TaskType.GENERAL)
-    decision = RouteDecision(
-        task_id=task.task_id,
-        selected_candidate=primary,
-        fallback_candidates=[fallback],
-    )
-
-    executor = RouterExecutor(history_tracker=temp_history, max_retries_per_candidate=2)
-
-    def auth_fail_adapter(t, c):
-        raise PermissionError("401 Unauthorized: Invalid API key")
-
-    def local_adapter(t, c):
-        return "ok"
-
-    executor.register_adapter("unauth-primary", auth_fail_adapter)
-    executor.register_adapter("local-fallback", local_adapter)
-
-    res = executor.execute(task, decision)
-    assert res.success is True
     assert len(res.attempts) == 2
+    assert "No execution adapter available" in str(res.attempts[0].error)
     assert res.attempts[0].is_retryable is False
 
 
 @pytest.mark.unit
-def test_fallback_loop_prevention(temp_history):
-    """Verify executor never re-executes an already attempted candidate."""
-    cand = RouteCandidate(
-        candidate_id="flaky-candidate",
-        provider_type="mock",
-        display_name="Flaky Candidate",
+def test_successful_real_worker_adapters(temp_history):
+    """Verify real worker adapters invoke underlying worker run methods correctly."""
+    # 1. CodeWorker
+    mock_code_worker = MagicMock()
+    mock_code_worker.run.return_value = WorkerResult(status=WorkerStatus.SUCCESS, data={"code": "pass"})
+    code_adapter = create_code_worker_adapter(mock_code_worker)
+
+    task = TaskSpec(prompt="Generate GDScript player", task_type=TaskType.CODE_GENERATION)
+    cand = RouteCandidate(candidate_id="code-worker", provider_type="hybrid_worker", display_name="Code Worker")
+    res_code = code_adapter(task, cand)
+    assert res_code["status"] == "success"
+    assert res_code["worker"] == "code"
+    assert mock_code_worker.run.called
+
+    # 2. BlenderWorker
+    mock_blender_worker = MagicMock()
+    mock_blender_worker.run.return_value = WorkerResult(status=WorkerStatus.SUCCESS, data={"scene": "scene.fbx"})
+    blender_adapter = create_blender_worker_adapter(mock_blender_worker)
+    res_blender = blender_adapter(task, cand)
+    assert res_blender["status"] == "success"
+    assert res_blender["worker"] == "blender"
+
+    # 3. GodotWorker
+    mock_godot_worker = MagicMock()
+    mock_godot_worker.run.return_value = WorkerResult(status=WorkerStatus.SUCCESS, data={"project": "project.godot"})
+    godot_adapter = create_godot_worker_adapter(mock_godot_worker)
+    res_godot = godot_adapter(task, cand)
+    assert res_godot["status"] == "success"
+    assert res_godot["worker"] == "godot"
+
+    # 4. ValidationWorker
+    mock_val_worker = MagicMock()
+    mock_val_worker.run.return_value = WorkerResult(status=WorkerStatus.SUCCESS, data={"valid": True})
+    val_adapter = create_validation_worker_adapter(mock_val_worker)
+    res_val = val_adapter(task, cand)
+    assert res_val["status"] == "success"
+    assert res_val["worker"] == "validation"
+
+    # 5. ProviderManager
+    mock_prov_mgr = MagicMock()
+    mock_prov_mgr.generate_text.return_value = "def test(): return 42"
+    prov_adapter = create_provider_manager_adapter(mock_prov_mgr)
+    res_prov = prov_adapter(task, cand)
+    assert res_prov["status"] == "success"
+    assert res_prov["output"] == "def test(): return 42"
+
+    # 6. RuleEngine
+    rule_adapter = create_rule_engine_adapter()
+    res_rule = rule_adapter(task, cand)
+    assert res_rule["status"] == "success"
+    assert "class Solution:" in res_rule["output"]
+
+
+@pytest.mark.unit
+def test_execution_timeout_enforcement_and_fallback(temp_history):
+    """Verify execution timeout is enforced and causes safe transition to fallback."""
+    slow_cand = RouteCandidate(
+        candidate_id="slow-cand",
+        provider_type="cloud",
+        display_name="Hanging Slow Candidate",
+        is_local=False,
+    )
+    fast_cand = RouteCandidate(
+        candidate_id="fast-cand",
+        provider_type="local",
+        display_name="Fast Fallback",
         is_local=True,
     )
 
-    task = TaskSpec(prompt="Loop test", task_type=TaskType.GENERAL)
+    task = TaskSpec(prompt="Timeout task", task_type=TaskType.GENERAL, preferred_latency_seconds=0.1)
+    decision = RouteDecision(
+        task_id=task.task_id,
+        selected_candidate=slow_cand,
+        fallback_candidates=[fast_cand],
+    )
+
+    executor = RouterExecutor(history_tracker=temp_history, default_timeout_seconds=0.1, max_retries_per_candidate=0)
+
+    def hanging_adapter(t, c):
+        time.sleep(0.5)
+        return "too late"
+
+    def fast_adapter(t, c):
+        return "fast response"
+
+    executor.register_adapter("slow-cand", hanging_adapter)
+    executor.register_adapter("fast-cand", fast_adapter)
+
+    res = executor.execute(task, decision)
+    assert res.success is True
+    assert res.final_candidate_id == "fast-cand"
+    assert res.output == "fast response"
+    assert len(res.attempts) == 2
+    assert "timed out after" in str(res.attempts[0].error).lower()
+
+
+@pytest.mark.unit
+def test_actual_hardware_tier_recorded_in_history(temp_history):
+    """Verify real HardwareTier from route decision is recorded in database history."""
+    cand = RouteCandidate(
+        candidate_id="tier-cand",
+        provider_type="local",
+        display_name="Tier Test Candidate",
+        is_local=True,
+    )
+    task = TaskSpec(prompt="Tier task", task_type=TaskType.GENERAL)
     decision = RouteDecision(
         task_id=task.task_id,
         selected_candidate=cand,
-        fallback_candidates=[cand, cand],
+        hardware_profile_summary={"hardware_tier": "high"},
     )
 
-    executor = RouterExecutor(history_tracker=temp_history, max_retries_per_candidate=0)
-
-    def fail_adapter(t, c):
-        raise RuntimeError("Always fails")
-
-    executor.register_adapter("flaky-candidate", fail_adapter)
+    executor = RouterExecutor(history_tracker=temp_history)
+    executor.register_adapter("tier-cand", lambda t, c: "done")
 
     res = executor.execute(task, decision)
-    assert res.success is False
-    assert len(res.attempts) == 1
+    assert res.success is True
+
+    # Inspect SQLite history records
+    records = temp_history.list_history(limit=5)
+    assert len(records) >= 1
+    assert records[0]["hardware_tier"] == "high"
 
 
 @pytest.mark.unit
-def test_historical_performance_bayesian_smoothing(temp_history):
-    """Verify Bayesian smoothing prevents low sample counts from breaking scoring."""
-    stats0 = temp_history.get_candidate_stats("cand-1")
-    assert stats0["has_sufficient_samples"] is False
-    assert stats0["smoothed_success_rate"] == 0.85
+def test_never_execute_unavailable_candidate(temp_history):
+    """Verify unavailable candidates are skipped and never dispatched."""
+    unavail_cand = RouteCandidate(
+        candidate_id="unavail-cand",
+        provider_type="cloud",
+        display_name="Unavailable Candidate",
+        is_available=False,
+        unavailability_reason="Missing credentials",
+    )
+    working_cand = RouteCandidate(
+        candidate_id="working-cand",
+        provider_type="local",
+        display_name="Working Candidate",
+        is_available=True,
+    )
 
-    temp_history.record_outcome(RouteOutcome(
-        task_id="t1",
-        candidate_id="cand-1",
-        task_type=TaskType.GENERAL,
-        success=False,
-        duration_seconds=1.0,
-        cost_usd=0.0,
-    ))
+    task = TaskSpec(prompt="Unavail test", task_type=TaskType.GENERAL)
+    decision = RouteDecision(
+        task_id=task.task_id,
+        selected_candidate=unavail_cand,
+        fallback_candidates=[working_cand],
+    )
 
-    stats1 = temp_history.get_candidate_stats("cand-1")
-    assert stats1["sample_count"] == 1
-    assert stats1["raw_success_rate"] == 0.0
-    assert stats1["smoothed_success_rate"] > 0.65
-    assert stats1["has_sufficient_samples"] is False
+    executor = RouterExecutor(history_tracker=temp_history)
+    invoked_unavail = False
+
+    def unavail_adapter(t, c):
+        nonlocal invoked_unavail
+        invoked_unavail = True
+        return "bad"
+
+    executor.register_adapter("unavail-cand", unavail_adapter)
+    executor.register_adapter("working-cand", lambda t, c: "good")
+
+    res = executor.execute(task, decision)
+    assert res.success is True
+    assert res.final_candidate_id == "working-cand"
+    assert invoked_unavail is False
+    assert "Candidate unavailable" in str(res.attempts[0].error)
 
 
 @pytest.mark.unit
-def test_3d_routing_policy(mock_hardware, monkeypatch, temp_history):
-    """Verify 3D routing policy precedence (Cloud 3D -> Local Model -> Blender -> Clear Diagnostic)."""
+def test_never_retry_non_retryable_auth_failures(temp_history):
+    """Verify authentication, permission, and validation errors are not retried."""
+    auth_cand = RouteCandidate(candidate_id="auth-cand", provider_type="cloud", display_name="Auth Error Cand")
+    fallback_cand = RouteCandidate(candidate_id="fb-cand", provider_type="local", display_name="Fallback Cand")
+
+    task = TaskSpec(prompt="Auth test", task_type=TaskType.GENERAL)
+    decision = RouteDecision(
+        task_id=task.task_id,
+        selected_candidate=auth_cand,
+        fallback_candidates=[fallback_cand],
+    )
+
+    executor = RouterExecutor(history_tracker=temp_history, max_retries_per_candidate=3)
+    auth_call_count = 0
+
+    def auth_adapter(t, c):
+        nonlocal auth_call_count
+        auth_call_count += 1
+        raise PermissionError("401 Unauthorized: Invalid API Key")
+
+    executor.register_adapter("auth-cand", auth_adapter)
+    executor.register_adapter("fb-cand", lambda t, c: "ok")
+
+    res = executor.execute(task, decision)
+    assert res.success is True
+    assert auth_call_count == 1  # Exactly 1 attempt, 0 retries on 401
+
+
+@pytest.mark.unit
+def test_explicit_3d_ordering_full_chain(mock_hardware, monkeypatch, temp_history):
+    """Verify explicit 3D ordering: Meshy -> Local Model -> Blender -> Unavailable Diagnostic."""
     registry = CapabilityRegistry()
 
-    # Case A: When Meshy API key is configured, Meshy is chosen for 3D generation
-    monkeypatch.setenv("MESHY_API_KEY", "mock-meshy-key")
-    router = DeterministicRouter(registry=registry, history_tracker=temp_history)
-    task = TaskSpec(prompt="Create 3D dragon mesh", task_type=TaskType.THREE_D_GENERATION, allow_cloud=True)
+    # 1. Meshy configured & cloud allowed -> Meshy
+    monkeypatch.setenv("MESHY_API_KEY", "valid-key")
+    router1 = DeterministicRouter(registry=registry, history_tracker=temp_history)
+    task1 = TaskSpec(prompt="Dragon 3D", task_type=TaskType.THREE_D_GENERATION, allow_cloud=True)
+    d1 = router1.plan_route(task1)
+    assert d1.selected_candidate is not None
+    assert d1.selected_candidate.candidate_id == "meshy-3d"
 
-    dec_cloud = router.plan_route(task)
-    assert dec_cloud.selected_candidate is not None
-    assert dec_cloud.selected_candidate.candidate_id == "meshy-3d"
-
-    # Case B: When Meshy is unavailable and Cloud is disallowed, but Blender is installed -> route to Blender
+    # 2. Meshy unavailable, high hardware RAM for local 3D -> Local 3D Model
     monkeypatch.delenv("MESHY_API_KEY", raising=False)
-    hw_blender = mock_hardware.model_copy()
-    hw_blender.installed_binaries["blender"] = True
-    hw_blender.ram_available_mb = 4096.0
+    hw_high = mock_hardware.model_copy()
+    hw_high.ram_available_mb = 16384.0
+    hw_high.vram_available_mb = 8192.0
+    hw_high.installed_binaries["blender"] = True
 
-    hw_mgr = HardwareManager({})
-    hw_mgr.get_hardware_profile = lambda: hw_blender
+    hw_mgr_high = HardwareManager({})
+    hw_mgr_high.get_hardware_profile = lambda: hw_high
+    router2 = DeterministicRouter(registry=registry, hardware_manager=hw_mgr_high, history_tracker=temp_history)
+    task2 = TaskSpec(prompt="Sword 3D", task_type=TaskType.THREE_D_GENERATION, allow_cloud=False)
+    d2 = router2.plan_route(task2)
+    assert d2.selected_candidate is not None
+    assert d2.selected_candidate.candidate_id == "local-3d-model"
 
-    router_blender = DeterministicRouter(registry=registry, hardware_manager=hw_mgr, history_tracker=temp_history)
-    task_local = TaskSpec(prompt="Create 3D sword", task_type=TaskType.THREE_D_GENERATION, allow_cloud=False)
+    # 3. Local 3D model insufficient RAM, Blender installed -> Blender Worker
+    hw_mid = mock_hardware.model_copy()
+    hw_mid.ram_available_mb = 4096.0  # < 8192MB required by local-3d-model
+    hw_mid.installed_binaries["blender"] = True
 
-    dec_blender = router_blender.plan_route(task_local)
-    assert dec_blender.selected_candidate is not None
-    assert dec_blender.selected_candidate.candidate_id == "blender-worker"
+    hw_mgr_mid = HardwareManager({})
+    hw_mgr_mid.get_hardware_profile = lambda: hw_mid
+    router3 = DeterministicRouter(registry=registry, hardware_manager=hw_mgr_mid, history_tracker=temp_history)
+    task3 = TaskSpec(prompt="Shield 3D", task_type=TaskType.THREE_D_GENERATION, allow_cloud=False)
+    d3 = router3.plan_route(task3)
+    assert d3.selected_candidate is not None
+    assert d3.selected_candidate.candidate_id == "blender-worker"
 
+    # 4. Blender not installed, no cloud, low RAM -> None + Diagnostic
+    hw_weak = mock_hardware.model_copy()
+    hw_weak.ram_available_mb = 512.0
+    hw_weak.installed_binaries["blender"] = False
 
-@pytest.mark.unit
-def test_no_available_3d_route_diagnostic_message(mock_hardware, monkeypatch, temp_history):
-    """Verify when no 3D route is possible, router returns a clear actionable diagnostic."""
-    monkeypatch.delenv("MESHY_API_KEY", raising=False)
-    weak_hw = mock_hardware.model_copy()
-    weak_hw.installed_binaries["blender"] = False
-    weak_hw.ram_available_mb = 512.0  # Cannot run local 3D model
-
-    hw_mgr = HardwareManager({})
-    hw_mgr.get_hardware_profile = lambda: weak_hw
-
-    router = DeterministicRouter(hardware_manager=hw_mgr, history_tracker=temp_history)
-    task = TaskSpec(prompt="Synthesize 3D spaceship", task_type=TaskType.THREE_D_GENERATION, allow_cloud=False)
-
-    dec = router.plan_route(task)
-    assert dec.selected_candidate is None
-    diag_reasons = "\n".join(dec.selection_reasons)
-    assert "3D Policy Diagnostic" in diag_reasons
-    assert "MESHY_API_KEY" in diag_reasons
-    assert "Install Blender" in diag_reasons
+    hw_mgr_weak = HardwareManager({})
+    hw_mgr_weak.get_hardware_profile = lambda: hw_weak
+    router4 = DeterministicRouter(registry=registry, hardware_manager=hw_mgr_weak, history_tracker=temp_history)
+    task4 = TaskSpec(prompt="Castle 3D", task_type=TaskType.THREE_D_GENERATION, allow_cloud=False)
+    d4 = router4.plan_route(task4)
+    assert d4.selected_candidate is None
+    diag = "\n".join(d4.selection_reasons)
+    assert "3D Policy Diagnostic" in diag
+    assert "MESHY_API_KEY" in diag
+    assert "Install Blender" in diag

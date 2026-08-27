@@ -120,7 +120,16 @@ def score_candidate(
     reasons.append(f"Capability match: {cap_score:.2f}")
 
     # 2. Task relevance score (0.0 - 1.0)
-    if task.task_type in candidate.supported_task_types:
+    if task.task_type == TaskType.THREE_D_GENERATION:
+        if candidate.candidate_id in ("meshy-3d", "local-3d-model"):
+            relevance_score = 1.0
+        elif candidate.candidate_id == "blender-worker":
+            relevance_score = 0.85
+        elif task.task_type in candidate.supported_task_types:
+            relevance_score = 0.80
+        else:
+            relevance_score = 0.50
+    elif task.task_type in candidate.supported_task_types:
         relevance_score = 1.0
     elif TaskType.GENERAL in candidate.supported_task_types:
         relevance_score = 0.70
@@ -135,6 +144,14 @@ def score_candidate(
 
     # 4. Quality score (0.0 - 1.0)
     quality_score = float(candidate.quality_score)
+    # Explicit 3D ordering: Meshy (0.98) -> Local 3D model (0.92) -> Blender automation (0.75)
+    if task.task_type == TaskType.THREE_D_GENERATION:
+        if candidate.candidate_id == "meshy-3d":
+            quality_score = 0.98
+        elif candidate.candidate_id == "local-3d-model":
+            quality_score = 0.92
+        elif candidate.candidate_id == "blender-worker":
+            quality_score = 0.75
     reasons.append(f"Base quality: {quality_score:.2f}")
 
     # 5. Latency score (0.0 - 1.0)

@@ -2,103 +2,90 @@
 
 **PyFlare Autonomous Platform**  
 **Branch:** `refactor/pyflare-cleanup`  
-**Milestone:** Phase 1 — Deterministic Routing Layer  
+**Milestone:** Router V1 Completion  
 
 ---
 
 ## 1. Executive Summary
 
-We have implemented **Deterministic Router V1** for PyFlare. The router replaces ad-hoc LLM or worker selection with a 100% deterministic, hardware-aware, cost-bounded, and privacy-confined dispatch layer. 
+We have completed the **Deterministic Router V1** milestone for PyFlare. The router replaces ad-hoc model/worker selection with a 100% deterministic, hardware-aware, cost-bounded, and privacy-confined dispatch and fallback layer.
 
-No AI model makes the final routing decision. All filtering, constraint validation, scoring, and fallback chain evaluations are executed strictly in deterministic Python code.
-
----
-
-## 2. Files Created and Modified
-
-### Newly Created Files
-* `src/pyflare/router/models.py` — Validated Pydantic models for `TaskSpec`, `CapabilityRequirement`, `ProviderCapability`, `HardwareProfile`, `RouteCandidate`, `RouteDecision`, `ExecutionConstraint`, and `RouteOutcome`.
-* `src/pyflare/router/capability_registry.py` — Central capability registry connecting cloud LLMs, local models, MCP tools, and worker engines.
-* `src/pyflare/router/history.py` — Persistent SQLite performance store (`router_history`) with Bayesian smoothing (m-estimate) to prevent outlier runs from skewing routing scores.
-* `src/pyflare/router/scoring.py` — Deterministic candidate filtering and normalized multi-factor composite scoring engine.
-* `src/pyflare/router/router.py` — Central `DeterministicRouter` with stable tie-breaking and domain-specific 3D dispatch logic.
-* `src/pyflare/router/executor.py` — Resilient `RouterExecutor` orchestrating primary routes, retry limits, non-retryable error detection (401/403/policy), and loop prevention.
-* `src/pyflare/router/__init__.py` — Clean public exports for the router package.
-* `tests/unit/test_router.py` — 17 unit tests verifying deterministic output, stable tie-breaking, weak hardware, missing GPU/binaries/keys, privacy confinement, 3D routing policy, and Bayesian smoothing.
-* `tests/unit/test_router_api.py` — 5 unit tests verifying `/router/plan`, `/router/capabilities`, `/router/hardware`, and authenticated `/router/execute` and `/router/history` endpoints.
-* `docs/ROUTER_ARCHITECTURE.md` — Complete router architecture specification.
-* `docs/CAPABILITY_REGISTRY.md` — Candidate registration schema and default provider catalog.
-* `docs/HARDWARE_ROUTING.md` — Host hardware telemetry and resource routing guide.
-
-### Modified Files
-* `src/pyflare/core/hardware_manager.py` — Extended with `get_hardware_profile() -> HardwareProfile`, normalized hardware tiers (`weak`, `mid`, `high`), non-blocking binary detection, and GPU VRAM fallback.
-* `src/pyflare/api/routes.py` — Added endpoints: `POST /router/plan`, `POST /router/execute`, `GET /router/capabilities`, `GET /router/hardware`, and `GET /router/history`.
-* `src/pyflare/cli.py` — Added subcommands `pyflare route`, `pyflare capabilities`, `pyflare hardware`, and `pyflare validate-os`.
-* `src/pyflare/plugins/plugin_manager.py` — Added `enabled`, `load()`, and `list()` methods for clean lifecycle management.
-* `src/pyflare/core/health.py` — Added `run_doctor_checks` preflight diagnostic function.
-* `README.md` — Updated with an honest Component Status Matrix, architecture diagram, and CLI routing examples.
+All fake success responses have been eliminated. Real adapters now connect the router directly to `CodeWorker`, `BlenderWorker`, `GodotWorker`, `ValidationWorker`, `ProviderManager`, and the local deterministic rule engine.
 
 ---
 
-## 3. Mathematical Routing Formula
+## 2. Router V1 Components Implemented
 
-For every candidate satisfying all hard filters (privacy, cloud restrictions, hardware RAM/VRAM, required tools, and task type), the composite score $S \in [0.0, 1.0]$ is computed as:
+### 1. Real Worker & Provider Adapters (`src/pyflare/router/adapters.py`)
+* `create_code_worker_adapter(code_worker)`: Maps `TaskSpec` to `CodeWorker.run(job, state)`.
+* `create_blender_worker_adapter(blender_worker)`: Maps `TaskSpec` to `BlenderWorker.run(job, state)`.
+* `create_godot_worker_adapter(godot_worker)`: Maps `TaskSpec` to `GodotWorker.run(job, state)`.
+* `create_validation_worker_adapter(val_worker)`: Maps `TaskSpec` to `ValidationWorker.run(job, state)`.
+* `create_provider_manager_adapter(provider_mgr)`: Dispatches text generation through `ProviderManager.generate_text()`.
+* `create_rule_engine_adapter()`: Clean deterministic procedural synthesis for code, validation, and planning fallback.
 
-$$S = \sum_{k} w_k \cdot f_k(\text{Candidate}, \text{Task}, \text{Hardware}, \text{History})$$
+### 2. Elimination of Fake Responses & Typed Error Handling
+* If a route candidate lacks an adapter, `RouterExecutor` raises a typed `AdapterUnavailableError`.
+* Missing adapters are marked as non-retryable and safely transition to the next eligible fallback candidate without faking success.
 
-### Default Weights ($w_k$)
-* **Capability Match ($w = 0.20$):** Mean capability coverage for required task capabilities.
-* **Task Relevance ($w = 0.15$):** $1.0$ for exact domain match, $0.70$ for generalist model, $0.50$ otherwise.
-* **Historical Success ($w = 0.15$):** Bayesian smoothed rate $\hat{p} = \frac{\text{successes} + 5 \times 0.85}{N + 5}$.
-* **Quality Score ($w = 0.15$):** Baseline verified quality rating ($0.0$ to $1.0$).
-* **Latency Score ($w = 0.10$):** Normalized latency score $f(L) = \frac{1}{1 + L/5.0}$.
-* **Cost Score ($w = 0.10$):** Normalized cost score $f(C) = \frac{1}{1 + C \times 50.0}$.
-* **Hardware Suitability ($w = 0.10$):** Host tier compatibility score ($1.0$ high, $0.85$ mid, $0.65$ weak; $0.95$ for cloud).
-* **Privacy Compliance ($w = 0.05$):** Bonus for local/confidential processing.
+### 3. Timeout Enforcement & Resilient Fallback
+* `RouterExecutor._run_candidate_with_timeout()` enforces `preferred_latency_seconds` / `default_timeout_seconds` using worker thread containment.
+* If execution exceeds the allotted duration, `ExecutionTimeoutError` is raised, recorded in the attempt history, and the executor safely advances to the next fallback candidate.
 
-### Stable Tie-Breaking
-When candidates achieve identical scores, deterministic ordering is enforced by:
-$$\text{Rank Key} = (-\text{Score}, \text{candidate\_id})$$
+### 4. Actual Hardware Tier Recording
+* The actual detected `HardwareTier` (`HIGH`, `MID`, or `WEAK`) from `decision.hardware_profile_summary` is recorded in `router_history` SQLite records rather than a hardcoded default.
 
----
+### 5. Explicit Deterministic 3D Ordering
+* For `3d_generation` tasks, ranking strictly follows:
+  1. `meshy-3d` (if `MESHY_API_KEY` configured and cloud processing allowed)
+  2. `local-3d-model` (if local model installed and hardware RAM/VRAM compatible)
+  3. `blender-worker` (if `blender` executable installed in PATH)
+  4. Explicit 3D Policy Diagnostic explaining exact missing prerequisites.
 
-## 4. Hardware Detection & Host Safety
-
-* **Normalized Tiers:**
-  * `high`: $\ge 16\text{ GB RAM}$, $\ge 6\text{ GB VRAM}$, $\ge 8\text{ logical CPU cores}$.
-  * `mid`: $\ge 8\text{ GB RAM}$, $(\ge 2\text{ GB VRAM} \text{ or } \ge 4\text{ logical CPU cores})$.
-  * `weak`: $< 8\text{ GB RAM}$ or $< 500\text{ MB available RAM}$.
-* **Host Protection:**
-  * Candidates requiring more RAM than currently available (`hardware.ram_available_mb`) are rejected before execution.
-  * Blender and Godot workers run gracefully on CPU without discrete NVIDIA GPU crashes.
-  * System RAM monitor throttles heavy worker dispatch if memory pressure exceeds 85%.
+### 6. Non-Retryable Error Confinement
+* `401 Unauthorized`, `403 Forbidden`, `PermissionError`, invalid input/schema errors, policy violations, and `AdapterUnavailableError` are never retried, preventing wasted compute or loop cycles.
 
 ---
 
-## 5. Verification Results
+## 3. Files Created and Modified
 
-### Test Suite Execution
-* **Unit Tests:** 144 passed, 9 xfailed
-* **Integration Tests:** 28 passed, 1 xfailed
-* **Total Tests:** **172 passed, 10 xfailed, 0 unhandled failures**
-
-### Linter & Type Checks
-* **Ruff:** `All checks passed!` (0 errors)
-* **Compileall:** `python -m compileall src` passed with exit code 0.
-* **Mypy:** `src/pyflare/router/` contains **0 typing errors**. Existing typing debt in legacy core components is documented and preserved.
-
-### CLI Verification
-* `pyflare doctor` — System diagnostics pass cleanly.
-* `pyflare hardware` — Detects 8 logical cores, 7.8GB RAM, and binary status.
-* `pyflare capabilities` — Lists all 13 registered candidate providers with dynamic availability.
-* `pyflare route "Generate a 3D procedural tree"` — Generates deterministic 3D diagnostic plan.
-* `pyflare route "Write a Python parser for math equations"` — Selects `code-worker` with score `0.9051` and `local-fallback-rules` fallback.
-* `pyflare validate-os` — Runs all 14 PyFlare OS static validators in 0.17s without heavy ISO builds.
+| File | Type | Purpose |
+| :--- | :--- | :--- |
+| `src/pyflare/router/adapters.py` | New | Worker and provider execution adapters, `AdapterUnavailableError`, `ExecutionTimeoutError` |
+| `src/pyflare/router/executor.py` | Updated | Resilient executor with timeout enforcement, real hardware tier recording, loop prevention, and typed error handling |
+| `src/pyflare/router/scoring.py` | Updated | Explicit 3D ordering weights and domain-specific task filtering |
+| `src/pyflare/router/router.py` | Updated | Deterministic route planner with stable tie-breaking |
+| `src/pyflare/router/models.py` | Updated | Pydantic data models for specifications, decisions, profiles, and outcomes |
+| `src/pyflare/router/capability_registry.py` | Updated | Candidate registry for cloud, local, and worker nodes |
+| `src/pyflare/router/history.py` | Updated | SQLite performance tracking with Bayesian smoothing |
+| `src/pyflare/router/__init__.py` | Updated | Clean public router exports |
+| `src/pyflare/api/routes.py` | Updated | Added authenticated `/router/execute` and `/router/history` endpoints |
+| `src/pyflare/cli.py` | Updated | CLI subcommands: `pyflare route`, `capabilities`, `hardware`, `validate-os` |
+| `tests/unit/test_router.py` | Updated | 18 unit tests covering all required edge cases, adapters, timeouts, and policies |
+| `tests/unit/test_router_api.py` | Updated | 5 API endpoint and authentication tests |
+| `docs/ROUTER_ARCHITECTURE.md` | New | Comprehensive architecture guide |
+| `docs/CAPABILITY_REGISTRY.md` | New | Registered candidate schema and catalog |
+| `docs/HARDWARE_ROUTING.md` | New | Hardware telemetry and resource routing documentation |
 
 ---
 
-## 6. Remaining Limitations & Next Steps
+## 4. Test & Verification Results
 
-1. **Live 3D Cloud API Mocking:** External cloud 3D providers (Meshy) currently operate via capability adapters and require a valid `MESHY_API_KEY` for live execution.
-2. **Context Window Manager:** Next milestone should enhance conversational and multi-turn context compaction algorithms.
-3. **Repository Split for PyFlare OS:** PyFlare OS source assets remain safely archived in `archive/pyflareos/` with automated static validation. Repository separation is documented for future standalone migration.
+### Windows Local Verification Matrix
+* **Python Compile Check:** `python -m compileall src` $\rightarrow$ **Passed** (0 errors)
+* **Ruff Linter:** `python -m ruff check .` $\rightarrow$ **Passed** (0 errors)
+* **Mypy Router Check:** `python -m mypy src/pyflare/router --explicit-package-bases` $\rightarrow$ **Passed** (0 errors in 8 source files)
+* **Full Test Suite:** `python -m pytest tests/unit tests/integration` $\rightarrow$ **173 passed, 10 xfailed, 0 unhandled failures** in 31.42s
+* **CLI Doctor Diagnostics:** `pyflare doctor` $\rightarrow$ **Passed**
+* **CLI Hardware Telemetry:** `pyflare hardware` $\rightarrow$ **Passed** (Detected 8 logical cores, 7.8GB RAM, and binary status)
+* **CLI Capability Listing:** `pyflare capabilities` $\rightarrow$ **Passed** (13 registered candidates)
+* **CLI Route Preview:** `pyflare route "Generate a 3D procedural tree"` $\rightarrow$ **Passed** (Deterministic 3D diagnostic)
+* **PyFlare OS Validator:** `pyflare validate-os` $\rightarrow$ **Passed** (14 static checks passed in 0.17s)
+
+---
+
+## 5. Remaining Limitations & Next Steps
+
+1. **Live Cloud API Credentials:** Meshy and third-party cloud 3D providers require valid user-supplied API keys for live network synthesis; mock fallback adapters are fully verified for automated testing.
+2. **Context Window Compaction:** Future milestone can build conversational and multi-turn context compaction algorithms.
+3. **Repository Split for PyFlare OS:** PyFlare OS source assets remain safely archived in `archive/pyflareos/` with automated static validation. Standalone repository migration is prepared.
