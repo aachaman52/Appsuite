@@ -5,7 +5,25 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
-**PyFlare** is a modular, production-ready autonomous AI agent orchestration and development platform. It coordinates multi-agent cognitive reasoning, resilient tool execution pipelines, semantic memory retrieval, and 3D / software asset generation with built-in self-healing and security confinement.
+**PyFlare** is a modular autonomous AI agent orchestration and development platform. It coordinates deterministic capability-based routing, hardware-aware worker dispatch, semantic memory retrieval, and 3D / software asset generation with built-in self-healing and security confinement.
+
+---
+
+## 🚦 Component Status Matrix
+
+| Component | Status | Description |
+| :--- | :--- | :--- |
+| **Deterministic Router V1** | `Implemented` | 100% deterministic scoring, Bayesian history, privacy & cloud filtering, stable tie-breaking |
+| **Capability Registry** | `Implemented` | Central registry for cloud models, local models, MCP tools, and worker nodes |
+| **Hardware Profiler** | `Implemented` | Non-blocking CPU, RAM, VRAM, disk, binary detection and normalized tiers |
+| **Workspace Security Confinement** | `Implemented` | Path traversal protection, shell injection prevention, secret redaction |
+| **FastAPI REST API & Auth** | `Implemented` | Strict API key authentication by default, rate limiting, and localhost binding |
+| **Multi-Agent Pipeline & DAG** | `Implemented` | Multi-stage asset creation, code generation, and validation pipelines |
+| **Semantic Strategy Memory** | `Experimental` | Vector recall and strategy similarity evaluation |
+| **Context Manager** | `Experimental` | Baseline context tracking; advanced long-horizon compaction in progress |
+| **Distributed Workers** | `Planned` | Multi-node worker clustering and remote task queues |
+| **Shared Enterprise Asset Store**| `Planned` | Global distributed object cache and cross-project asset deduplication |
+| **PyFlare OS Linux Distribution** | `Offline Validation Only` | ISO generation requires Linux tooling and is deferred; offline source validation enabled |
 
 ---
 
@@ -22,6 +40,7 @@ pyflare/
 ├── pipeline/     # DAG execution pipeline, asset router, asset registry, GLTF/FBX normalizers
 ├── plugins/      # Extensible plugin system and hook lifecycle managers
 ├── providers/    # Multi-LLM provider client (OpenAI, Gemini, Anthropic, NVIDIA NIM, Local rules fallback)
+├── router/       # Deterministic routing engine, capability registry, executor, Bayesian history
 ├── scheduler/    # Dynamic hardware-aware scheduler, resource monitor, worker scoring
 └── workers/      # Resilient task execution workers (Blender, Godot, Code, Deploy, Validation)
 ```
@@ -30,16 +49,13 @@ pyflare/
 graph TD
     User([User / CLI / API]) --> CLI[PyFlare CLI / REST API]
     CLI --> Auth[Security & Auth Middleware]
-    Auth --> Engine[PyFlare Core Engine]
+    Auth --> Router[Deterministic Router V1]
+    Router --> Registry[Capability Registry]
+    Router --> Hardware[Hardware Manager & Telemetry]
+    Router --> Executor[Router Fallback Executor]
+    Executor --> Engine[PyFlare Core Engine & Workers]
     Engine --> Memory[Semantic Memory & Vector Store]
-    Engine --> Brain[Multi-Agent Debate & Brain]
-    Brain --> Providers[LLM Providers / Fallback]
-    Brain --> Scheduler[Hardware-Aware DAG Scheduler]
-    Scheduler --> Workers[Execution Workers]
-    Workers --> Blender[Blender Worker]
-    Workers --> Godot[Godot Worker]
-    Workers --> Code[Code Worker]
-    Workers --> Deploy[Deployment Worker]
+    Engine --> Workers[Blender / Godot / Code / Validation / Deploy]
     Workers --> Sandbox[Workspace Security Confinement]
 ```
 
@@ -79,9 +95,26 @@ pyflare doctor
 
 ## 💻 CLI Usage
 
-PyFlare includes an intuitive command-line interface:
+### Deterministic Routing Plan
+Preview deterministic route selection, score breakdown, hardware constraints, and ordered fallbacks:
+```bash
+pyflare route "Generate a 3D procedural tree"
+pyflare route "Write a Python parser" --local-only
+```
 
-### Plan Execution (Dry Run Preview)
+### Inspect Hardware Telemetry
+View detected CPU cores, RAM headroom, GPU VRAM, and binary availability:
+```bash
+pyflare hardware
+```
+
+### List Registered Capabilities
+View all registered candidate providers, latency estimates, cost metrics, and availability:
+```bash
+pyflare capabilities
+```
+
+### Plan Execution (Pipeline Preview)
 Inspect the generated multi-stage DAG, template assignment, and estimated resource requirements:
 ```bash
 pyflare plan "Build an enchanted medieval watchtower scene"
@@ -93,50 +126,24 @@ Launch the hardened FastAPI server (bound to localhost by default):
 pyflare serve --host 127.0.0.1 --port 8000
 ```
 
-### Direct Job Execution
-Execute an autonomous run end-to-end from the terminal:
+### Validate PyFlare OS Source Tree
+Run lightweight static validation of PyFlare OS source assets, theme, and package manifests without heavy ISO remastering:
 ```bash
-pyflare run "Generate low-poly dungeon crawler assets"
+pyflare validate-os
 ```
 
 ---
 
 ## 🔒 Security Hardening
 
-PyFlare is built with security as a first-class requirement:
-
-- **Workspace Path Confinement:** All file access from workers is validated using canonical path resolution (`pyflare.core.security.resolve_workspace_path`) to prevent directory traversal attacks (`../` and null bytes).
-- **Safe Command Allowlist:** Subprocess execution is restricted to allowlisted executables without `shell=True` (`pyflare.core.security.run_safe_command`).
-- **Secret Redaction:** Logs, error messages, and debug dumps automatically scrub API keys, bearer tokens, and credentials via `pyflare.core.security.redact_secrets`.
-- **API Authentication:** Protected endpoints require `X-API-Key` or `Authorization: Bearer <token>` when enabled.
-- **Localhost Default Binding:** Web services bind to `127.0.0.1` to prevent accidental public network exposure.
-- **Safe Worker Defaults:** Network deployment workers (such as FTP uploads) are disabled by default.
-
----
-
-## 🧪 Testing & Quality
-
-Run the test suite across unit and integration categories:
-
-```bash
-# Run unit tests
-pytest tests/unit
-
-# Run unit tests with coverage
-pytest tests/unit --cov=pyflare --cov-report=term
-
-# Run integration tests
-pytest tests/integration
-
-# Run Ruff linter
-python -m ruff check .
-
-# Run mypy type checking
-python -m mypy src/pyflare --explicit-package-bases
-```
+- **Workspace Path Confinement**: Filesystem access is strictly restricted within the designated workspace directory. Attempts to escape via directory traversal (`../`) or null bytes (`\0`) are immediately blocked.
+- **Safe Subprocess Execution**: Subprocesses are executed without shell expansion (`shell=False`) using strictly sanitized argument vectors.
+- **Secret Redaction**: API keys and credential strings are automatically redacted from error traces and logs.
+- **Strict Default Authentication**: The FastAPI API server rejects unauthenticated requests with HTTP 401 Unauthorized unless `PYFLARE_REQUIRE_AUTH=false` is explicitly configured.
+- **Safe Network Bindings**: Default server binding is strictly confined to `127.0.0.1`.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+PyFlare is licensed under the [MIT License](LICENSE).
