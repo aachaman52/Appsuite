@@ -157,6 +157,7 @@ def run_command(args: argparse.Namespace) -> int:
     ctx.start()
     try:
         print(f"\nExecuting {__product__} run for prompt: '{args.prompt}'")
+        res = ctx.jarvis.run(prompt=args.prompt, template_id=args.template)
         status_val = getattr(res.status, "value", str(res.status))
         print(f"Status  : {status_val}")
         print(f"Job ID  : {res.job_id}")
