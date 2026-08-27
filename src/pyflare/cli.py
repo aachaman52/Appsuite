@@ -1,106 +1,89 @@
-"""PyFlare Command Line Interface.
-
-Provides:
-- pyflare serve
-- pyflare run "<prompt>"
-- pyflare plan "<prompt>"
-- pyflare doctor
-"""
+"""PyFlare CLI entry point."""
 from __future__ import annotations
 
 import argparse
 import os
-import shutil
 import sys
-from pathlib import Path
 from typing import Optional
 
-# Ensure standard output can handle utf-8 / localized filepaths without charmap errors
+from pyflare import __product__, __version__
+from pyflare.core.config import load_config
+from pyflare.core.security import redact_secrets
+
+# Ensure Windows stdout prints standard UTF-8 safely without crashing
 if hasattr(sys.stdout, "reconfigure"):
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
-if hasattr(sys.stderr, "reconfigure"):
-    try:
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
-
-from pyflare import __version__, __product__
-from pyflare.core.config import get_config, load_config
 
 
 def doctor_command(args: argparse.Namespace) -> int:
-    """Run diagnostics on environment, dependencies, optional tools, and configs."""
-    print(f"\n{__product__} v{__version__} - System Diagnostics & Doctor\n" + "=" * 55)
-    
-    # 1. Python Environment
-    print(f"[OK] Python version: {sys.version.split()[0]} ({sys.executable})")
-    
-    # 2. Config & Workspace
-    cfg = load_config()
-    print(f"[OK] Config loaded successfully ({len(cfg.raw)} top-level sections)")
-    print(f"[OK] Providers configured: {len(cfg.providers)}")
-    print(f"[OK] Templates available: {len(cfg.templates)}")
-    
-    ws_dir = os.environ.get("PYFLARE_WORKSPACE_DIR") or str(Path.cwd() / "workspace")
-    Path(ws_dir).mkdir(parents=True, exist_ok=True)
-    print(f"[OK] Workspace directory: {ws_dir} (writeable: {os.access(ws_dir, os.W_OK)})")
+    """Run system diagnostic and preflight checks."""
+    from pyflare.core.health import run_doctor_checks
 
-    # 3. Optional Tool Binaries
+    cfg = load_config()
+    print(f"\n{__product__} v{__version__} - System Diagnostics & Doctor")
+    print("=" * 55)
+
+    checks = run_doctor_checks(cfg)
+    all_ok = True
+    for check in checks:
+        status_tag = "[OK]" if check["ok"] else "[-]"
+        print(f"{status_tag} {check['title']}: {check['message']}")
+        if not check["ok"] and check.get("required", False):
+            all_ok = False
+
     print("\nOptional Tool Integrations:")
     for tool in ["blender", "godot", "ffmpeg", "git"]:
-        path = shutil.which(tool)
-        if path:
-            print(f"  [OK] {tool:<10}: Available at {path}")
-        else:
-            print(f"  [-]  {tool:<10}: Not found in PATH (gracefully mocked/disabled)")
+        bin_path = cfg.get("workers", {}).get(tool, {}).get("binary", tool)
+        import shutil
+        found = shutil.which(bin_path)
+        tag = "[OK]" if found else "[-]"
+        msg = f"Available at {found}" if found else "Not found in PATH (gracefully mocked/disabled)"
+        print(f"  {tag:<4} {tool:<10}: {msg}")
 
-    # 4. LLM API Keys
     print("\nConfigured LLM Provider Keys (presence only):")
-    for key_env in ["OPENAI_API_KEY", "GEMINI_API_KEY", "ANTHROPIC_API_KEY", "NVIDIA_API_KEY"]:
-        has_key = bool(os.environ.get(key_env))
-        status = "[SET]" if has_key else "[NOT SET - local fallback used]"
-        print(f"  {key_env:<20}: {status}")
+    for key_name in ["OPENAI_API_KEY", "GEMINI_API_KEY", "ANTHROPIC_API_KEY", "NVIDIA_API_KEY", "MESHY_API_KEY"]:
+        is_set = bool(os.environ.get(key_name))
+        tag = "[CONFIGURED]" if is_set else "[NOT SET - local fallback used]"
+        print(f"  {key_name:<20}: {tag}")
 
-    # 5. Security & Auth Settings
     print("\nSecurity Configuration:")
-    api_key_set = bool(os.environ.get("PYFLARE_API_KEY"))
-    print(f"  PYFLARE_API_KEY     : {'[CONFIGURED]' if api_key_set else '[NOT CONFIGURED - dev mode]'}")
-    ext_bind = os.environ.get("PYFLARE_ALLOW_EXTERNAL_BIND", "false").lower() in ("1", "true", "yes")
-    print(f"  External Binding    : {'[ALLOWED]' if ext_bind else '[RESTRICTED TO LOCALHOST]'}")
-    ftp_enabled = os.environ.get("PYFLARE_FTP_ENABLED", "false").lower() in ("1", "true", "yes")
-    print(f"  FTP Deployments     : {'[ENABLED]' if ftp_enabled else '[DISABLED (safe default)]'}")
+    api_key_set = bool(os.environ.get("PYFLARE_API_KEY") or os.environ.get("APPSUITE_API_KEY"))
+    auth_required = os.environ.get("PYFLARE_REQUIRE_AUTH", "true").lower() in ("true", "1", "yes")
+    external_allowed = cfg.raw.get("server", {}).get("allow_external_bind", False)
+    print(f"  PYFLARE_API_KEY     : {'[CONFIGURED]' if api_key_set else '[NOT CONFIGURED]'}")
+    print(f"  Authentication Req  : {'[ENABLED BY DEFAULT]' if auth_required else '[DISABLED]'}")
+    print(f"  External Binding    : {'[ENABLED]' if external_allowed else '[RESTRICTED TO LOCALHOST]'}")
+    print(f"  FTP Deployments     : {'[ENABLED]' if os.environ.get('PYFLARE_FTP_ENABLED', 'false').lower() == 'true' else '[DISABLED (safe default)]'}")
 
     print("\n" + "=" * 55)
     print("Doctor check complete: System is ready to run PyFlare.\n")
-    return 0
+    return 0 if all_ok else 1
 
 
 def serve_command(args: argparse.Namespace) -> int:
-    """Start the PyFlare FastAPI server with uvicorn."""
-    import uvicorn
+    """Launch the PyFlare hardened FastAPI server."""
     from pyflare.core.main import create_app
+    import uvicorn
 
     cfg = load_config()
-    host = args.host or os.environ.get("PYFLARE_HOST") or cfg.raw.get("server", {}).get("host", "127.0.0.1")
-    port = args.port or int(os.environ.get("PYFLARE_PORT") or cfg.raw.get("server", {}).get("port", 8000))
-    allow_external = args.allow_external or (
-        os.environ.get("PYFLARE_ALLOW_EXTERNAL_BIND", "false").lower() in ("1", "true", "yes")
-    )
+    server_cfg = cfg.raw.get("server", {})
+    host = args.host or server_cfg.get("host", "127.0.0.1")
+    port = args.port or server_cfg.get("port", 8000)
+    allow_external = args.allow_external or server_cfg.get("allow_external_bind", False)
 
     if host not in ("127.0.0.1", "localhost") and not allow_external:
-        print(
-            f"[SECURITY ERROR] Binding to non-loopback address '{host}' blocked.\n"
-            "Pass --allow-external or set PYFLARE_ALLOW_EXTERNAL_BIND=true to allow external connections.",
-            file=sys.stderr,
-        )
+        print(f"Error: Binding to external interface '{host}' is disallowed by default.")
+        print("To allow external binding, provide --allow-external or set server.allow_external_bind=true in config.")
         return 1
 
-    print(f"Starting {__product__} v{__version__} server on http://{host}:{port}")
     app = create_app(cfg)
-    uvicorn.run(app, host=host, port=port)
+    log_lvl = cfg.raw.get("log_level", "info").lower()
+    print(f"\nStarting {__product__} v{__version__} API Server on http://{host}:{port}")
+    print("Press Ctrl+C to stop.\n")
+    uvicorn.run(app, host=host, port=port, log_level=log_lvl)
     return 0
 
 
@@ -113,6 +96,7 @@ def plan_command(args: argparse.Namespace) -> int:
     from pyflare.providers.provider_manager import ProviderManager
     from pyflare.core.hardware_manager import HardwareManager
     from pyflare.core.token_banker import TokenBanker
+    from pyflare.core.jarvis_brain import JarvisBrain
 
     cfg = load_config()
     db = Database(cfg.abs_path("database_path"))
@@ -121,8 +105,6 @@ def plan_command(args: argparse.Namespace) -> int:
     provider_mgr = ProviderManager(cfg.providers, token_banker=token_banker)
     memory = SemanticMemory(db, provider_mgr)
     hardware = HardwareManager(cfg.scheduler, str(cfg.abs_path("output_dir")))
-
-    from pyflare.core.jarvis_brain import JarvisBrain
 
     brain = JarvisBrain(memory, provider_mgr, token_banker, hardware, templates)
     jarvis = JarvisCore(cfg.scheduler, str(cfg.abs_path("output_dir")))
@@ -169,6 +151,139 @@ def run_command(args: argparse.Namespace) -> int:
         ctx.shutdown()
 
 
+def route_command(args: argparse.Namespace) -> int:
+    """Plan a deterministic execution route for a task."""
+    from pyflare.router import DeterministicRouter, TaskSpec, TaskType, PrivacyLevel
+
+    # Determine TaskType from arguments or prompt heuristics
+    task_type_val = TaskType.GENERAL
+    if args.task_type:
+        try:
+            task_type_val = TaskType(args.task_type)
+        except ValueError:
+            task_type_val = TaskType.GENERAL
+    else:
+        prompt_lower = args.prompt.lower()
+        if any(k in prompt_lower for k in ["3d", "mesh", "tower", "castle", "model", "blender", "fbx", "glb"]):
+            task_type_val = TaskType.THREE_D_GENERATION
+        elif any(k in prompt_lower for k in ["code", "script", "gdscript", "python", "function", "class"]):
+            task_type_val = TaskType.CODE_GENERATION
+        elif any(k in prompt_lower for k in ["godot", "scene", "tscn", "game"]):
+            task_type_val = TaskType.GODOT_AUTOMATION
+
+    privacy = PrivacyLevel.CONFIDENTIAL if args.local_only or args.privacy == "confidential" else (
+        PrivacyLevel.INTERNAL if args.privacy == "internal" else PrivacyLevel.PUBLIC
+    )
+
+    spec = TaskSpec(
+        prompt=args.prompt,
+        task_type=task_type_val,
+        allow_cloud=not args.no_cloud and not args.local_only,
+        require_local=bool(args.local_only),
+        privacy_level=privacy,
+        max_cost_usd=args.max_cost,
+    )
+
+    router = DeterministicRouter()
+    decision = router.plan_route(spec)
+
+    print(f"\n{__product__} Deterministic Routing Plan")
+    print("=" * 60)
+    print(f"Task ID           : {spec.task_id}")
+    print(f"Prompt            : '{redact_secrets(spec.prompt)}'")
+    print(f"Task Type         : {spec.task_type.value}")
+    print(f"Privacy Level     : {spec.privacy_level.value}")
+    print(f"Allow Cloud       : {spec.allow_cloud}")
+    print(f"Require Local     : {spec.require_local}")
+
+    print("\nRouting Decision:")
+    if decision.selected_candidate:
+        cand = decision.selected_candidate
+        print(f"  [SELECTED] {cand.display_name} (ID: {cand.candidate_id})")
+        print(f"  Provider Type   : {cand.provider_type}")
+        print(f"  Execution Mode  : {'Local' if cand.is_local else 'Cloud'}")
+        print(f"  Deterministic Score : {decision.score:.4f}")
+        print(f"  Estimated Cost  : ${decision.estimated_cost_usd:.4f}")
+        print(f"  Expected Latency: ~{decision.estimated_latency_seconds:.1f}s")
+        print("  Selection Rationale:")
+        for r in decision.selection_reasons:
+            print(f"    - {r}")
+    else:
+        print("  [-] NO ELIGIBLE CANDIDATE FOUND")
+        for r in decision.selection_reasons:
+            print(f"    - {r}")
+
+    if decision.fallback_candidates:
+        print("\nOrdered Fallback Candidates:")
+        for idx, fb in enumerate(decision.fallback_candidates, start=1):
+            fb_score = decision.candidate_scores.get(fb.candidate_id, 0.0)
+            print(f"  {idx}. {fb.display_name:<35} [Score: {fb_score:.4f}, Cost: ${fb.estimated_cost_usd:.4f}, Latency: ~{fb.expected_latency_seconds:.1f}s]")
+
+    if decision.rejected_candidates:
+        print("\nRejected Candidates:")
+        for cid, reason in decision.rejected_candidates.items():
+            print(f"  [-] {cid:<22}: {reason}")
+
+    print("=" * 60 + "\n")
+    return 0 if decision.selected_candidate else 1
+
+
+def capabilities_command(args: argparse.Namespace) -> int:
+    """List all registered capability candidates and availability."""
+    from pyflare.router import CapabilityRegistry
+
+    reg = CapabilityRegistry()
+    candidates = reg.list_candidates()
+
+    print(f"\n{__product__} Registered Capability Registry ({len(candidates)} candidates)")
+    print("=" * 70)
+    for c in candidates:
+        status_tag = "[AVAILABLE]" if c.is_available else "[- UNAVAILABLE]"
+        print(f"{status_tag:<16} {c.display_name} ({c.candidate_id})")
+        print(f"  Type: {c.provider_type:<18} Local: {str(c.is_local):<6} Privacy: {c.privacy_level.value}")
+        print(f"  Cost: ${c.estimated_cost_usd:.4f}/task    Latency: ~{c.expected_latency_seconds:.1f}s  Quality: {c.quality_score:.2f}")
+        supported_tasks = ", ".join(t.value for t in c.supported_task_types)
+        print(f"  Supported Tasks: {supported_tasks}")
+        if not c.is_available and c.unavailability_reason:
+            print(f"  Reason: {c.unavailability_reason}")
+        print("-" * 70)
+    print()
+    return 0
+
+
+def hardware_command(args: argparse.Namespace) -> int:
+    """Inspect and display detected hardware capabilities and tier."""
+    from pyflare.core.hardware_manager import HardwareManager
+
+    hw = HardwareManager({})
+    profile = hw.get_hardware_profile()
+
+    print(f"\n{__product__} Host Hardware Profile & Telemetry")
+    print("=" * 55)
+    print(f"Hardware Tier     : {profile.hardware_tier.value.upper()}")
+    print(f"Operating System  : {profile.os_name}")
+    print(f"CPU Cores         : {profile.cpu_cores_logical} logical ({profile.cpu_cores_physical} physical)")
+    print(f"RAM Total         : {profile.ram_total_mb:.1f} MB (Available: {profile.ram_available_mb:.1f} MB)")
+    if profile.gpu_name:
+        print(f"GPU Device        : {profile.gpu_name}")
+        print(f"VRAM Total        : {profile.vram_total_mb:.1f} MB (Free: {profile.vram_available_mb:.1f} MB)")
+    else:
+        print("GPU Device        : No discrete NVIDIA GPU detected (Integrated/CPU fallback)")
+    print(f"Disk Available    : {profile.disk_available_gb:.1f} GB")
+
+    print("\nInstalled Binary Tools:")
+    for b_name, b_inst in profile.installed_binaries.items():
+        tag = "[INSTALLED]" if b_inst else "[- NOT FOUND]"
+        print(f"  {tag:<14} {b_name}")
+
+    print("\nResource Pressure:")
+    for p_name, p_val in profile.resource_pressure.items():
+        print(f"  {p_name:<16}: {p_val:.1f}%")
+
+    print("=" * 55 + "\n")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="pyflare",
@@ -197,7 +312,40 @@ def build_parser() -> argparse.ArgumentParser:
     run_p.add_argument("prompt", help="Natural language prompt describing what to build")
     run_p.add_argument("--template", help="Optional template identifier")
 
+    # 5. route
+    route_p = subparsers.add_parser("route", help="Plan a deterministic execution route for a task")
+    route_p.add_argument("prompt", help="Task prompt or requirement")
+    route_p.add_argument("--task-type", help="Explicit TaskType (e.g. 3d_generation, code_generation, validation)")
+    route_p.add_argument("--local-only", action="store_true", help="Force local-only execution")
+    route_p.add_argument("--no-cloud", action="store_true", help="Disallow cloud providers")
+    route_p.add_argument("--privacy", choices=["public", "internal", "confidential"], default="internal", help="Privacy constraint")
+    route_p.add_argument("--max-cost", type=float, help="Maximum allowed cost in USD")
+
+    # 6. capabilities
+    subparsers.add_parser("capabilities", help="List all registered candidate capabilities")
+
+    # 7. hardware
+    subparsers.add_parser("hardware", help="Inspect host hardware profile and detection telemetry")
+
+    # 8. validate-os
+    subparsers.add_parser("validate-os", help="Run lightweight PyFlare OS source validation without building ISO")
+
     return parser
+
+
+def validate_os_command(args: argparse.Namespace) -> int:
+    """Run static syntax, branding, and manifest validation for PyFlare OS source tree."""
+    from pyflare.core.config import find_project_root
+    root = find_project_root()
+    val_script = root / "archive" / "pyflareos" / "validation" / "run_all.py"
+    if not val_script.exists():
+        print(f"PyFlare OS source tree not found at {val_script}")
+        return 1
+
+    import subprocess
+    print("\nRunning PyFlare OS Static Source Validation...")
+    res = subprocess.run([sys.executable, str(val_script)], cwd=str(val_script.parent.parent))
+    return res.returncode
 
 
 def main(argv: Optional[list] = None) -> int:
@@ -216,6 +364,14 @@ def main(argv: Optional[list] = None) -> int:
         return plan_command(args)
     elif args.command == "run":
         return run_command(args)
+    elif args.command == "route":
+        return route_command(args)
+    elif args.command == "capabilities":
+        return capabilities_command(args)
+    elif args.command == "hardware":
+        return hardware_command(args)
+    elif args.command == "validate-os":
+        return validate_os_command(args)
 
     return 0
 

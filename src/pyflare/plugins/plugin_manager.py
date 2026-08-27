@@ -20,11 +20,20 @@ class BasePlugin:
 class PluginManager:
     """Discovers, loads, and registers plugins dynamically from the plugins folder."""
     
-    def __init__(self, plugins_dir: Path, event_bus: Optional[Any] = None) -> None:
+    def __init__(self, plugins_dir: Path, event_bus: Optional[Any] = None, enabled: bool = True) -> None:
         self.plugins_dir = Path(plugins_dir)
         self.event_bus = event_bus
+        self.enabled = enabled
         self.plugins_dir.mkdir(parents=True, exist_ok=True)
         self._loaded_plugins: Dict[str, BasePlugin] = {}
+
+    def load(self, context: Optional[Dict[str, Any]] = None) -> List[BasePlugin]:
+        if not self.enabled:
+            return []
+        return self.discover_and_load()
+
+    def list(self) -> List[str]:
+        return list(self._loaded_plugins.keys())
         
     def discover_and_load(self) -> List[BasePlugin]:
         """Scans plugins directory, imports all module files, and instantiates any BasePlugin subclasses."""

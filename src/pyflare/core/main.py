@@ -192,7 +192,9 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
     )
     configure_middleware(app)
     app.state.ctx = ctx
-    app.include_router(build_router(ctx), prefix="/api/v1")
+    api_router = build_router(ctx)
+    app.include_router(api_router, prefix="/api/v1")
+    app.include_router(api_router)
 
     @app.get("/")
     def root() -> Dict[str, str]:

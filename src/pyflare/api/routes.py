@@ -144,9 +144,50 @@ def build_router(app_ctx) -> APIRouter:
             "reasons":           plan.reasons,
         }
 
-    @router.get("/jarvis/memory", dependencies=[Depends(verify_api_key)])
-    def jarvis_memory(limit: int = 20) -> List[Dict[str, Any]]:
-        """Return recent memory entries."""
-        return app_ctx.memory.recall(limit)
+    # ── Deterministic Router Endpoints ──────────────────────────────────────────
+
+    @router.post("/router/plan", response_model=Dict[str, Any])
+    def router_plan(task: Dict[str, Any]) -> Dict[str, Any]:
+        """Preview deterministic routing decision for a given task specification."""
+        from pyflare.router import DeterministicRouter, TaskSpec
+        spec = TaskSpec(**task) if isinstance(task, dict) else task
+        hw_mgr = getattr(app_ctx, "hardware", None)
+        router_engine = DeterministicRouter(hardware_manager=hw_mgr)
+        decision = router_engine.plan_route(spec)
+        return decision.model_dump()
+
+    @router.post("/router/execute", response_model=Dict[str, Any], dependencies=[Depends(verify_api_key)])
+    def router_execute(task: Dict[str, Any]) -> Dict[str, Any]:
+        """Plan and execute a task through the deterministic router with fallbacks."""
+        from pyflare.router import DeterministicRouter, RouterExecutor, TaskSpec
+        spec = TaskSpec(**task) if isinstance(task, dict) else task
+        hw_mgr = getattr(app_ctx, "hardware", None)
+        router_engine = DeterministicRouter(hardware_manager=hw_mgr)
+        decision = router_engine.plan_route(spec)
+        executor = RouterExecutor()
+        result = executor.execute(spec, decision)
+        return result.model_dump()
+
+    @router.get("/router/capabilities")
+    def router_capabilities() -> List[Dict[str, Any]]:
+        """List all registered candidate capabilities and current availability."""
+        from pyflare.router import CapabilityRegistry
+        reg = CapabilityRegistry()
+        return [c.model_dump() for c in reg.list_candidates()]
+
+    @router.get("/router/hardware")
+    def router_hardware() -> Dict[str, Any]:
+        """Inspect host hardware profile and detection telemetry."""
+        from pyflare.core.hardware_manager import HardwareManager
+        hw_mgr = getattr(app_ctx, "hardware", None) or HardwareManager({})
+        profile = hw_mgr.get_hardware_profile()
+        return profile.model_dump()
+
+    @router.get("/router/history", dependencies=[Depends(verify_api_key)])
+    def router_history(limit: int = 50) -> List[Dict[str, Any]]:
+        """Retrieve recent routing history records and telemetry."""
+        from pyflare.router import RouterHistoryTracker
+        tracker = RouterHistoryTracker()
+        return tracker.list_history(limit=limit)
 
     return router
