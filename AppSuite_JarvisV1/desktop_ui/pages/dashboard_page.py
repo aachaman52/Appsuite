@@ -455,11 +455,51 @@ class DashboardPage(QWidget):
         if not prompt:
             return
 
-        # 1. Check for ecosystem planning and read query first
-        from appsuite.ecosystem import EcosystemPlanner, EcosystemExecutor, JarvisEcosystemIntent
+        # 1. Check for multi-step goal plan first
+        from appsuite.ecosystem import GoalPlanner, EcosystemPlanner, EcosystemExecutor, JarvisEcosystemIntent
         from PySide6.QtWidgets import QMessageBox, QDialog
         from desktop_ui.widgets.ecosystem_drawer import ActionConfirmationDialog
 
+        goal_planner = GoalPlanner()
+        goal_plan = goal_planner.plan_goal(prompt)
+
+        if goal_plan is not None:
+            steps_desc = "\n".join(
+                f"  {s.order}. [{'READ' if s.step_type == 'read_summary' else 'WRITE'}] {s.title}"
+                for s in goal_plan.steps
+            )
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle(f"Jarvis Goal Plan: {goal_plan.goal}")
+            msg_box.setText(f"Goal: {goal_plan.goal}\n\n{goal_plan.summary}")
+            msg_box.setInformativeText(f"Planned Steps:\n{steps_desc}\n\nWould you like to step through and execute this plan?")
+            btn_start = msg_box.addButton("Start Plan", QMessageBox.AcceptRole)
+            btn_cancel = msg_box.addButton("Cancel", QMessageBox.RejectRole)
+            msg_box.exec()
+
+            if msg_box.clickedButton() == btn_start:
+                for step in goal_plan.steps:
+                    if step.step_type == "write_action" and step.status in ("ready", "planned"):
+                        action_intent = JarvisEcosystemIntent(
+                            command_id=step.command_id or "action.unknown",
+                            confidence=1.0,
+                            parameters=step.parameters,
+                            requires_confirmation=True,
+                            summary=f"{step.title}\n\nReason: {step.reason}",
+                        )
+                        conf_dlg = ActionConfirmationDialog(action_intent, self)
+                        if conf_dlg.exec() == QDialog.Accepted:
+                            res = goal_planner.execute_plan_step(goal_plan, step.step_id, confirm=True)
+                            if res.status == "success":
+                                QMessageBox.information(self, "Step Completed", res.message)
+                            else:
+                                QMessageBox.warning(self, "Step Failed", res.message)
+                                break
+                        else:
+                            goal_planner.skip_plan_step(goal_plan, step.step_id)
+            self.txt_prompt.clear()
+            return
+
+        # 2. Check for single-step ecosystem planning and read query
         planner = EcosystemPlanner()
         plan_result = planner.plan_from_prompt(prompt)
 

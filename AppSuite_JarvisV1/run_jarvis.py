@@ -56,6 +56,7 @@ from appsuite.ecosystem import (
     interpret_ecosystem_read_query,
     EcosystemReadExecutor,
     EcosystemPlanner,
+    GoalPlanner,
     JarvisEcosystemIntent,
 )
 
@@ -214,8 +215,73 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    # ── CHECK FOR AACHMAN ECOSYSTEM PLANNING & READ QUERY FIRST ──
+    # ── CHECK FOR MULTI-STEP GOAL PLAN FIRST ──
     if args.prompt:
+        goal_planner = GoalPlanner()
+        goal_plan = goal_planner.plan_goal(args.prompt)
+
+        if goal_plan is not None:
+            if args.json:
+                print(json.dumps(goal_plan.to_dict(), indent=2))
+                sys.exit(0)
+
+            print(f"\n{'=' * 60}")
+            print(f"  Jarvis Goal Plan: {goal_plan.goal}")
+            print(f"{'=' * 60}\n")
+            print(f"  Summary : {goal_plan.summary}\n")
+            print(f"  PLANNED STEPS ({len(goal_plan.steps)} total):")
+
+            for step in goal_plan.steps:
+                stype = "[READ]" if step.step_type == "read_summary" else "[WRITE]"
+                print(f"    {step.order}. {stype} {step.title} ({step.status.upper()})")
+                print(f"       {step.description}")
+                if step.reason:
+                    print(f"       Reason: {step.reason}")
+
+            # Step-by-step confirmation loop
+            for step in goal_plan.steps:
+                if step.step_type == "write_action" and step.status in ("ready", "planned"):
+                    print(f"\n  ┌─ STEP {step.order}: {step.title} {'─' * max(2, 35 - len(step.title))}┐")
+                    print(f"  │ Command ID : {step.command_id}")
+                    print("  │ Parameters :")
+                    for k, v in step.parameters.items():
+                        print(f"  │   • {k:10}: {v}")
+                    print(f"  └{'─' * 55}┘")
+
+                    action_choice = "confirm" if args.confirm else None
+                    if not action_choice:
+                        try:
+                            ans = input("  Execute step? [y=Confirm / s=Skip / c=Cancel Plan / N=Stop]: ").strip().lower()
+                            if ans in ("y", "yes"):
+                                action_choice = "confirm"
+                            elif ans in ("s", "skip"):
+                                action_choice = "skip"
+                            else:
+                                action_choice = "cancel"
+                        except (EOFError, KeyboardInterrupt):
+                            action_choice = "cancel"
+
+                    if action_choice == "confirm":
+                        res = goal_planner.execute_plan_step(goal_plan, step.step_id, confirm=True)
+                        if res.status == "success":
+                            print(f"  [OK] Step completed: {res.message}")
+                            if res.deep_link:
+                                print(f"  Link: {res.deep_link}")
+                        else:
+                            print(f"  [FAILED] Step failed: {res.message}")
+                            break
+                    elif action_choice == "skip":
+                        goal_planner.skip_plan_step(goal_plan, step.step_id)
+                        print("  [SKIPPED] Step marked as skipped.")
+                    else:
+                        goal_planner.cancel_plan(goal_plan)
+                        print("\n  Plan execution cancelled. Zero further writes performed.\n")
+                        break
+
+            print(f"\n{'=' * 60}\n")
+            sys.exit(0)
+
+        # ── SINGLE-STEP PLANNER & READ QUERY ──
         planner = EcosystemPlanner()
         plan_result = planner.plan_from_prompt(args.prompt)
 
