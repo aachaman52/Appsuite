@@ -4,6 +4,7 @@ from desktop_ui.pages.dashboard_page import DashboardPage
 from desktop_ui.pages.workers_page import WorkersPage
 from desktop_ui.pages.timeline_page import TimelinePage
 from desktop_ui.pages.benchmark_page import BenchmarkPage
+from desktop_ui.widgets.ecosystem_drawer import EcosystemDrawer
 
 
 class TabManager(QTabWidget):
@@ -42,6 +43,7 @@ class TabManager(QTabWidget):
 
     def setup_ui(self):
         self.dashboard = DashboardPage(self)
+        self.ecosystem = EcosystemDrawer(self)
         self.workers = WorkersPage(self)
         self.timeline = TimelinePage(self)
         self.benchmark = BenchmarkPage(self)
@@ -81,6 +83,7 @@ class TabManager(QTabWidget):
 
         # 2. Add to TabWidget in exact order corresponding to Sidebar
         self.addTab(self.dashboard, "Dashboard")
+        self.addTab(self.ecosystem, "Aachman Ecosystem")
         self.addTab(self.workers, "Workers")
         self.addTab(self.timeline, "Timeline")
         self.addTab(self.benchmark, "Benchmark")
@@ -90,10 +93,12 @@ class TabManager(QTabWidget):
     def show_page(self, page_id: str):
         idx = {
             "dashboard": 0,
-            "workers": 1,
-            "timeline": 2,
-            "benchmark": 3,
-            "assets": 4,
-            "settings": 5
+            "ecosystem": 1,
+            "workers": 2,
+            "timeline": 3,
+            "benchmark": 4,
+            "assets": 5,
+            "settings": 6,
         }.get(page_id, 0)
         self.setCurrentIndex(idx)
+

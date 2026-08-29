@@ -4,6 +4,7 @@ from .constants import (
     ECOSYSTEM_URLS,
     DEFAULT_SUPABASE_URL,
     DEFAULT_SUPABASE_ANON_KEY,
+    HACKATHON_PROBLEMS,
 )
 from .client import AachmanEcosystemClient, get_ecosystem_client
 from .interpreter import (
@@ -18,6 +19,7 @@ __all__ = [
     "ECOSYSTEM_URLS",
     "DEFAULT_SUPABASE_URL",
     "DEFAULT_SUPABASE_ANON_KEY",
+    "HACKATHON_PROBLEMS",
     "AachmanEcosystemClient",
     "get_ecosystem_client",
     "interpret_ecosystem_query",

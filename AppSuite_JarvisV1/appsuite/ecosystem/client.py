@@ -310,6 +310,28 @@ class AachmanEcosystemClient:
         except Exception as e:
             return {"success": False, "error": f"Ecosystem request error: {str(e)}"}
 
+    def fetch_recent_activity(self, limit: int = 5) -> List[Dict[str, Any]]:
+        """Fetch authenticated user's recent ecosystem activities (read-only)."""
+        access_token = self.get_valid_access_token()
+        user_id = self.user_id
+        if not access_token or not user_id:
+            return []
+
+        url = f"{self.supabase_url}/rest/v1/user_activity?user_id=eq.{user_id}&order=occurred_at.desc&limit={limit}"
+        headers = {
+            "apikey": self.supabase_key,
+            "Authorization": f"Bearer {access_token}",
+        }
+
+        try:
+            resp = requests.get(url, headers=headers, timeout=10)
+            if resp.status_code == 200:
+                return resp.json()
+            return []
+        except Exception as e:
+            log.warning(f"Failed to fetch recent activity: {e}")
+            return []
+
 
 # Global singleton client instance
 _global_client: Optional[AachmanEcosystemClient] = None

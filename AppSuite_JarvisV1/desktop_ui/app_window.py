@@ -95,8 +95,13 @@ class AppWindow(QMainWindow):
         # Sidebar page selections
         self.sidebar.page_selected.connect(self.switch_workspace_page)
         
-        # Topbar search actions
+        # Topbar search & ecosystem actions
         self.topbar.search_clicked.connect(self.trigger_search)
+        self.topbar.ecosystem_clicked.connect(self.open_ecosystem_page)
+
+    def open_ecosystem_page(self):
+        self.switch_workspace_page("ecosystem")
+        self.sidebar.select_page("ecosystem")
 
     def trigger_search(self):
         palette = CommandPalette(self)

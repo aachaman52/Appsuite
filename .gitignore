@@ -40,6 +40,9 @@ venv.bak/
 
 # Project caches and logs
 *.log
+*.db-shm
+*.db-wal
+output/
 .pytest_cache/
 .mypy_cache/
 .coverage

@@ -6,6 +6,7 @@ from desktop_ui.state.event_bus import event_bus
 
 class Topbar(QWidget):
     search_clicked = Signal()
+    ecosystem_clicked = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -38,6 +39,20 @@ class Topbar(QWidget):
                 border-color: #00ff66;
                 color: #ffffff;
             }
+            QPushButton#EcosystemBtn {
+                background-color: #1e2923;
+                border: 1px solid #00ff66;
+                border-radius: 4px;
+                color: #00ff66;
+                font-family: 'Segoe UI';
+                font-size: 12px;
+                font-weight: bold;
+                padding: 4px 12px;
+            }
+            QPushButton#EcosystemBtn:hover {
+                background-color: #00ff66;
+                color: #121212;
+            }
         """)
         
         self.setup_ui()
@@ -67,6 +82,12 @@ class Topbar(QWidget):
         layout.addWidget(self.search_btn)
         
         layout.addStretch()
+
+        # 4. Ecosystem quick button
+        self.btn_ecosystem = QPushButton("⚡ Aachman Ecosystem", self)
+        self.btn_ecosystem.setObjectName("EcosystemBtn")
+        self.btn_ecosystem.clicked.connect(self.ecosystem_clicked.emit)
+        layout.addWidget(self.btn_ecosystem)
 
         # 4. Active provider
         provider_label = QLabel("Active Provider: Gemini 2.5 Flash / NIM", self)

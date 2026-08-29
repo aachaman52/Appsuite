@@ -48,11 +48,12 @@ class Sidebar(QWidget):
         
         nav_items = [
             ("D", "dashboard", "Dashboard"),
+            ("E", "ecosystem", "Aachman Ecosystem"),
             ("W", "workers", "Workers"),
             ("T", "timeline", "Timeline"),
             ("B", "benchmark", "Benchmark"),
             ("A", "assets", "Assets"),
-            ("S", "settings", "Settings")
+            ("S", "settings", "Settings"),
         ]
 
         self.buttons = {}
