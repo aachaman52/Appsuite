@@ -55,6 +55,8 @@ from appsuite.ecosystem import (
     get_ecosystem_client,
     interpret_ecosystem_read_query,
     EcosystemReadExecutor,
+    EcosystemPlanner,
+    JarvisEcosystemIntent,
 )
 
 
@@ -212,27 +214,62 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    # ── CHECK FOR AACHMAN ECOSYSTEM READ QUERY FIRST (READ-ONLY) ──
+    # ── CHECK FOR AACHMAN ECOSYSTEM PLANNING & READ QUERY FIRST ──
     if args.prompt:
-        read_intent = interpret_ecosystem_read_query(args.prompt)
-        if read_intent is not None:
-            read_executor = EcosystemReadExecutor()
-            read_result = read_executor.execute_read_intent(read_intent)
+        planner = EcosystemPlanner()
+        plan_result = planner.plan_from_prompt(args.prompt)
 
+        if plan_result is not None:
             if args.json:
-                print(json.dumps(read_result.to_dict(), indent=2))
-                sys.exit(0 if read_result.status in ("success", "empty") else 1)
+                print(json.dumps(plan_result.to_dict(), indent=2))
+                sys.exit(0)
 
             print(f"\n{'=' * 60}")
-            print("  Jarvis Ecosystem Intelligence")
-            print(f"{'=' * 60}")
-            print(f"  Tool ID : {read_result.tool_id}")
-            print(f"  Status  : {read_result.status.upper()}\n")
-            print(read_result.human_text)
-            print(f"\n{'=' * 60}\n")
-            sys.exit(0 if read_result.status in ("success", "empty") else 1)
+            print("  Jarvis Ecosystem Intelligence & Planning")
+            print(f"{'=' * 60}\n")
+            print(plan_result.answer_text)
 
-        # ── CHECK FOR AACHMAN ECOSYSTEM WRITE/NAV ACTION ──
+            sugg = plan_result.suggested_action
+            if sugg is not None:
+                print(f"\n  ┌─ SUGGESTED ACTION {'─' * 38}┐")
+                print(f"  │ Command ID : {sugg.command_id}")
+                print(f"  │ Action     : {sugg.title}")
+                print(f"  │ Reason     : {sugg.reason}")
+                print("  │ Parameters :")
+                for k, v in sugg.parameters.items():
+                    print(f"  │   • {k:10}: {v}")
+                print(f"  └{'─' * 57}┘\n")
+
+                should_execute = args.confirm
+                if not should_execute:
+                    try:
+                        ans = input("  Execute this suggested action? [y/N]: ").strip().lower()
+                        should_execute = ans in ("y", "yes")
+                    except (EOFError, KeyboardInterrupt):
+                        should_execute = False
+
+                if should_execute:
+                    executor = EcosystemExecutor()
+                    action_intent = JarvisEcosystemIntent(
+                        command_id=sugg.command_id,
+                        confidence=sugg.confidence,
+                        parameters=sugg.parameters,
+                        requires_confirmation=False,
+                        summary=sugg.title,
+                    )
+                    res = executor.execute_intent(action_intent, confirm=True)
+                    print(f"\n  [OK] {res.message}")
+                    if res.deep_link:
+                        print(f"  Link: {res.deep_link}\n")
+                    sys.exit(0 if res.status == "success" else 1)
+                else:
+                    print("  Action cancelled. Zero writes executed.\n")
+                    sys.exit(0)
+
+            print(f"\n{'=' * 60}\n")
+            sys.exit(0)
+
+        # ── CHECK FOR EXPLICIT AACHMAN ECOSYSTEM WRITE/NAV ACTION ──
         eco_intent = interpret_ecosystem_query(args.prompt)
         if eco_intent is not None:
             executor = EcosystemExecutor()

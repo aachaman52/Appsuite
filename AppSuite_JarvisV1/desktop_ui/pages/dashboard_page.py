@@ -455,23 +455,57 @@ class DashboardPage(QWidget):
         if not prompt:
             return
 
-        # 1. Check for ecosystem read query first (read-only)
-        from appsuite.ecosystem import interpret_ecosystem_read_query, EcosystemReadExecutor
-        read_intent = interpret_ecosystem_read_query(prompt)
-        if read_intent is not None:
-            executor = EcosystemReadExecutor()
-            res = executor.execute_read_intent(read_intent)
-            from PySide6.QtWidgets import QMessageBox
-            QMessageBox.information(self, "Jarvis Ecosystem Intelligence", res.human_text)
+        # 1. Check for ecosystem planning and read query first
+        from appsuite.ecosystem import EcosystemPlanner, EcosystemExecutor, JarvisEcosystemIntent
+        from PySide6.QtWidgets import QMessageBox, QDialog
+        from desktop_ui.widgets.ecosystem_drawer import ActionConfirmationDialog
+
+        planner = EcosystemPlanner()
+        plan_result = planner.plan_from_prompt(prompt)
+
+        if plan_result is not None:
+            # If a contextual action was suggested
+            if plan_result.suggested_action is not None:
+                sugg = plan_result.suggested_action
+                action_intent = JarvisEcosystemIntent(
+                    command_id=sugg.command_id,
+                    confidence=sugg.confidence,
+                    parameters=sugg.parameters,
+                    requires_confirmation=True,
+                    summary=f"{sugg.title}\n\nReason: {sugg.reason}",
+                )
+
+                # Show recommendation dialog
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Jarvis Planning Recommendation")
+                msg_box.setText(plan_result.answer_text)
+                msg_box.setInformativeText(f"Would you like to execute the suggested action:\n• {sugg.title}?")
+                btn_review = msg_box.addButton("Review & Confirm", QMessageBox.AcceptRole)
+                btn_dismiss = msg_box.addButton("Dismiss", QMessageBox.RejectRole)
+                msg_box.exec()
+
+                if msg_box.clickedButton() == btn_review:
+                    conf_dlg = ActionConfirmationDialog(action_intent, self)
+                    if conf_dlg.exec() == QDialog.Accepted:
+                        # Double-confirm protection: execute via background executor
+                        executor = EcosystemExecutor()
+                        res = executor.execute_intent(action_intent, confirm=True)
+                        if res.status == "success":
+                            QMessageBox.information(self, "Action Executed", res.message)
+                        else:
+                            QMessageBox.warning(self, "Action Failed", res.message)
+                self.txt_prompt.clear()
+                return
+
+            # Pure read response without action
+            QMessageBox.information(self, "Jarvis Ecosystem Intelligence", plan_result.answer_text)
             self.txt_prompt.clear()
             return
 
-        # 2. Check for ecosystem write / navigation action
-        from appsuite.ecosystem import interpret_ecosystem_query, EcosystemExecutor
+        # 2. Check for explicit ecosystem write / navigation action
+        from appsuite.ecosystem import interpret_ecosystem_query
         eco_intent = interpret_ecosystem_query(prompt)
         if eco_intent is not None:
-            from desktop_ui.widgets.ecosystem_drawer import ActionConfirmationDialog
-            from PySide6.QtWidgets import QDialog, QMessageBox
             if eco_intent.requires_confirmation:
                 dlg = ActionConfirmationDialog(eco_intent, self)
                 if dlg.exec() != QDialog.Accepted:
