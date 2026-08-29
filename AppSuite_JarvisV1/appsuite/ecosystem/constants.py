@@ -12,6 +12,19 @@ JARVIS_ALLOWED_ECOSYSTEM_COMMAND_IDS = [
     "action.hackathon.start_simulation",
 ]
 
+# Strict Allowlist of Supported Ecosystem Read Tool IDs
+JARVIS_ALLOWED_READ_TOOL_IDS = [
+    "read.daymentor.tasks_today",
+    "read.daymentor.tasks_tomorrow",
+    "read.daymentor.next_exam",
+    "read.daymentor.study_week",
+    "read.cricket.last_match",
+    "read.cricket.match_summary",
+    "read.hackathon.latest_result",
+    "read.ecosystem.recent_activity",
+    "read.ecosystem.summary",
+]
+
 # Trusted Official Ecosystem URLs
 ECOSYSTEM_URLS: Dict[str, str] = {
     "app.open.aachman_hub": "https://aachman-hub.vercel.app",

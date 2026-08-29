@@ -452,9 +452,43 @@ class DashboardPage(QWidget):
 
     def run_generation(self):
         prompt = self.txt_prompt.text().strip()
-        if prompt:
-            app_state.run_prompt(prompt)
+        if not prompt:
+            return
+
+        # 1. Check for ecosystem read query first (read-only)
+        from appsuite.ecosystem import interpret_ecosystem_read_query, EcosystemReadExecutor
+        read_intent = interpret_ecosystem_read_query(prompt)
+        if read_intent is not None:
+            executor = EcosystemReadExecutor()
+            res = executor.execute_read_intent(read_intent)
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.information(self, "Jarvis Ecosystem Intelligence", res.human_text)
             self.txt_prompt.clear()
+            return
+
+        # 2. Check for ecosystem write / navigation action
+        from appsuite.ecosystem import interpret_ecosystem_query, EcosystemExecutor
+        eco_intent = interpret_ecosystem_query(prompt)
+        if eco_intent is not None:
+            from desktop_ui.widgets.ecosystem_drawer import ActionConfirmationDialog
+            from PySide6.QtWidgets import QDialog, QMessageBox
+            if eco_intent.requires_confirmation:
+                dlg = ActionConfirmationDialog(eco_intent, self)
+                if dlg.exec() != QDialog.Accepted:
+                    self.txt_prompt.clear()
+                    return
+            executor = EcosystemExecutor()
+            res = executor.execute_intent(eco_intent, confirm=True)
+            if res.status == "success":
+                QMessageBox.information(self, "Jarvis Action", res.message)
+            else:
+                QMessageBox.warning(self, "Jarvis Action", res.message)
+            self.txt_prompt.clear()
+            return
+
+        # 3. Regular 3D Scene Generation
+        app_state.run_prompt(prompt)
+        self.txt_prompt.clear()
 
     def trigger_gta_scene(self):
         app_state.run_prompt("Create a GTA-like street block.")

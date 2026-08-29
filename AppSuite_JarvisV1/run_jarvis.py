@@ -53,6 +53,8 @@ from appsuite.ecosystem import (
     interpret_ecosystem_query,
     EcosystemExecutor,
     get_ecosystem_client,
+    interpret_ecosystem_read_query,
+    EcosystemReadExecutor,
 )
 
 
@@ -210,8 +212,27 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    # ── CHECK FOR AACHMAN ECOSYSTEM INTENT FIRST ──
+    # ── CHECK FOR AACHMAN ECOSYSTEM READ QUERY FIRST (READ-ONLY) ──
     if args.prompt:
+        read_intent = interpret_ecosystem_read_query(args.prompt)
+        if read_intent is not None:
+            read_executor = EcosystemReadExecutor()
+            read_result = read_executor.execute_read_intent(read_intent)
+
+            if args.json:
+                print(json.dumps(read_result.to_dict(), indent=2))
+                sys.exit(0 if read_result.status in ("success", "empty") else 1)
+
+            print(f"\n{'=' * 60}")
+            print("  Jarvis Ecosystem Intelligence")
+            print(f"{'=' * 60}")
+            print(f"  Tool ID : {read_result.tool_id}")
+            print(f"  Status  : {read_result.status.upper()}\n")
+            print(read_result.human_text)
+            print(f"\n{'=' * 60}\n")
+            sys.exit(0 if read_result.status in ("success", "empty") else 1)
+
+        # ── CHECK FOR AACHMAN ECOSYSTEM WRITE/NAV ACTION ──
         eco_intent = interpret_ecosystem_query(args.prompt)
         if eco_intent is not None:
             executor = EcosystemExecutor()
