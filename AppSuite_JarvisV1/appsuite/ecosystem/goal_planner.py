@@ -30,6 +30,7 @@ from .read_interpreter import (
     get_current_date_kolkata,
     interpret_ecosystem_read_query,
 )
+from .plan_store import PlanStore, CURRENT_SCHEMA_VERSION, get_current_timestamp_iso
 from ..logging_setup import get_logger
 
 log = get_logger("ecosystem.goal_planner")
@@ -47,7 +48,7 @@ class GoalPlanStep:
     parameters: Dict[str, Any] = field(default_factory=dict)
     reason: str = ""
     requires_confirmation: bool = False
-    status: str = "planned"  # "planned" | "ready" | "confirmed" | "executing" | "completed" | "skipped" | "cancelled" | "failed" | "blocked"
+    status: str = "planned"  # "planned" | "ready" | "confirmed" | "executing" | "completed" | "skipped" | "cancelled" | "failed" | "blocked" | "recovery_pending"
     depends_on: List[str] = field(default_factory=list)
     idempotency_key: Optional[str] = None
     result: Optional[Dict[str, Any]] = None
@@ -71,6 +72,25 @@ class GoalPlanStep:
             "error_message": self.error_message,
         }
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> GoalPlanStep:
+        return cls(
+            step_id=data.get("step_id", str(uuid.uuid4())[:8]),
+            order=data.get("order", 1),
+            title=data.get("title", ""),
+            description=data.get("description", ""),
+            step_type=data.get("step_type", "suggestion"),
+            command_id=data.get("command_id"),
+            parameters=data.get("parameters", {}),
+            reason=data.get("reason", ""),
+            requires_confirmation=data.get("requires_confirmation", False),
+            status=data.get("status", "planned"),
+            depends_on=data.get("depends_on", []),
+            idempotency_key=data.get("idempotency_key"),
+            result=data.get("result"),
+            error_message=data.get("error_message"),
+        )
+
 
 @dataclass
 class GoalPlan:
@@ -80,19 +100,42 @@ class GoalPlan:
     source_tool_ids: List[str]
     steps: List[GoalPlanStep]
     confidence: float
-    created_at: str = field(
-        default_factory=lambda: datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-    )
+    plan_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    owner_id: Optional[str] = None
+    schema_version: int = CURRENT_SCHEMA_VERSION
+    created_at: str = field(default_factory=get_current_timestamp_iso)
+    updated_at: str = field(default_factory=get_current_timestamp_iso)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
+            "schema_version": self.schema_version,
+            "plan_id": self.plan_id,
+            "owner_id": self.owner_id,
             "goal": self.goal,
             "summary": self.summary,
             "source_tool_ids": self.source_tool_ids,
             "steps": [s.to_dict() for s in self.steps],
             "confidence": self.confidence,
             "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> GoalPlan:
+        steps_data = data.get("steps", [])
+        steps = [GoalPlanStep.from_dict(s) for s in steps_data if isinstance(s, dict)]
+        return cls(
+            goal=data.get("goal", ""),
+            summary=data.get("summary", ""),
+            source_tool_ids=data.get("source_tool_ids", []),
+            steps=steps,
+            confidence=data.get("confidence", 1.0),
+            plan_id=data.get("plan_id", str(uuid.uuid4())),
+            owner_id=data.get("owner_id"),
+            schema_version=data.get("schema_version", CURRENT_SCHEMA_VERSION),
+            created_at=data.get("created_at", get_current_timestamp_iso()),
+            updated_at=data.get("updated_at", get_current_timestamp_iso()),
+        )
 
     @property
     def completed_count(self) -> int:
@@ -101,6 +144,13 @@ class GoalPlan:
     @property
     def total_write_steps(self) -> int:
         return sum(1 for s in self.steps if s.step_type == "write_action")
+
+    @property
+    def is_active(self) -> bool:
+        return any(
+            s.status in ("ready", "planned", "executing", "recovery_pending", "failed", "blocked")
+            for s in self.steps
+        )
 
 
 class GoalPlanner:
@@ -111,10 +161,12 @@ class GoalPlanner:
         client: Optional[AachmanEcosystemClient] = None,
         read_executor: Optional[EcosystemReadExecutor] = None,
         executor: Optional[EcosystemExecutor] = None,
+        plan_store: Optional[PlanStore] = None,
     ):
         self.read_executor = read_executor or EcosystemReadExecutor(client)
         self.client = client or (self.read_executor.client if self.read_executor else get_ecosystem_client())
         self.executor = executor or EcosystemExecutor(self.client)
+        self.plan_store = plan_store or PlanStore()
 
     def plan_goal(
         self, prompt: str, now: Optional[datetime.datetime] = None
@@ -129,30 +181,38 @@ class GoalPlanner:
         if any(p in cleaned for p in ("select * from", "insert into", "delete from", "drop table", "ignore rules")):
             return None
 
+        res_plan = None
         # ── 1. Exam Preparation Goal ──
         if (
             re.search(r"\b(prepare|study|plan)\b.*\b(exam|finals|test)\b", cleaned)
             or re.search(r"\bprepare me for (my )?(next )?exam\b", cleaned)
             or re.search(r"\bprepare for finals week\b", cleaned)
         ):
-            return self._plan_exam_preparation(now)
+            res_plan = self._plan_exam_preparation(now)
 
         # ── 2. Cricket Match / Rematch Goal ──
-        if (
+        elif (
             re.search(r"\b(set up|plan|create)\b.*\b(rematch|weekend match|cricket match)\b", cleaned)
             or re.search(r"\bset up a (weekend )?cricket match\b", cleaned)
             or re.search(r"\bcreate a rematch plan\b", cleaned)
         ):
-            return self._plan_cricket_goal(cleaned)
+            res_plan = self._plan_cricket_goal(cleaned)
 
         # ── 3. Hackathon Practice Goal ──
-        if (
+        elif (
             re.search(r"\b(practice|prepare|train)\b.*\b(hackathon|challenge)\b", cleaned)
             or re.search(r"\bhelp me practice for (another )?hackathon\b", cleaned)
         ):
-            return self._plan_hackathon_goal()
+            res_plan = self._plan_hackathon_goal()
 
-        return None
+        if res_plan and res_plan.steps:
+            res_plan.owner_id = self.client.user_id if self.client.is_authenticated else None
+            try:
+                self.plan_store.save_plan(res_plan.to_dict())
+            except Exception as e:
+                log.warning("Could not auto-persist plan %s: %s", res_plan.plan_id, e)
+
+        return res_plan
 
     # ── Goal Plan Generators ──────────────────────────────────────────────────
 
@@ -517,6 +577,11 @@ class GoalPlanner:
                 step.status = "failed"
                 step.error_message = res.message
 
+            try:
+                self.plan_store.save_plan(plan.to_dict())
+            except Exception as e:
+                log.warning("Could not auto-persist plan %s: %s", plan.plan_id, e)
+
             return res
 
         return ExecutionResult(command_id="unknown", status="failed", message="Unknown step type.")
@@ -532,6 +597,11 @@ class GoalPlanner:
         for next_step in plan.steps:
             if step.step_id in next_step.depends_on and next_step.status == "planned":
                 next_step.status = "ready"
+
+        try:
+            self.plan_store.save_plan(plan.to_dict())
+        except Exception as e:
+            log.warning("Could not auto-persist plan %s: %s", plan.plan_id, e)
         return True
 
     def cancel_plan(self, plan: GoalPlan) -> None:
@@ -539,3 +609,22 @@ class GoalPlanner:
         for step in plan.steps:
             if step.status not in ("completed", "skipped"):
                 step.status = "cancelled"
+
+        try:
+            self.plan_store.save_plan(plan.to_dict())
+        except Exception as e:
+            log.warning("Could not auto-persist plan %s: %s", plan.plan_id, e)
+
+    def load_active_plans(self) -> List[GoalPlan]:
+        """Load all unfinished active plans belonging to the current user."""
+        owner_id = self.client.user_id if self.client.is_authenticated else None
+        raw_plans = self.plan_store.load_active_plans(owner_id=owner_id)
+        return [GoalPlan.from_dict(p) for p in raw_plans]
+
+    def resume_plan(self, plan_id: str) -> Optional[GoalPlan]:
+        """Load and reconstruct a specific plan by ID for the current user."""
+        owner_id = self.client.user_id if self.client.is_authenticated else None
+        raw = self.plan_store.load_plan(plan_id, owner_id=owner_id)
+        if not raw:
+            return None
+        return GoalPlan.from_dict(raw)

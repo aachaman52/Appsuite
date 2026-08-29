@@ -178,6 +178,7 @@ def main() -> None:
     parser.add_argument("--plan", action="store_true", help="Preview Jarvis plan and exit")
     parser.add_argument("--json", action="store_true", help="Output result as raw JSON")
     parser.add_argument("--confirm", action="store_true", help="Confirm execution of ecosystem write actions")
+    parser.add_argument("--resume-plan", default=None, help="Resume an active GoalPlan by plan ID")
     
     # Ecosystem Auth Flags
     parser.add_argument("--ecosystem-status", action="store_true", help="Show Aachman Ecosystem login status")
@@ -211,75 +212,101 @@ def main() -> None:
             sys.exit(1)
         return
 
+    # Handle Explicit Resume
+    goal_planner = GoalPlanner()
+    if args.resume_plan:
+        resumed_plan = goal_planner.resume_plan(args.resume_plan)
+        if not resumed_plan:
+            print(f"\n[ERROR] Could not find or validate plan '{args.resume_plan}'.\n")
+            sys.exit(1)
+        _execute_cli_goal_plan(goal_planner, resumed_plan, args.confirm, args.json)
+        return
+
+    # Check for active unfinished plans if no prompt given
     if not args.prompt and not args.status and not args.history:
+        active_plans = goal_planner.load_active_plans()
+        if active_plans:
+            plan = active_plans[0]
+            print(f"\nYou have an unfinished plan: {plan.goal} ({plan.completed_count}/{len(plan.steps)} completed)")
+            try:
+                ans = input("Resume this plan? [y/N/d] (y=Resume, n=Exit, d=Dismiss): ").strip().lower()
+                if ans in ("y", "yes"):
+                    _execute_cli_goal_plan(goal_planner, plan, args.confirm, args.json)
+                    return
+                elif ans in ("d", "dismiss"):
+                    print("Plan dismissed for this session.\n")
+                    return
+            except (EOFError, KeyboardInterrupt):
+                pass
         parser.print_help()
         sys.exit(1)
 
     # ── CHECK FOR MULTI-STEP GOAL PLAN FIRST ──
-    if args.prompt:
-        goal_planner = GoalPlanner()
-        goal_plan = goal_planner.plan_goal(args.prompt)
+def _execute_cli_goal_plan(goal_planner: GoalPlanner, goal_plan: Any, confirm_all: bool = False, is_json: bool = False):
+    """Render and interactively step through a GoalPlan in the terminal."""
+    if is_json:
+        print(json.dumps(goal_plan.to_dict(), indent=2))
+        sys.exit(0)
 
-        if goal_plan is not None:
-            if args.json:
-                print(json.dumps(goal_plan.to_dict(), indent=2))
-                sys.exit(0)
+    print(f"\n{'=' * 60}")
+    print(f"  Jarvis Goal Plan: {goal_plan.goal}")
+    print(f"{'=' * 60}\n")
+    print(f"  Summary : {goal_plan.summary}\n")
+    print(f"  PLANNED STEPS ({len(goal_plan.steps)} total):")
 
-            print(f"\n{'=' * 60}")
-            print(f"  Jarvis Goal Plan: {goal_plan.goal}")
-            print(f"{'=' * 60}\n")
-            print(f"  Summary : {goal_plan.summary}\n")
-            print(f"  PLANNED STEPS ({len(goal_plan.steps)} total):")
+    for step in goal_plan.steps:
+        stype = "[READ]" if step.step_type == "read_summary" else "[WRITE]"
+        print(f"    {step.order}. {stype} {step.title} ({step.status.upper()})")
+        print(f"       {step.description}")
+        if step.reason:
+            print(f"       Reason: {step.reason}")
 
-            for step in goal_plan.steps:
-                stype = "[READ]" if step.step_type == "read_summary" else "[WRITE]"
-                print(f"    {step.order}. {stype} {step.title} ({step.status.upper()})")
-                print(f"       {step.description}")
-                if step.reason:
-                    print(f"       Reason: {step.reason}")
+    # Step-by-step confirmation loop
+    for step in goal_plan.steps:
+        if step.step_type == "write_action" and step.status in ("ready", "planned", "recovery_pending", "failed"):
+            print(f"\n  ┌─ STEP {step.order}: {step.title} {'─' * max(2, 35 - len(step.title))}┐")
+            print(f"  │ Command ID : {step.command_id}")
+            print("  │ Parameters :")
+            for k, v in step.parameters.items():
+                print(f"  │   • {k:10}: {v}")
+            print(f"  └{'─' * 55}┘")
 
-            # Step-by-step confirmation loop
-            for step in goal_plan.steps:
-                if step.step_type == "write_action" and step.status in ("ready", "planned"):
-                    print(f"\n  ┌─ STEP {step.order}: {step.title} {'─' * max(2, 35 - len(step.title))}┐")
-                    print(f"  │ Command ID : {step.command_id}")
-                    print("  │ Parameters :")
-                    for k, v in step.parameters.items():
-                        print(f"  │   • {k:10}: {v}")
-                    print(f"  └{'─' * 55}┘")
-
-                    action_choice = "confirm" if args.confirm else None
-                    if not action_choice:
-                        try:
-                            ans = input("  Execute step? [y=Confirm / s=Skip / c=Cancel Plan / N=Stop]: ").strip().lower()
-                            if ans in ("y", "yes"):
-                                action_choice = "confirm"
-                            elif ans in ("s", "skip"):
-                                action_choice = "skip"
-                            else:
-                                action_choice = "cancel"
-                        except (EOFError, KeyboardInterrupt):
-                            action_choice = "cancel"
-
-                    if action_choice == "confirm":
-                        res = goal_planner.execute_plan_step(goal_plan, step.step_id, confirm=True)
-                        if res.status == "success":
-                            print(f"  [OK] Step completed: {res.message}")
-                            if res.deep_link:
-                                print(f"  Link: {res.deep_link}")
-                        else:
-                            print(f"  [FAILED] Step failed: {res.message}")
-                            break
-                    elif action_choice == "skip":
-                        goal_planner.skip_plan_step(goal_plan, step.step_id)
-                        print("  [SKIPPED] Step marked as skipped.")
+            action_choice = "confirm" if confirm_all else None
+            if not action_choice:
+                try:
+                    ans = input("  Execute step? [y=Confirm / s=Skip / c=Cancel Plan / N=Stop]: ").strip().lower()
+                    if ans in ("y", "yes"):
+                        action_choice = "confirm"
+                    elif ans in ("s", "skip"):
+                        action_choice = "skip"
+                    elif ans in ("c", "cancel"):
+                        action_choice = "cancel"
                     else:
-                        goal_planner.cancel_plan(goal_plan)
-                        print("\n  Plan execution cancelled. Zero further writes performed.\n")
-                        break
+                        action_choice = "stop"
+                except (EOFError, KeyboardInterrupt):
+                    action_choice = "stop"
 
-            print(f"\n{'=' * 60}\n")
-            sys.exit(0)
+            if action_choice == "confirm":
+                res = goal_planner.execute_plan_step(goal_plan, step.step_id, confirm=True)
+                if res.status == "success":
+                    print(f"  [OK] Step completed: {res.message}")
+                    if res.deep_link:
+                        print(f"  Link: {res.deep_link}")
+                else:
+                    print(f"  [FAILED] Step failed: {res.message}")
+                    break
+            elif action_choice == "skip":
+                goal_planner.skip_plan_step(goal_plan, step.step_id)
+                print("  [SKIPPED] Step marked as skipped.")
+            elif action_choice == "cancel":
+                goal_planner.cancel_plan(goal_plan)
+                print("\n  Plan execution cancelled. Zero further writes performed.\n")
+                break
+            else:
+                print("\n  Plan execution paused. You can resume it anytime.\n")
+                break
+
+    print(f"\n{'=' * 60}\n")
 
         # ── SINGLE-STEP PLANNER & READ QUERY ──
         planner = EcosystemPlanner()

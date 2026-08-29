@@ -304,7 +304,31 @@ class DashboardPage(QWidget):
         split_layout.addWidget(right_panel, 1)
         main_layout.addLayout(split_layout, 1)
 
-        # Phase 7: Prompt Runner text box & Run button
+        # Resume Plan Banner (Non-intrusive indicator)
+        self.resume_banner = QFrame(self)
+        self.resume_banner.setStyleSheet("background-color: #1a2e22; border: 1px solid #00ff66; border-radius: 6px;")
+        banner_lay = QHBoxLayout(self.resume_banner)
+        banner_lay.setContentsMargins(12, 8, 12, 8)
+        banner_lay.setSpacing(10)
+
+        self.lbl_resume_info = QLabel("Unfinished Plan Detected", self.resume_banner)
+        self.lbl_resume_info.setStyleSheet("color: #00ff66; font-weight: bold; font-size: 12px;")
+        banner_lay.addWidget(self.lbl_resume_info, 1)
+
+        self.btn_resume_plan = QPushButton("Resume", self.resume_banner)
+        self.btn_resume_plan.setStyleSheet("background-color: #00ff66; color: #121212; font-weight: bold; padding: 4px 12px; border-radius: 4px;")
+        self.btn_resume_plan.clicked.connect(self.resume_active_plan)
+        banner_lay.addWidget(self.btn_resume_plan)
+
+        self.btn_dismiss_plan = QPushButton("Dismiss", self.resume_banner)
+        self.btn_dismiss_plan.setStyleSheet("background-color: #2d2d2d; color: #cccccc; padding: 4px 8px; border-radius: 4px;")
+        self.btn_dismiss_plan.clicked.connect(lambda: self.resume_banner.setVisible(False))
+        banner_lay.addWidget(self.btn_dismiss_plan)
+
+        self.resume_banner.setVisible(False)
+        main_layout.addWidget(self.resume_banner)
+
+        # Prompt input area
         prompt_panel = QFrame(self)
         prompt_panel.setStyleSheet("background-color: #212121; border: 1px solid #2d2d2d; border-radius: 6px;")
         prompt_lay = QHBoxLayout(prompt_panel)
@@ -590,3 +614,53 @@ class DashboardPage(QWidget):
             godot_bin = app_state.ctx.config.raw.get("workers", {}).get("godot", {}).get("binary")
             if path and scene and godot_bin and os.path.exists(godot_bin):
                 subprocess.Popen([godot_bin, "--path", path, scene])
+
+    def check_active_plans(self):
+        """Check for active saved plans and display non-intrusive banner if present."""
+        try:
+            from appsuite.ecosystem import GoalPlanner
+            planner = GoalPlanner()
+            active_plans = planner.load_active_plans()
+            if active_plans:
+                plan = active_plans[0]
+                self._current_resumable_plan = plan
+                self.lbl_resume_info.setText(
+                    f"Unfinished Plan: {plan.goal} ({plan.completed_count}/{len(plan.steps)} complete)"
+                )
+                self.resume_banner.setVisible(True)
+            else:
+                self.resume_banner.setVisible(False)
+        except Exception:
+            pass
+
+    def resume_active_plan(self):
+        """Resume execution of current active plan."""
+        plan = getattr(self, "_current_resumable_plan", None)
+        if not plan:
+            return
+        from appsuite.ecosystem import GoalPlanner, JarvisEcosystemIntent
+        from desktop_ui.widgets.ecosystem_drawer import ActionConfirmationDialog
+        from PySide6.QtWidgets import QMessageBox, QDialog
+
+        planner = GoalPlanner()
+        for step in plan.steps:
+            if step.step_type == "write_action" and step.status in ("ready", "planned", "recovery_pending", "failed"):
+                action_intent = JarvisEcosystemIntent(
+                    command_id=step.command_id or "action.unknown",
+                    confidence=1.0,
+                    parameters=step.parameters,
+                    requires_confirmation=True,
+                    summary=f"{step.title}\n\nReason: {step.reason}",
+                )
+                conf_dlg = ActionConfirmationDialog(action_intent, self)
+                if conf_dlg.exec() == QDialog.Accepted:
+                    res = planner.execute_plan_step(plan, step.step_id, confirm=True)
+                    if res.status == "success":
+                        QMessageBox.information(self, "Step Completed", res.message)
+                    else:
+                        QMessageBox.warning(self, "Step Failed", res.message)
+                        break
+                else:
+                    planner.skip_plan_step(plan, step.step_id)
+
+        self.check_active_plans()

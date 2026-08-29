@@ -22,6 +22,7 @@ from .read_interpreter import (
 from .read_executor import EcosystemReadExecutor, JarvisReadResponse
 from .planner import EcosystemPlanner, SuggestedAction, PlannerResult
 from .goal_planner import GoalPlanner, GoalPlan, GoalPlanStep
+from .plan_store import PlanStore, CURRENT_SCHEMA_VERSION, DEFAULT_PLAN_STORE_DIR
 
 __all__ = [
     "JARVIS_ALLOWED_ECOSYSTEM_COMMAND_IDS",
@@ -48,4 +49,7 @@ __all__ = [
     "GoalPlanner",
     "GoalPlan",
     "GoalPlanStep",
+    "PlanStore",
+    "CURRENT_SCHEMA_VERSION",
+    "DEFAULT_PLAN_STORE_DIR",
 ]
