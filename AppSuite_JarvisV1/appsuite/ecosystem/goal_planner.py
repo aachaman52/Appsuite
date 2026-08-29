@@ -331,22 +331,22 @@ class GoalPlanner:
                 confidence=1.0,
             )
 
-        # General weekend match without prior history
+        # General match request without known teams -> Input Needed step
         return GoalPlan(
             goal="Set up Weekend Cricket Match",
-            summary="Ready to schedule a new Cricket Scorer match. Please confirm teams.",
+            summary="Please specify Team A and Team B to schedule a new Cricket Scorer match.",
             source_tool_ids=sources,
             steps=[
                 GoalPlanStep(
                     step_id="step_01",
                     order=1,
-                    title="Create T20 Match: Team A vs Team B",
-                    description="Standard 20-over weekend match.",
-                    step_type="write_action",
-                    command_id="action.cricket.create_match",
-                    parameters={"team_a": "Team A", "team_b": "Team B", "match_type": "T20", "overs": 20},
-                    reason="Create new weekend fixture in Cricket Scorer",
-                    requires_confirmation=True,
+                    title="Provide Team Names",
+                    description="Enter Team A and Team B names to configure the match fixture.",
+                    step_type="suggestion",
+                    command_id=None,
+                    parameters={},
+                    reason="Both Team A and Team B names are required to create a match.",
+                    requires_confirmation=False,
                     status="ready",
                 )
             ],
@@ -470,13 +470,21 @@ class GoalPlanner:
 
         # Handle Write Action
         if step.step_type == "write_action":
+            if step.command_id not in JARVIS_ALLOWED_ECOSYSTEM_COMMAND_IDS:
+                step.status = "failed"
+                return ExecutionResult(
+                    command_id=step.command_id or "unknown",
+                    status="rejected",
+                    message=f"Command ID '{step.command_id}' is not authorized.",
+                )
+
             # Apply edits if user modified parameters before confirmation
             if edited_parameters:
                 step.parameters.update(edited_parameters)
 
             if not confirm:
                 return ExecutionResult(
-                    command_id=step.command_id or "write_action",
+                    command_id=step.command_id,
                     status="preview",
                     message=f"Confirmation required to execute: {step.title}",
                     requires_confirmation=True,
