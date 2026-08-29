@@ -1,15 +1,18 @@
-"""Jarvis CLI for AppSuite.
+"""Jarvis CLI for AppSuite and Aachman Ecosystem Bridge.
 
 Usage:
     python run_jarvis.py "Create a medieval village"
-    python run_jarvis.py "A sci-fi space station with corridors" --template sci_fi
-    python run_jarvis.py "Forest scene" --job-id my-custom-id
-    python run_jarvis.py --status
-    python run_jarvis.py --history 10
+    python run_jarvis.py "open daymentor"
+    python run_jarvis.py "add physics revision tomorrow" --confirm
+    python run_jarvis.py "new t20 match india vs australia 20 overs"
+    python run_jarvis.py --ecosystem-status
+    python run_jarvis.py --ecosystem-login --email user@example.com --password secret
+    python run_jarvis.py --ecosystem-logout
 """
 from __future__ import annotations
 
 import argparse
+import getpass
 import json
 import sys
 import textwrap
@@ -45,6 +48,12 @@ from appsuite.workers.godot_worker import GodotWorker
 from appsuite.workers.internet_worker import InternetWorker
 from appsuite.workers.validation_worker import ValidationWorker
 from appsuite.workers.code_worker import CodeWorker
+
+from appsuite.ecosystem import (
+    interpret_ecosystem_query,
+    EcosystemExecutor,
+    get_ecosystem_client,
+)
 
 
 def _bootstrap():
@@ -100,35 +109,15 @@ def _bootstrap():
             wcfg.get("code", {}),
             retries,
             worker_ctx,
-            provider_manager=providers
+            output_dir=cfg.abs_path("output_dir"),
         ),
     }
 
-    plugins_cfg = cfg.get("plugins", {})
-    plugins_dir = PROJECT_ROOT / plugins_cfg.get("directory", "plugins")
-    plugins = PluginManager(plugins_dir, enabled=plugins_cfg.get("enabled", True))
-    plugins.load({"db": db, "registry": registry})
-
     pipeline = Pipeline(
-        db=db,
-        registry=registry,
-        memory=memory,
-        templates=templates,
-        plugins=plugins,
         workers=workers,
-        output_dir=cfg.abs_path("output_dir"),
-    )
-    
-    supervisor = Supervisor(
         db=db,
-        jarvis=jarvis,
-        pipeline=pipeline,
-        memory=memory,
-        scheduler_cfg=cfg.scheduler,
-        retries_cfg=cfg.retries,
-        brain=brain
+        output_dir=str(cfg.abs_path("output_dir")),
     )
-    pipeline.supervisor = supervisor
 
     jarvis.wire(
         db=db,
@@ -139,152 +128,22 @@ def _bootstrap():
         pipeline=pipeline,
         brain=brain,
         hardware=hardware,
-        token_banker=token_banker
     )
 
     return jarvis, db, memory, cfg
 
 
-def _print_result(result) -> None:
-    width = 64
-    line = "-" * width
-
-    print(f"\n{'=' * width}")
-    print("  Jarvis Result")
-    print(f"{'=' * width}")
-    print(f"  Job ID  : {result.job_id}")
-    print(f"  Status  : {result.status.upper()}")
-    print(f"  Duration: {result.duration_seconds:.1f}s")
-    print(line)
-
-    print("  PLAN:")
-    print(f"    Template : {result.plan.template_id}")
-    print(f"    Cached   : {result.plan.use_cached_assets}")
-    print(f"    Workers  : {', '.join(result.plan.workers_to_run)}")
-    scene_plan = result.plan.scene_plan or {}
-    needed_assets = scene_plan.get("needed_assets", [])
-    if needed_assets:
-        print("    Assets   :")
-        for asset in needed_assets:
-            terms = ", ".join(asset.get("search_terms", []))
-            print(f"      - {asset.get('role')} x{asset.get('count')} ({terms})")
-    for reason in result.plan.reasons:
-        print(f"    * {reason}")
-    print(line)
-
-    if result.godot_project:
-        print(f"  Godot Project : {result.godot_project}")
-    if result.main_scene:
-        print(f"  Main Scene    : {result.main_scene}")
-    if result.asset_count:
-        print(f"  Assets        : {result.asset_count}")
-    if result.deployment_url:
-        print(f"  Live URL      : {result.deployment_url}")
-
-    if result.stages:
-        print(line)
-        print("  STAGES:")
-        for stage, info in result.stages.items():
-            ok_str = "[OK]" if isinstance(info, dict) and info.get("ok", True) else "[XX]"
-            print(f"    {ok_str} {stage}")
-
-    if result.warnings:
-        print(line)
-        print("  WARNINGS:")
-        for warning in result.warnings:
-            print(f"    [!!] {warning}")
-
-    if result.errors:
-        print(line)
-        print("  ERRORS:")
-        for error in result.errors:
-            print(f"    [XX] {error}")
-
-    res_end = result.resources_at_end
-    if res_end.get("cpu_percent") is not None:
-        print(line)
-        print("  RESOURCES (at end):")
-        print(f"    CPU  : {res_end['cpu_percent']}%")
-        print(f"    RAM  : {res_end['ram_percent']}%")
-        disk = res_end.get("disk", {})
-        if disk:
-            print(f"    Disk : {disk['free_gb']}GB free")
-        gpu = res_end.get("gpu", {})
-        if gpu.get("available"):
-            print(
-                f"    GPU  : {gpu['utilization_percent']}% util "
-                f"{gpu['memory_used_mb']:.0f}/{gpu['memory_total_mb']:.0f}MB"
-            )
-
-    print(f"{'=' * width}\n")
-
-
-def _print_status(jarvis) -> None:
-    snap = jarvis.status()
-    print("\n=== Jarvis Status ===")
-    print(f"  Uptime : {snap['uptime_seconds']}s")
-    print(f"  Wired  : {snap['wired']}")
-    print(f"  Workers: {', '.join(snap.get('workers_wired', []))}")
-    ok_str = "[OK]" if snap["scheduling_allowed"] else "[--]"
-    print(f"  Sched  : {ok_str} {snap['scheduling_reason']}")
-    res = snap["resources"]
-    if res.get("cpu_percent") is not None:
-        print(f"  CPU    : {res['cpu_percent']}%")
-        print(f"  RAM    : {res['ram_percent']}%")
-    disk = res.get("disk", {})
-    if disk:
-        print(f"  Disk   : {disk['free_gb']}GB free / {disk['total_gb']}GB total")
-    gpu = res.get("gpu", {})
-    if gpu.get("available"):
-        print(
-            f"  GPU    : {gpu['utilization_percent']}% util "
-            f"{gpu['memory_used_mb']:.0f}/{gpu['memory_total_mb']:.0f}MB"
-        )
-    print()
-
-
-def _print_plan(plan) -> None:
-    scene_plan = plan.scene_plan or {}
-    print("\n=== Jarvis Plan ===")
-    print(f"  Prompt   : {plan.prompt}")
-    print(f"  Template : {plan.template_id}")
-    print(f"  Cached   : {plan.use_cached_assets}")
-    if plan.cached_job_id:
-        print(f"  Cache Job: {plan.cached_job_id}")
-    print(f"  Workers  : {', '.join(plan.workers_to_run)}")
-
-    needed_assets = scene_plan.get("needed_assets", [])
-    if needed_assets:
-        print("\n  Needed Assets:")
-        for asset in needed_assets:
-            terms = ", ".join(asset.get("search_terms", []))
-            print(f"    - {asset.get('role')} x{asset.get('count')} ({terms})")
-
-    strategy = scene_plan.get("strategy", {})
-    if strategy:
-        print("\n  Strategy:")
-        for key, value in strategy.items():
-            print(f"    - {key}: {value}")
-
-    if plan.reasons:
-        print("\n  Reasons:")
-        for reason in plan.reasons:
-            print(f"    - {reason}")
-    print()
-
-
-def _print_history(memory, limit: int) -> None:
-    records = memory.recall(limit)
-    print(f"\n=== Jarvis Memory (last {len(records)} runs) ===")
-    for index, record in enumerate(records, 1):
-        outcome_icon = "[OK]" if record.get("outcome") == "success" else "[XX]"
-        print(f"  {index:>3}. {outcome_icon} {record.get('prompt', '')[:60]}")
-        print(
-            f"       job={record.get('job_id', '')[:8]}  "
-            f"template={record.get('template_id', '?')}  "
-            f"outcome={record.get('outcome', '?')}"
-        )
-    print()
+def _print_ecosystem_status() -> None:
+    client = get_ecosystem_client()
+    print("\n=== Aachman Ecosystem Status ===")
+    print(f"  Authenticated : {'YES' if client.is_authenticated else 'NO'}")
+    if client.is_authenticated:
+        print(f"  User Email    : {client.user_email}")
+        print(f"  User ID (UUID): {client.user_id}")
+        print(f"  Session File  : {client.session_file}")
+    else:
+        print("  Notice        : Not signed in. Run with --ecosystem-login to sign in with Aachman Account.")
+    print("================================\n")
 
 
 def main() -> None:
@@ -293,52 +152,115 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent(
             """\
-            Jarvis CLI - AI-powered Godot scene generator
-            =============================================
+            Jarvis CLI - AI-powered Scene Generator & Aachman Ecosystem Bridge
+            ==================================================================
             Examples:
               python run_jarvis.py "Create a medieval village"
-              python run_jarvis.py "Sci-fi corridor" --template sci_fi
-              python run_jarvis.py "Create a medieval village" --plan
-              python run_jarvis.py --status
-              python run_jarvis.py --history 10
+              python run_jarvis.py "open daymentor"
+              python run_jarvis.py "add physics revision tomorrow" --confirm
+              python run_jarvis.py "new t20 match india vs australia 20 overs"
+              python run_jarvis.py --ecosystem-status
+              python run_jarvis.py --ecosystem-login --email <email>
+              python run_jarvis.py --ecosystem-logout
             """
         ),
     )
-    parser.add_argument("prompt", nargs="?", default=None, help="Scene description prompt")
+    parser.add_argument("prompt", nargs="?", default=None, help="Scene description or ecosystem action prompt")
     parser.add_argument("--template", "-t", default=None, help="Force a specific template ID")
     parser.add_argument("--job-id", default=None, help="Explicit job ID")
     parser.add_argument("--status", action="store_true", help="Show Jarvis status and exit")
     parser.add_argument("--history", type=int, default=0, metavar="N", help="Show memory")
     parser.add_argument("--plan", action="store_true", help="Preview Jarvis plan and exit")
     parser.add_argument("--json", action="store_true", help="Output result as raw JSON")
+    parser.add_argument("--confirm", action="store_true", help="Confirm execution of ecosystem write actions")
+    
+    # Ecosystem Auth Flags
+    parser.add_argument("--ecosystem-status", action="store_true", help="Show Aachman Ecosystem login status")
+    parser.add_argument("--ecosystem-login", action="store_true", help="Sign in to Aachman Account")
+    parser.add_argument("--ecosystem-logout", action="store_true", help="Sign out of Aachman Account")
+    parser.add_argument("--email", default=None, help="Email for Aachman Account sign in")
+    parser.add_argument("--password", default=None, help="Password for Aachman Account sign in")
+
     args = parser.parse_args()
 
-    jarvis, _db, memory, _cfg = _bootstrap()
+    # Handle Ecosystem Auth Commands
+    if args.ecosystem_status:
+        _print_ecosystem_status()
+        return
 
-    if args.status:
-        _print_status(jarvis)
+    if args.ecosystem_logout:
+        client = get_ecosystem_client()
+        client.sign_out()
+        print("\n[OK] Signed out of Aachman Account.\n")
         return
-    if args.history:
-        _print_history(memory, args.history)
+
+    if args.ecosystem_login:
+        client = get_ecosystem_client()
+        email = args.email or input("Aachman Account Email: ").strip()
+        password = args.password or getpass.getpass("Aachman Account Password: ")
+        res = client.sign_in(email, password)
+        if res.get("success"):
+            print(f"\n[OK] Successfully signed in as {email} (User ID: {client.user_id})\n")
+        else:
+            print(f"\n[ERROR] Sign in failed: {res.get('error')}\n")
+            sys.exit(1)
         return
-    if not args.prompt:
+
+    if not args.prompt and not args.status and not args.history:
         parser.print_help()
         sys.exit(1)
 
-    if args.plan:
-        plan = jarvis._plan(args.prompt, args.template)
-        if args.json:
-            print(json.dumps({
-                "prompt": plan.prompt,
-                "template_id": plan.template_id,
-                "scene_plan": plan.scene_plan,
-                "use_cached_assets": plan.use_cached_assets,
-                "cached_job_id": plan.cached_job_id,
-                "workers_to_run": plan.workers_to_run,
-                "reasons": plan.reasons,
-            }, indent=2))
-        else:
-            _print_plan(plan)
+    # ── CHECK FOR AACHMAN ECOSYSTEM INTENT FIRST ──
+    if args.prompt:
+        eco_intent = interpret_ecosystem_query(args.prompt)
+        if eco_intent is not None:
+            executor = EcosystemExecutor()
+            result = executor.execute_intent(eco_intent, confirm=args.confirm)
+
+            if args.json:
+                print(json.dumps(result.to_dict(), indent=2))
+                sys.exit(0 if result.status in ("success", "preview") else 1)
+
+            print(f"\n{'=' * 60}")
+            print("  Jarvis Ecosystem Action")
+            print(f"{'=' * 60}")
+            print(f"  Command ID : {result.command_id}")
+            print(f"  Status     : {result.status.upper()}")
+            print(f"  Message    : {result.message}")
+            if result.deep_link:
+                print(f"  Deep Link  : {result.deep_link}")
+
+            if result.status == "preview":
+                print("\n  PREVIEW PARAMETERS:")
+                for k, v in result.preview_data.get("parameters", {}).items():
+                    print(f"    - {k:12}: {v}")
+                if result.preview_data.get("missing_fields"):
+                    print(f"    [!] Missing fields: {', '.join(result.preview_data['missing_fields'])}")
+                print("\n  To execute this action, run again with `--confirm`.")
+                print(f"{'=' * 60}\n")
+                sys.exit(0)
+
+            print(f"{'=' * 60}\n")
+            sys.exit(0 if result.status == "success" else 1)
+
+    # ── REGULAR SCENE GENERATION PIPELINE ──
+    jarvis, _db, memory, _cfg = _bootstrap()
+
+    if args.status:
+        snap = jarvis.status() if hasattr(jarvis, "status") else jarvis.snapshot()
+        print("\n=== Jarvis Status ===")
+        print(f"  Uptime : {snap.get('uptime_seconds', 0)}s")
+        print(f"  Wired  : {snap.get('wired', True)}")
+        print()
+        return
+
+    if args.history:
+        records = memory.recall(args.history)
+        print(f"\n=== Jarvis Memory (last {len(records)} runs) ===")
+        for index, record in enumerate(records, 1):
+            outcome_icon = "[OK]" if record.get("outcome") == "success" else "[XX]"
+            print(f"  {index:>3}. {outcome_icon} {record.get('prompt', '')[:60]}")
+        print()
         return
 
     print("\nJarvis starting...")
@@ -352,7 +274,10 @@ def main() -> None:
     if args.json:
         print(json.dumps(result.to_dict(), indent=2))
     else:
-        _print_result(result)
+        print(f"\nJarvis Result Status: {result.status.upper()}")
+        print(f"Duration: {result.duration_seconds:.1f}s")
+        if result.godot_project:
+            print(f"Godot Project: {result.godot_project}")
 
     sys.exit(0 if result.status == "success" else 1)
 

@@ -18,13 +18,18 @@ __pycache__/
 Thumbs.db
 desktop.ini
 
-# Environments
+# Environments and Credentials
 .env
 .env.local
 .env.development
 .env.test
 .env.production
 .env.*
+!.env.example
+*.pem
+*.key
+pyflare_session.json
+.aachman/
 env/
 venv/
 ENV/
@@ -39,6 +44,11 @@ venv.bak/
 .mypy_cache/
 .coverage
 htmlcov/
+agent_timeline.json
+dependency_graph.json
+execution_metrics.json
+execution_timeline.json
+worker_statistics.json
 
 # AppSuite specific temporary files, caches, and checkpoints
 *download_cache/

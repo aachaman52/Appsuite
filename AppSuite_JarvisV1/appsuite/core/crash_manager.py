@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import os
 import json
 import traceback
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from ..logging_setup import get_structured_logger
-from .state import RuntimeContext
+
+if TYPE_CHECKING:
+    from .runtime_engine import RuntimeContext
 
 log = get_structured_logger("crash_manager")
 
