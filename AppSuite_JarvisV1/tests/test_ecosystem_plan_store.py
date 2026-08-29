@@ -212,7 +212,7 @@ def test_executing_step_recovery_on_startup():
         store = PlanStore(storage_dir=temp_dir)
         plan_id = str(uuid.uuid4())
 
-        # Plan saved while step was in flight
+        # Plan saved while step was mid-execution (has key, no fingerprint = legacy plan)
         plan = {
             "plan_id": plan_id,
             "goal": "Interrupted Goal",
@@ -221,20 +221,70 @@ def test_executing_step_recovery_on_startup():
                     "step_id": "s1",
                     "order": 1,
                     "title": "Interrupted Step",
+                    "description": "Create revision task",
                     "step_type": "write_action",
                     "command_id": "action.daymentor.create_task",
+                    "parameters": {"title": "Interrupted Revision Task", "priority": "high"},
                     "status": "executing",
                     "idempotency_key": "in_flight_key_999",
+                    "depends_on": [],
+                    "reason": "Interrupted mid-execution",
                 }
             ],
         }
         store.save_plan(plan)
 
-        # On restart / load, executing step is safely recovered to recovery_pending
+        # On restart / load:
+        # executing + key + no fingerprint (legacy) -> recovery_pending
+        # idempotency_key preserved
         loaded = store.load_plan(plan_id)
-        assert loaded["steps"][0]["status"] == "recovery_pending"
+        assert loaded is not None, "Plan should load successfully"
+        assert loaded["steps"][0]["status"] == "recovery_pending", (
+            f"Expected recovery_pending, got {loaded['steps'][0]['status']}"
+        )
         assert loaded["steps"][0]["idempotency_key"] == "in_flight_key_999"
         print("✓ Executing step recovery test passed")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+
+def test_delete_and_archive_plan():
+    temp_dir = Path(tempfile.mkdtemp())
+    try:
+        store = PlanStore(storage_dir=temp_dir)
+        plan_id = str(uuid.uuid4())
+        plan = {
+            "schema_version": CURRENT_SCHEMA_VERSION,
+            "plan_id": plan_id,
+            "owner_id": "u1",
+            "goal": "Goal",
+            "summary": "Summary",
+            "steps": [
+                {
+                    "step_id": "s1",
+                    "order": 1,
+                    "title": "Step 1",
+                    "description": "d",
+                    "reason": "r",
+                    "step_type": "suggestion",
+                    "status": "ready",
+                    "depends_on": [],
+                }
+            ],
+        }
+        store.save_plan(plan)
+        assert store.load_plan(plan_id) is not None
+
+        # Archive marks unexecuted steps as cancelled
+        assert store.archive_plan(plan_id) is True
+        loaded = store.load_plan(plan_id)
+        assert loaded["steps"][0]["status"] == "cancelled"
+
+        # Delete removes file
+        assert store.delete_plan(plan_id) is True
+        assert store.load_plan(plan_id) is None
+        print("✓ Delete and archive plan test passed")
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -248,4 +298,6 @@ if __name__ == "__main__":
     test_malicious_command_id_and_path_traversal()
     test_owner_isolation_and_no_secret_leakage()
     test_executing_step_recovery_on_startup()
+    test_delete_and_archive_plan()
     print("\n=== ALL PLAN STORE TESTS PASSED ===\n")
+

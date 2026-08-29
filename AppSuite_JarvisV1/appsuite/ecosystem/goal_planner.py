@@ -30,7 +30,12 @@ from .read_interpreter import (
     get_current_date_kolkata,
     interpret_ecosystem_read_query,
 )
-from .plan_store import PlanStore, CURRENT_SCHEMA_VERSION, get_current_timestamp_iso
+from .plan_store import (
+    PlanStore,
+    CURRENT_SCHEMA_VERSION,
+    get_current_timestamp_iso,
+    compute_confirmation_fingerprint,
+)
 from ..logging_setup import get_logger
 
 log = get_logger("ecosystem.goal_planner")
@@ -51,6 +56,7 @@ class GoalPlanStep:
     status: str = "planned"  # "planned" | "ready" | "confirmed" | "executing" | "completed" | "skipped" | "cancelled" | "failed" | "blocked" | "recovery_pending"
     depends_on: List[str] = field(default_factory=list)
     idempotency_key: Optional[str] = None
+    confirmation_fingerprint: Optional[str] = None
     result: Optional[Dict[str, Any]] = None
     error_message: Optional[str] = None
 
@@ -68,6 +74,7 @@ class GoalPlanStep:
             "status": self.status,
             "depends_on": self.depends_on,
             "idempotency_key": self.idempotency_key,
+            "confirmation_fingerprint": self.confirmation_fingerprint,
             "result": self.result,
             "error_message": self.error_message,
         }
@@ -87,6 +94,7 @@ class GoalPlanStep:
             status=data.get("status", "planned"),
             depends_on=data.get("depends_on", []),
             idempotency_key=data.get("idempotency_key"),
+            confirmation_fingerprint=data.get("confirmation_fingerprint"),
             result=data.get("result"),
             error_message=data.get("error_message"),
         )
@@ -538,11 +546,12 @@ class GoalPlanner:
                     message=f"Command ID '{step.command_id}' is not authorized.",
                 )
 
-            # Apply edits if user modified parameters before confirmation
-            if edited_parameters:
+            # Apply edits only for fresh (non-recovery) steps before confirmation check
+            if edited_parameters and step.status != "recovery_pending":
+                step.parameters = dict(step.parameters)
                 step.parameters.update(edited_parameters)
 
-            if not confirm:
+            if not confirm and step.status != "recovery_pending":
                 return ExecutionResult(
                     command_id=step.command_id,
                     status="preview",
@@ -551,11 +560,72 @@ class GoalPlanner:
                     preview_data=step.parameters,
                 )
 
-            # Assign opaque UUID idempotency key strictly upon confirmation
-            if not step.idempotency_key:
-                step.idempotency_key = str(uuid.uuid4())
+            # ── Differentiated execution path for recovery_pending vs fresh confirmation ──
+            if step.status == "recovery_pending":
+                # Recovery path: payload must be immutable
+                if not step.idempotency_key:
+                    # Key missing — cannot safely retry (should have been caught on load)
+                    step.status = "failed"
+                    step.error_message = (
+                        "Interrupted without idempotency key. Safe retry is unavailable. "
+                        "Code: unsafe_recovery_missing_idempotency_key"
+                    )
+                    try:
+                        self.plan_store.save_plan(plan.to_dict())
+                    except Exception:
+                        pass
+                    return ExecutionResult(
+                        command_id=step.command_id or "unknown",
+                        status="failed",
+                        message="Recovery refused: missing idempotency key. Cannot safely retry.",
+                    )
+
+                # Verify fingerprint if present (payload immutability check)
+                if step.confirmation_fingerprint:
+                    expected_fp = compute_confirmation_fingerprint(
+                        plan_id=plan.plan_id,
+                        step_id=step.step_id,
+                        command_id=step.command_id or "",
+                        parameters=step.parameters,
+                    )
+                    if expected_fp != step.confirmation_fingerprint:
+                        step.status = "failed"
+                        step.error_message = (
+                            "Persisted action changed after confirmation. Recovery refused."
+                        )
+                        try:
+                            self.plan_store.save_plan(plan.to_dict())
+                        except Exception:
+                            pass
+                        return ExecutionResult(
+                            command_id=step.command_id or "unknown",
+                            status="failed",
+                            message="Recovery refused: payload changed after confirmation.",
+                        )
+                # Recovery confirmed — proceed with original persisted key and payload
+
+            else:
+                # Fresh confirmation path
+                # Assign opaque UUID idempotency key strictly upon confirmation
+                if not step.idempotency_key:
+                    step.idempotency_key = str(uuid.uuid4())
+
+                # Compute and persist confirmation fingerprint (plan + step + action + payload)
+                step.confirmation_fingerprint = compute_confirmation_fingerprint(
+                    plan_id=plan.plan_id,
+                    step_id=step.step_id,
+                    command_id=step.command_id or "",
+                    parameters=step.parameters,
+                )
 
             step.status = "executing"
+
+            # Persist plan with key + fingerprint BEFORE dispatch (crash recovery identity)
+            try:
+                self.plan_store.save_plan(plan.to_dict())
+            except Exception as e:
+                log.warning("Could not persist plan before dispatch %s: %s", plan.plan_id, e)
+
             intent = JarvisEcosystemIntent(
                 command_id=step.command_id or "action.unknown",
                 confidence=1.0,
