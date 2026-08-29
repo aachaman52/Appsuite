@@ -112,8 +112,14 @@ class EcosystemExecutor:
                 message=f"Unknown write action: {intent.command_id}",
             )
 
-        # 4. Authorized Execution via Supabase RPC
-        res = self.client.execute_ecosystem_action(rpc_action_type, params)
+        import uuid
+        if not intent.idempotency_key:
+            intent.idempotency_key = str(uuid.uuid4())
+
+        # 4. Authorized Execution via Supabase RPC with Idempotency Key
+        res = self.client.execute_ecosystem_action(
+            rpc_action_type, params, idempotency_key=intent.idempotency_key
+        )
         if res.get("success"):
             deep_link = res.get("deep_link")
             return ExecutionResult(

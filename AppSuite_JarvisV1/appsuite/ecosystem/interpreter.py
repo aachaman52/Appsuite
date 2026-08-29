@@ -17,6 +17,7 @@ class JarvisEcosystemIntent:
     requires_confirmation: bool = True
     summary: str = ""
     missing_fields: List[str] = field(default_factory=list)
+    idempotency_key: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -26,6 +27,7 @@ class JarvisEcosystemIntent:
             "requires_confirmation": self.requires_confirmation,
             "summary": self.summary,
             "missing_fields": self.missing_fields,
+            "idempotency_key": self.idempotency_key,
         }
 
 

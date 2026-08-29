@@ -253,7 +253,7 @@ class AachmanEcosystemClient:
         return {"success": True}
 
     def execute_ecosystem_action(
-        self, action_type: str, payload: Dict[str, Any]
+        self, action_type: str, payload: Dict[str, Any], idempotency_key: Optional[str] = None
     ) -> Dict[str, Any]:
         """Call the authoritative public.execute_ecosystem_action RPC.
 
@@ -275,6 +275,7 @@ class AachmanEcosystemClient:
         body = {
             "p_action_type": action_type,
             "p_payload": payload,
+            "p_idempotency_key": idempotency_key,
         }
 
         try:
