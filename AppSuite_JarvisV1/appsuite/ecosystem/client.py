@@ -272,14 +272,26 @@ class AachmanEcosystemClient:
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
         }
+        payload_copy = dict(payload)
+        if idempotency_key:
+            payload_copy["idempotency_key"] = idempotency_key
+
         body = {
             "p_action_type": action_type,
-            "p_payload": payload,
+            "p_payload": payload_copy,
             "p_idempotency_key": idempotency_key,
         }
 
         try:
             resp = requests.post(url, headers=headers, json=body, timeout=12)
+            if resp.status_code == 404 and "schema cache" in resp.text:
+                # Fallback to 2-parameter signature
+                body_2arg = {
+                    "p_action_type": action_type,
+                    "p_payload": payload_copy,
+                }
+                resp = requests.post(url, headers=headers, json=body_2arg, timeout=12)
+
             if resp.status_code == 200:
                 result = resp.json()
                 return result
@@ -289,6 +301,8 @@ class AachmanEcosystemClient:
                     refreshed_token = self._in_memory_access_token
                     headers["Authorization"] = f"Bearer {refreshed_token}"
                     retry_resp = requests.post(url, headers=headers, json=body, timeout=12)
+                    if retry_resp.status_code == 404 and "schema cache" in retry_resp.text:
+                        retry_resp = requests.post(url, headers=headers, json={"p_action_type": action_type, "p_payload": payload_copy}, timeout=12)
                     if retry_resp.status_code == 200:
                         return retry_resp.json()
 
@@ -296,6 +310,7 @@ class AachmanEcosystemClient:
                     "success": False,
                     "error": "Session expired or invalid. Please sign in again.",
                 }
+
             else:
                 err_text = resp.text
                 try:
