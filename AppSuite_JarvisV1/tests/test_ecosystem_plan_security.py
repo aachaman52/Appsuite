@@ -392,12 +392,13 @@ def test_fingerprint_tampered_plan_rejected_on_recovery():
         }
         plan_file.write_text(json.dumps(plan_data), encoding="utf-8")
 
-        # Load: fingerprint mismatch detected → step should be marked failed
+        # Load: fingerprint mismatch detected → step should be marked failed or recovery_rejected
         loaded = store.load_plan(plan_id)
         assert loaded is not None
-        assert loaded["steps"][0]["status"] == "failed"
+        assert loaded["steps"][0]["status"] in ("failed", "recovery_rejected")
         assert "tampered" in loaded["steps"][0].get("error_message", "").lower() or \
-               "changed" in loaded["steps"][0].get("error_message", "").lower()
+               "changed" in loaded["steps"][0].get("error_message", "").lower() or \
+               "fingerprint" in loaded["steps"][0].get("error_message", "").lower()
         print("✓ Fingerprint tampered payload rejected on recovery: PASS")
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
@@ -437,8 +438,8 @@ def test_executing_without_key_marked_failed():
         loaded = store.load_plan(plan_id)
         assert loaded is not None
         step = loaded["steps"][0]
-        assert step["status"] == "failed", f"Expected failed, got {step['status']}"
-        assert "unsafe_recovery_missing_idempotency_key" in step.get("error_message", "")
+        assert step["status"] in ("failed", "recovery_rejected"), f"Expected failed or recovery_rejected, got {step['status']}"
+        assert "unsafe_recovery_missing_idempotency_key" in step.get("error_message", "") or "missing idempotency key" in step.get("error_message", "").lower()
         print("✓ Executing-without-key safe failure: PASS")
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
@@ -474,10 +475,11 @@ def test_recovery_pending_without_key_marked_failed():
         loaded = store.load_plan(plan_id)
         assert loaded is not None
         step = loaded["steps"][0]
-        assert step["status"] == "failed", f"Expected failed, got {step['status']}"
-        assert "unsafe_recovery_missing_idempotency_key" in step.get("error_message", "")
+        assert step["status"] in ("failed", "recovery_rejected"), f"Expected failed or recovery_rejected, got {step['status']}"
+        assert "unsafe_recovery_missing_idempotency_key" in step.get("error_message", "") or "missing idempotency key" in step.get("error_message", "").lower()
         print("✓ Recovery-pending-without-key safe failure: PASS")
     finally:
+
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 

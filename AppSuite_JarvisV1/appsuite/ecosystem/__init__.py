@@ -7,6 +7,10 @@ from .constants import (
     DEFAULT_SUPABASE_ANON_KEY,
     HACKATHON_PROBLEMS,
 )
+from .action_validation import (
+    WRITE_ACTION_COMMAND_IDS,
+    validate_action_parameters,
+)
 from .client import AachmanEcosystemClient, get_ecosystem_client
 from .interpreter import (
     interpret_ecosystem_query,
@@ -14,6 +18,11 @@ from .interpreter import (
     parse_relative_date,
 )
 from .executor import EcosystemExecutor, ExecutionResult
+from .planning_helpers import (
+    calculate_exam_revision_schedule,
+    is_duplicate_task,
+    normalize_subject,
+)
 from .read_interpreter import (
     interpret_ecosystem_read_query,
     JarvisReadIntent,
@@ -24,7 +33,10 @@ from .planner import EcosystemPlanner, SuggestedAction, PlannerResult
 from .goal_planner import GoalPlanner, GoalPlan, GoalPlanStep
 from .plan_store import (
     PlanStore,
+    PlanLock,
+    PlanLockTimeoutError,
     CURRENT_SCHEMA_VERSION,
+    VALID_STEP_STATUSES,
     DEFAULT_PLAN_STORE_DIR,
     compute_confirmation_fingerprint,
 )
@@ -32,10 +44,15 @@ from .plan_store import (
 __all__ = [
     "JARVIS_ALLOWED_ECOSYSTEM_COMMAND_IDS",
     "JARVIS_ALLOWED_READ_TOOL_IDS",
+    "WRITE_ACTION_COMMAND_IDS",
     "ECOSYSTEM_URLS",
     "DEFAULT_SUPABASE_URL",
     "DEFAULT_SUPABASE_ANON_KEY",
     "HACKATHON_PROBLEMS",
+    "validate_action_parameters",
+    "calculate_exam_revision_schedule",
+    "is_duplicate_task",
+    "normalize_subject",
     "AachmanEcosystemClient",
     "get_ecosystem_client",
     "interpret_ecosystem_query",
@@ -55,7 +72,11 @@ __all__ = [
     "GoalPlan",
     "GoalPlanStep",
     "PlanStore",
+    "PlanLock",
+    "PlanLockTimeoutError",
     "CURRENT_SCHEMA_VERSION",
+    "VALID_STEP_STATUSES",
     "DEFAULT_PLAN_STORE_DIR",
     "compute_confirmation_fingerprint",
 ]
+

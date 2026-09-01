@@ -14,11 +14,20 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
+from .action_validation import (
+    WRITE_ACTION_COMMAND_IDS,
+    validate_action_parameters,
+)
 from .client import AachmanEcosystemClient, get_ecosystem_client
 from .constants import (
     HACKATHON_PROBLEMS,
     JARVIS_ALLOWED_ECOSYSTEM_COMMAND_IDS,
     JARVIS_ALLOWED_READ_TOOL_IDS,
+)
+from .planning_helpers import (
+    calculate_exam_revision_schedule,
+    is_duplicate_task,
+    normalize_subject,
 )
 from .read_executor import EcosystemReadExecutor, JarvisReadResponse
 from .read_interpreter import (
@@ -179,35 +188,49 @@ class EcosystemPlanner:
             parameters={"target_date": today_str},
         )
         res_tasks = self.read_executor.execute_read_intent(intent_tasks)
-
         sources = [res_exam, res_tasks]
 
-        if res_exam.status == "success" and res_exam.data.get("has_exam"):
-            exam = res_exam.data.get("exam", {})
-            days_rem = res_exam.data.get("days_remaining", 999)
-            subject = exam.get("subjectName") or exam.get("subjectId") or "Upcoming Exam"
+        if res_exam.status in ("error", "failed"):
 
-            existing_tasks = res_tasks.data.get("tasks", [])
-            suggested_title = f"{subject} revision"
+            return PlannerResult(
+                answer_text="I couldn't check your upcoming exams right now. Please check DayMentor connection and try again.",
+                suggested_action=None,
+                source_reads=sources,
+            )
+
+        if res_exam.status == "success" and res_exam.data.get("has_exam"):
+            schedule = calculate_exam_revision_schedule(res_exam.data, ref_dt)
+            subject = schedule["subject"]
+            exam_date = schedule["exam_date"]
+            days_rem = schedule["days_remaining"]
+            suggested_title = schedule["revision_title"]
+            deadline = schedule["revision_deadline"]
+            priority = schedule["revision_priority"]
+
+            existing_tasks = []
+            if res_tasks.status == "success":
+                existing_tasks.extend(res_tasks.data.get("tasks", []))
+
+            # If task is scheduled for tomorrow, ALSO check tomorrow's tasks for deduplication
+            tom_str = (ref_dt + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+            if deadline == tom_str:
+                intent_tom = JarvisReadIntent(
+                    tool_id="read.daymentor.tasks_tomorrow",
+                    confidence=1.0,
+                    parameters={"target_date": tom_str},
+                )
+                res_tom = self.read_executor.execute_read_intent(intent_tom)
+                sources.append(res_tom)
+                if res_tom.status == "success":
+                    existing_tasks.extend(res_tom.data.get("tasks", []))
 
             # Duplicate check
-            if _is_duplicate_task(suggested_title, existing_tasks):
+            if is_duplicate_task(suggested_title, existing_tasks):
                 text = (
                     f"{res_exam.human_text}\n"
-                    f"You already have a {subject} study task scheduled for today."
+                    f"You already have a {subject} study task scheduled."
                 )
                 return PlannerResult(answer_text=text, suggested_action=None, source_reads=sources)
-
-            # Deadline & Urgency logic
-            if days_rem <= 1:
-                deadline = today_str
-                priority = "high"
-            elif days_rem <= 3:
-                deadline = (ref_dt + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-                priority = "high"
-            else:
-                deadline = (ref_dt + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-                priority = "medium"
 
             reason = f"Your {subject} exam is in {days_rem} days and you do not have a revision task scheduled."
             action = SuggestedAction(
@@ -227,9 +250,10 @@ class EcosystemPlanner:
             text = f"{res_exam.human_text}\n\nSuggested Next Step:\nCreate a {priority}-priority revision task for {deadline}."
             return PlannerResult(answer_text=text, suggested_action=action, source_reads=sources)
 
-        # No upcoming exam
+        # No upcoming exam (verified from successful read)
         text = "You don't have any upcoming exams scheduled. You can focus on your regular daily tasks or explore new topics."
         return PlannerResult(answer_text=text, suggested_action=None, source_reads=sources)
+
 
     def _synthesize_exam_action(
         self, res_exam: JarvisReadResponse, now: Optional[datetime.datetime] = None

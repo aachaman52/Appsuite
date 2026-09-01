@@ -1,10 +1,13 @@
-"""Jarvis Multi-Step Goal Planner v1.
+"""Jarvis Multi-Step Goal Planner v2 (Beta Execution Safety Hardened).
 
 Decomposes high-level user goals into structured sequences of safe ecosystem steps:
-- Grounded in live read facts from canonical read tools
+- Grounded in live read facts from canonical read tools (errors != empty results)
 - Step types: read_summary, suggestion, write_action
 - Strict per-step review, confirmation, editing, and skipping
 - Unique per-step idempotency key assigned only on user confirmation
+- Coordinated via OS-level PlanLock across multiple local sessions
+- Fail-closed ownership isolation and pre-dispatch verification
+- Non-retryable recovery_rejected lifecycle state
 - Zero planning side-effects prior to explicit confirmation
 """
 from __future__ import annotations
@@ -15,6 +18,10 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
+from .action_validation import (
+    WRITE_ACTION_COMMAND_IDS,
+    validate_action_parameters,
+)
 from .client import AachmanEcosystemClient, get_ecosystem_client
 from .constants import (
     HACKATHON_PROBLEMS,
@@ -23,7 +30,11 @@ from .constants import (
 )
 from .executor import EcosystemExecutor, ExecutionResult
 from .interpreter import JarvisEcosystemIntent
-from .planner import _is_duplicate_task, _normalize_subject
+from .planning_helpers import (
+    calculate_exam_revision_schedule,
+    is_duplicate_task,
+    normalize_subject,
+)
 from .read_executor import EcosystemReadExecutor, JarvisReadResponse
 from .read_interpreter import (
     JarvisReadIntent,
@@ -32,7 +43,10 @@ from .read_interpreter import (
 )
 from .plan_store import (
     PlanStore,
+    PlanLock,
+    PlanLockTimeoutError,
     CURRENT_SCHEMA_VERSION,
+    VALID_STEP_STATUSES,
     get_current_timestamp_iso,
     compute_confirmation_fingerprint,
 )
@@ -53,7 +67,7 @@ class GoalPlanStep:
     parameters: Dict[str, Any] = field(default_factory=dict)
     reason: str = ""
     requires_confirmation: bool = False
-    status: str = "planned"  # "planned" | "ready" | "confirmed" | "executing" | "completed" | "skipped" | "cancelled" | "failed" | "blocked" | "recovery_pending"
+    status: str = "planned"  # "planned" | "ready" | "confirmed" | "executing" | "completed" | "skipped" | "cancelled" | "failed" | "blocked" | "recovery_pending" | "recovery_rejected"
     depends_on: List[str] = field(default_factory=list)
     idempotency_key: Optional[str] = None
     confirmation_fingerprint: Optional[str] = None
@@ -82,7 +96,7 @@ class GoalPlanStep:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> GoalPlanStep:
         return cls(
-            step_id=data.get("step_id", str(uuid.uuid4())[:8]),
+            step_id=data.get("step_id", ""),
             order=data.get("order", 1),
             title=data.get("title", ""),
             description=data.get("description", ""),
@@ -107,8 +121,9 @@ class GoalPlan:
     summary: str
     source_tool_ids: List[str]
     steps: List[GoalPlanStep]
-    confidence: float
+    confidence: float = 1.0
     plan_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+
     owner_id: Optional[str] = None
     schema_version: int = CURRENT_SCHEMA_VERSION
     created_at: str = field(default_factory=get_current_timestamp_iso)
@@ -175,6 +190,11 @@ class GoalPlanner:
         self.client = client or (self.read_executor.client if self.read_executor else get_ecosystem_client())
         self.executor = executor or EcosystemExecutor(self.client)
         self.plan_store = plan_store or PlanStore()
+        self._in_memory_plan_cache: Dict[str, GoalPlan] = {}
+
+    def invalidate_plan_cache(self) -> None:
+        """Clear cached in-memory plans on sign-out or account switch."""
+        self._in_memory_plan_cache.clear()
 
     def plan_goal(
         self, prompt: str, now: Optional[datetime.datetime] = None
@@ -217,6 +237,7 @@ class GoalPlanner:
             res_plan.owner_id = self.client.user_id if self.client.is_authenticated else None
             try:
                 self.plan_store.save_plan(res_plan.to_dict())
+                self._in_memory_plan_cache[res_plan.plan_id] = res_plan
             except Exception as e:
                 log.warning("Could not auto-persist plan %s: %s", res_plan.plan_id, e)
 
@@ -225,7 +246,7 @@ class GoalPlanner:
     # ── Goal Plan Generators ──────────────────────────────────────────────────
 
     def _plan_exam_preparation(self, now: Optional[datetime.datetime] = None) -> GoalPlan:
-        """Construct multi-step study plan for upcoming exams."""
+        """Construct multi-step study plan for upcoming exams with verified read grounding."""
         if not self.client.is_authenticated:
             return GoalPlan(
                 goal="Prepare for upcoming exams",
@@ -239,34 +260,79 @@ class GoalPlanner:
         today_str = ref_dt.strftime("%Y-%m-%d")
         tom_str = (ref_dt + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
-        # Read facts
+        # Read upcoming exam
         res_exam = self.read_executor.execute_read_intent(
             JarvisReadIntent(tool_id="read.daymentor.next_exam", confidence=1.0)
         )
-        res_tasks = self.read_executor.execute_read_intent(
-            JarvisReadIntent(
-                tool_id="read.daymentor.tasks_today",
-                confidence=1.0,
-                parameters={"target_date": today_str},
-            )
-        )
 
-        sources = ["read.daymentor.next_exam", "read.daymentor.tasks_today"]
-        steps: List[GoalPlanStep] = []
+        # Handle read failure explicitly (Read failure != empty result)
+        if res_exam.status in ("error", "failed"):
+            log.warning("Exam read failed: %s", res_exam.human_text)
+            return GoalPlan(
+                goal="Prepare for upcoming exams",
+                summary="I couldn't check your upcoming exams right now. Please check DayMentor connection and try again.",
+                source_tool_ids=["read.daymentor.next_exam"],
+                steps=[
+                    GoalPlanStep(
+                        step_id="step_01",
+                        order=1,
+                        title="Exam Schedule Check Unavailable",
+                        description=f"DayMentor exam read returned an error: {res_exam.human_text}",
+                        step_type="read_summary",
+                        status="completed",
+                    )
+                ],
+                confidence=0.0,
+            )
+
+        sources = ["read.daymentor.next_exam"]
 
         if res_exam.status == "success" and res_exam.data.get("has_exam"):
             exam = res_exam.data.get("exam", {})
-            days_rem = res_exam.data.get("days_remaining", 999)
-            subject = exam.get("subjectName") or exam.get("subjectId") or "Subject"
-            exam_date = exam.get("date", "Upcoming")
+            schedule = calculate_exam_revision_schedule(res_exam.data, ref_dt)
+            subject = schedule["subject"]
+            exam_date = schedule["exam_date"]
+            days_rem = schedule["days_remaining"]
+
+            # Read today's tasks for deduplication
+            res_tasks_today = self.read_executor.execute_read_intent(
+                JarvisReadIntent(
+                    tool_id="read.daymentor.tasks_today",
+                    confidence=1.0,
+                    parameters={"target_date": today_str},
+                )
+            )
+            sources.append("read.daymentor.tasks_today")
+
+            # If revision is due tomorrow, ALSO read tomorrow's tasks for deduplication
+            tasks_to_check: List[Dict[str, Any]] = []
+            if res_tasks_today.status == "success":
+                tasks_to_check.extend(res_tasks_today.data.get("tasks", []))
+            elif res_tasks_today.status in ("error", "failed"):
+                log.warning("Today's tasks read failed: %s", res_tasks_today.human_text)
+
+            if schedule["revision_deadline"] == tom_str:
+                res_tasks_tom = self.read_executor.execute_read_intent(
+                    JarvisReadIntent(
+                        tool_id="read.daymentor.tasks_tomorrow",
+                        confidence=1.0,
+                        parameters={"target_date": tom_str},
+                    )
+                )
+                sources.append("read.daymentor.tasks_tomorrow")
+                if res_tasks_tom.status == "success":
+                    tasks_to_check.extend(res_tasks_tom.data.get("tasks", []))
+
+            steps: List[GoalPlanStep] = []
 
             # Step 1: Read Summary
+            urgency_text = "today" if days_rem == 0 else f"{days_rem} days remaining"
             steps.append(
                 GoalPlanStep(
                     step_id="step_01",
                     order=1,
                     title=f"Review {subject} Exam Schedule",
-                    description=f"Exam scheduled on {exam_date} ({days_rem} days remaining).",
+                    description=f"Exam scheduled on {exam_date} ({urgency_text}).",
                     step_type="read_summary",
                     reason="Confirm exam timeline and urgency",
                     requires_confirmation=False,
@@ -274,13 +340,11 @@ class GoalPlanner:
                 )
             )
 
-            existing_tasks = res_tasks.data.get("tasks", [])
-
             # Step 2: Primary Revision Task
-            rev_title = f"{subject} revision"
-            if not _is_duplicate_task(rev_title, existing_tasks):
-                pri = "high" if days_rem <= 2 else "medium"
-                deadline = today_str if days_rem <= 1 else tom_str
+            rev_title = schedule["revision_title"]
+            if not is_duplicate_task(rev_title, tasks_to_check):
+                pri = schedule["revision_priority"]
+                deadline = schedule["revision_deadline"]
                 steps.append(
                     GoalPlanStep(
                         step_id="step_02",
@@ -298,10 +362,10 @@ class GoalPlanner:
                 )
 
             # Step 3: Practice Problem Set (if >= 3 days away)
-            if days_rem >= 3:
-                prac_title = f"{subject} practice questions"
-                if not _is_duplicate_task(prac_title, existing_tasks):
-                    prac_deadline = (ref_dt + datetime.timedelta(days=min(2, days_rem - 1))).strftime("%Y-%m-%d")
+            if schedule["has_practice"]:
+                prac_title = schedule["practice_title"]
+                if not is_duplicate_task(prac_title, tasks_to_check):
+                    prac_deadline = schedule["practice_deadline"]
                     steps.append(
                         GoalPlanStep(
                             step_id="step_03",
@@ -310,7 +374,7 @@ class GoalPlanner:
                             description=f"Solve mock questions and practice problems (due {prac_deadline}).",
                             step_type="write_action",
                             command_id="action.daymentor.create_task",
-                            parameters={"title": prac_title, "priority": "medium", "deadline": prac_deadline},
+                            parameters={"title": prac_title, "priority": schedule["practice_priority"], "deadline": prac_deadline},
                             reason="Active problem solving improves exam readiness",
                             requires_confirmation=True,
                             status="planned",
@@ -327,7 +391,7 @@ class GoalPlanner:
                 confidence=1.0,
             )
 
-        # No upcoming exam found
+        # No upcoming exam found (verified empty from successful read)
         return GoalPlan(
             goal="Prepare for Exams",
             summary="You don't have any upcoming exams scheduled in DayMentor.",
@@ -363,10 +427,10 @@ class GoalPlanner:
 
         if "rematch" in cleaned_prompt and res_match.status == "success" and res_match.data.get("has_match"):
             m = res_match.data.get("match", {})
-            team_a = m.get("team_a", "Team A")
-            team_b = m.get("team_b", "Team B")
-            m_type = m.get("match_type", "T20")
-            overs = 20 if m_type == "T20" else 50
+            team_a = m.get("team_a") or m.get("teamA") or "Team A"
+            team_b = m.get("team_b") or m.get("teamB") or "Team B"
+            m_type = m.get("match_type") or m.get("matchType") or "T20"
+            overs = int(m.get("overs") or (20 if m_type == "T20" else 50))
 
             steps = [
                 GoalPlanStep(
@@ -421,65 +485,62 @@ class GoalPlanner:
             confidence=0.9,
         )
 
+
     def _plan_hackathon_goal(self) -> GoalPlan:
-        """Construct multi-step hackathon simulation practice plan."""
+        """Construct hackathon simulation practice plan."""
         if not self.client.is_authenticated:
             return GoalPlan(
-                goal="Hackathon Practice Simulation",
-                summary="Sign in to your Aachman Account to create a hackathon practice plan.",
+                goal="Hackathon Simulation Practice",
+                summary="Sign in to your Aachman Account to manage hackathon practice runs.",
                 source_tool_ids=[],
                 steps=[],
                 confidence=0.0,
             )
 
-        res_hack = self.read_executor.execute_read_intent(
+        res_latest = self.read_executor.execute_read_intent(
             JarvisReadIntent(tool_id="read.hackathon.latest_result", confidence=1.0)
         )
         sources = ["read.hackathon.latest_result"]
 
         diff = "medium"
-        reason = "Practice product strategy and system design under simulation constraints."
-        steps: List[GoalPlanStep] = []
+        prob_id = "prob-learnflow"
+        prob_title = "LearnFlow AI"
 
-        if res_hack.status == "success" and res_hack.data.get("has_result"):
-            prev_result = res_hack.data.get("result", {})
-            score = prev_result.get("score", 70)
-            p_title = prev_result.get("title") or prev_result.get("problem_title") or "Challenge"
-
-            steps.append(
-                GoalPlanStep(
-                    step_id="step_01",
-                    order=1,
-                    title="Review Recent Performance",
-                    description=f"Scored {score}/100 on '{p_title}'.",
-                    step_type="read_summary",
-                    status="completed",
-                )
-            )
-
-            if score >= 85:
+        if res_latest.status == "success" and res_latest.data.get("has_result"):
+            res = res_latest.data.get("result", {})
+            score = res.get("final_score") or res.get("score") or 0
+            if score >= 80:
                 diff = "hard"
-                reason = f"Excellent score of {score}/100. Progressing to Hard challenge."
-            elif score < 60:
+                prob_id = "prob-codequest"
+                prob_title = "CodeQuest RPG"
+            elif score <= 50:
                 diff = "easy"
-                reason = "Focusing on fundamentals with an accessible problem statement."
+                prob_id = "prob-quizwiz"
+                prob_title = "QuizWiz Games"
 
-        prob = HACKATHON_PROBLEMS[1] if len(steps) > 0 else HACKATHON_PROBLEMS[0]
-        steps.append(
+        steps = [
+            GoalPlanStep(
+                step_id="step_01",
+                order=1,
+                title="Evaluate Past Performance",
+                description=f"Assessed previous hackathon result. Recommending {diff.capitalize()} challenge: {prob_title}.",
+                step_type="read_summary",
+                status="completed",
+            ),
             GoalPlanStep(
                 step_id="step_02",
-                order=len(steps) + 1,
-                title=f"Start Challenge: {prob['title']}",
-                description=f"{diff.capitalize()} difficulty simulation run.",
+                order=2,
+                title=f"Start Challenge: {prob_title}",
+                description=f"Launch hackathon simulation on {diff.capitalize()} difficulty.",
                 step_type="write_action",
                 command_id="action.hackathon.start_simulation",
-                parameters={"problem_id": prob["id"], "problem_title": prob["title"], "difficulty": diff},
-                reason=reason,
+                parameters={"problem_id": prob_id, "problem_title": prob_title, "difficulty": diff},
+                reason=f"Challenges problem solving at {diff} level",
                 requires_confirmation=True,
                 status="ready",
-                depends_on=["step_01"] if len(steps) >= 1 else [],
-            )
-        )
+                depends_on=["step_01"],
+            ),
+        ]
 
         return GoalPlan(
             goal="Hackathon Simulation Practice",
@@ -498,7 +559,7 @@ class GoalPlanner:
         confirm: bool = False,
         edited_parameters: Optional[Dict[str, Any]] = None,
     ) -> ExecutionResult:
-        """Execute or confirm a specific step in the plan with safe idempotency key handling."""
+        """Execute or confirm a specific step in the plan with centralized guards."""
         step = next((s for s in plan.steps if s.step_id == step_id), None)
         if not step:
             return ExecutionResult(
@@ -507,13 +568,34 @@ class GoalPlanner:
                 message=f"Step '{step_id}' not found in plan.",
             )
 
-        # If already completed
+        # ── 1. Terminal / Non-Executable State Enforcement ────────────────────
         if step.status == "completed":
             return ExecutionResult(
                 command_id=step.command_id or "read_summary",
                 status="success",
                 message=f"Step '{step.title}' has already been completed.",
                 preview_data=step.result or {},
+            )
+
+        if step.status == "skipped":
+            return ExecutionResult(
+                command_id=step.command_id or "unknown",
+                status="rejected",
+                message=f"Cannot execute '{step.title}': Step was skipped.",
+            )
+
+        if step.status == "cancelled":
+            return ExecutionResult(
+                command_id=step.command_id or "unknown",
+                status="rejected",
+                message=f"Cannot execute '{step.title}': Step was cancelled.",
+            )
+
+        if step.status == "recovery_rejected":
+            return ExecutionResult(
+                command_id=step.command_id or "unknown",
+                status="rejected",
+                message=f"Cannot execute '{step.title}': Step is in recovery_rejected state. Safe recovery was refused.",
             )
 
         # Check dependencies
@@ -536,98 +618,174 @@ class GoalPlanner:
                 message=f"Reviewed: {step.title}",
             )
 
-        # Handle Write Action
+        # ── 2. Handle Write Action ────────────────────────────────────────────
         if step.step_type == "write_action":
-            if step.command_id not in JARVIS_ALLOWED_ECOSYSTEM_COMMAND_IDS:
+            command_id = step.command_id or "unknown"
+            if command_id not in JARVIS_ALLOWED_ECOSYSTEM_COMMAND_IDS:
                 step.status = "failed"
                 return ExecutionResult(
-                    command_id=step.command_id or "unknown",
+                    command_id=command_id,
                     status="rejected",
-                    message=f"Command ID '{step.command_id}' is not authorized.",
+                    message=f"Command ID '{command_id}' is not authorized.",
                 )
 
-            # Apply edits only for fresh (non-recovery) steps before confirmation check
-            if edited_parameters and step.status != "recovery_pending":
-                step.parameters = dict(step.parameters)
-                step.parameters.update(edited_parameters)
+            # Apply and validate edits for fresh steps
+            if edited_parameters is not None:
+                if step.status == "recovery_pending":
+                    return ExecutionResult(
+                        command_id=command_id,
+                        status="rejected",
+                        message="Recovery payload must be immutable. Create a new plan to modify parameters.",
+                    )
+                # Validate edited parameters without corrupting the existing step
+                candidate_params = dict(step.parameters)
+                candidate_params.update(edited_parameters)
+                val_err = validate_action_parameters(command_id, candidate_params)
+                if val_err:
+                    return ExecutionResult(
+                        command_id=command_id,
+                        status="rejected",
+                        message=f"Invalid edited parameters: {val_err}",
+                    )
+                step.parameters = candidate_params
 
-            if not confirm and step.status != "recovery_pending":
+            # ── 3. Mandatory Explicit Confirmation for ALL Writes ─────────────
+            if not confirm:
+                if step.status == "recovery_pending":
+                    msg = f"Retry interrupted action requires explicit confirmation: {step.title}"
+                else:
+                    msg = f"Confirmation required to execute: {step.title}"
                 return ExecutionResult(
-                    command_id=step.command_id,
+                    command_id=command_id,
                     status="preview",
-                    message=f"Confirmation required to execute: {step.title}",
+                    message=msg,
                     requires_confirmation=True,
                     preview_data=step.parameters,
                 )
 
-            # ── Differentiated execution path for recovery_pending vs fresh confirmation ──
-            if step.status == "recovery_pending":
-                # Recovery path: payload must be immutable
-                if not step.idempotency_key:
-                    # Key missing — cannot safely retry (should have been caught on load)
-                    step.status = "failed"
-                    step.error_message = (
-                        "Interrupted without idempotency key. Safe retry is unavailable. "
-                        "Code: unsafe_recovery_missing_idempotency_key"
+            # ── 4. Immediate Pre-Dispatch Ownership Check ─────────────────────
+            if plan.owner_id:
+                if not self.client.is_authenticated or self.client.user_id != plan.owner_id:
+                    log.warning(
+                        "Pre-dispatch ownership rejection: client=%s, plan.owner=%s",
+                        self.client.user_id if self.client.is_authenticated else "unauthenticated",
+                        plan.owner_id,
                     )
-                    try:
-                        self.plan_store.save_plan(plan.to_dict())
-                    except Exception:
-                        pass
                     return ExecutionResult(
-                        command_id=step.command_id or "unknown",
-                        status="failed",
-                        message="Recovery refused: missing idempotency key. Cannot safely retry.",
+                        command_id=command_id,
+                        status="rejected",
+                        message="User authentication or ownership mismatch. Execution rejected.",
                     )
 
-                # Verify fingerprint if present (payload immutability check)
-                if step.confirmation_fingerprint:
-                    expected_fp = compute_confirmation_fingerprint(
-                        plan_id=plan.plan_id,
-                        step_id=step.step_id,
-                        command_id=step.command_id or "",
-                        parameters=step.parameters,
-                    )
-                    if expected_fp != step.confirmation_fingerprint:
-                        step.status = "failed"
-                        step.error_message = (
-                            "Persisted action changed after confirmation. Recovery refused."
-                        )
-                        try:
-                            self.plan_store.save_plan(plan.to_dict())
-                        except Exception:
-                            pass
-                        return ExecutionResult(
-                            command_id=step.command_id or "unknown",
-                            status="failed",
-                            message="Recovery refused: payload changed after confirmation.",
-                        )
-                # Recovery confirmed — proceed with original persisted key and payload
-
-            else:
-                # Fresh confirmation path
-                # Assign opaque UUID idempotency key strictly upon confirmation
-                if not step.idempotency_key:
-                    step.idempotency_key = str(uuid.uuid4())
-
-                # Compute and persist confirmation fingerprint (plan + step + action + payload)
-                step.confirmation_fingerprint = compute_confirmation_fingerprint(
-                    plan_id=plan.plan_id,
-                    step_id=step.step_id,
-                    command_id=step.command_id or "",
-                    parameters=step.parameters,
+            # Validate parameters before coordination
+            param_err = validate_action_parameters(command_id, step.parameters)
+            if param_err:
+                step.status = "failed"
+                return ExecutionResult(
+                    command_id=command_id,
+                    status="rejected",
+                    message=f"Pre-dispatch parameter validation failed: {param_err}",
                 )
 
-            step.status = "executing"
-
-            # Persist plan with key + fingerprint BEFORE dispatch (crash recovery identity)
+            # ── 5. Multi-Session Coordination under PlanLock ──────────────────
             try:
-                self.plan_store.save_plan(plan.to_dict())
-            except Exception as e:
-                log.warning("Could not persist plan before dispatch %s: %s", plan.plan_id, e)
+                with self.plan_store.get_plan_lock(plan.plan_id):
+                    # Reload authoritative state from disk while coordinated
+                    auth_owner = self.client.user_id if self.client.is_authenticated else None
+                    reloaded_raw = self.plan_store.load_plan(plan.plan_id, owner_id=auth_owner)
+                    if reloaded_raw:
+                        reloaded_step = next(
+                            (s for s in reloaded_raw.get("steps", []) if s.get("step_id") == step_id),
+                            None,
+                        )
+                        if reloaded_step:
+                            # If another session already assigned a key or completed it
+                            if reloaded_step.get("status") == "completed":
+                                step.status = "completed"
+                                step.result = reloaded_step.get("result")
+                                return ExecutionResult(
+                                    command_id=command_id,
+                                    status="success",
+                                    message=f"Step '{step.title}' was already completed by another session.",
+                                    preview_data=step.result or {},
+                                )
+                            if reloaded_step.get("status") == "recovery_rejected":
+                                step.status = "recovery_rejected"
+                                step.error_message = reloaded_step.get("error_message")
+                                return ExecutionResult(
+                                    command_id=command_id,
+                                    status="rejected",
+                                    message=step.error_message or "Step was rejected during recovery.",
+                                )
 
+                            if reloaded_step.get("idempotency_key"):
+                                step.idempotency_key = reloaded_step["idempotency_key"]
+                            if reloaded_step.get("confirmation_fingerprint"):
+                                step.confirmation_fingerprint = reloaded_step["confirmation_fingerprint"]
+
+                    # Differentiated recovery vs fresh confirmation handling
+                    if step.status == "recovery_pending":
+                        if not step.idempotency_key:
+                            step.status = "recovery_rejected"
+                            step.error_message = "Unsafe recovery: missing idempotency key."
+                            self.plan_store.save_plan(plan.to_dict())
+                            return ExecutionResult(
+                                command_id=command_id,
+                                status="rejected",
+                                message="Recovery refused: missing idempotency key.",
+                            )
+                        if step.confirmation_fingerprint:
+                            expected_fp = compute_confirmation_fingerprint(
+                                plan_id=plan.plan_id,
+                                step_id=step.step_id,
+                                command_id=command_id,
+                                parameters=step.parameters,
+                            )
+                            if expected_fp != step.confirmation_fingerprint:
+                                step.status = "recovery_rejected"
+                                step.error_message = "Unsafe recovery: confirmation fingerprint mismatch."
+                                self.plan_store.save_plan(plan.to_dict())
+                                return ExecutionResult(
+                                    command_id=command_id,
+                                    status="rejected",
+                                    message="Recovery refused: payload changed after confirmation.",
+                                )
+                    else:
+                        # Fresh confirmation path: assign key and fingerprint
+                        if not step.idempotency_key:
+                            step.idempotency_key = str(uuid.uuid4())
+                        step.confirmation_fingerprint = compute_confirmation_fingerprint(
+                            plan_id=plan.plan_id,
+                            step_id=step.step_id,
+                            command_id=command_id,
+                            parameters=step.parameters,
+                        )
+
+                    step.status = "executing"
+
+                    # Persist atomically before releasing lock and before network dispatch
+                    self.plan_store.save_plan(plan.to_dict())
+
+            except PlanLockTimeoutError as e:
+                log.warning("Plan lock timeout: %s", e)
+                return ExecutionResult(
+                    command_id=command_id,
+                    status="failed",
+                    message="This plan is currently being updated by another PyFlare session. Try again.",
+                )
+            except Exception as e:
+                # Pre-dispatch persistence failure: ABORT immediately (0 dispatches)
+                log.error("Pre-dispatch persistence failure for plan %s: %s", plan.plan_id, e)
+                step.status = "ready"
+                return ExecutionResult(
+                    command_id=command_id,
+                    status="failed",
+                    message=f"Pre-dispatch save failed. Execution aborted to protect idempotency: {e}",
+                )
+
+            # ── 6. Dispatch via Executor (Lock is released) ───────────────────
             intent = JarvisEcosystemIntent(
-                command_id=step.command_id or "action.unknown",
+                command_id=command_id,
                 confidence=1.0,
                 parameters=step.parameters,
                 requires_confirmation=False,
@@ -636,21 +794,23 @@ class GoalPlanner:
             )
 
             res = self.executor.execute_intent(intent, confirm=True)
-            if res.status == "success":
-                step.status = "completed"
-                step.result = res.preview_data or {"message": res.message, "deep_link": res.deep_link}
-                # Unblock next steps if ready
-                for next_step in plan.steps:
-                    if step.step_id in next_step.depends_on and next_step.status == "planned":
-                        next_step.status = "ready"
-            else:
-                step.status = "failed"
-                step.error_message = res.message
 
+            # ── 7. Post-Dispatch Result Persistence under Lock ────────────────
             try:
-                self.plan_store.save_plan(plan.to_dict())
+                with self.plan_store.get_plan_lock(plan.plan_id):
+                    if res.status == "success":
+                        step.status = "completed"
+                        step.result = res.preview_data or {"message": res.message, "deep_link": res.deep_link}
+                        for next_step in plan.steps:
+                            if step.step_id in next_step.depends_on and next_step.status == "planned":
+                                next_step.status = "ready"
+                    else:
+                        step.status = "failed"
+                        step.error_message = res.message
+
+                    self.plan_store.save_plan(plan.to_dict())
             except Exception as e:
-                log.warning("Could not auto-persist plan %s: %s", plan.plan_id, e)
+                log.warning("Could not persist post-dispatch result for plan %s: %s", plan.plan_id, e)
 
             return res
 
@@ -669,7 +829,8 @@ class GoalPlanner:
                 next_step.status = "ready"
 
         try:
-            self.plan_store.save_plan(plan.to_dict())
+            with self.plan_store.get_plan_lock(plan.plan_id):
+                self.plan_store.save_plan(plan.to_dict())
         except Exception as e:
             log.warning("Could not auto-persist plan %s: %s", plan.plan_id, e)
         return True
@@ -681,20 +842,23 @@ class GoalPlanner:
                 step.status = "cancelled"
 
         try:
-            self.plan_store.save_plan(plan.to_dict())
+            with self.plan_store.get_plan_lock(plan.plan_id):
+                self.plan_store.save_plan(plan.to_dict())
         except Exception as e:
             log.warning("Could not auto-persist plan %s: %s", plan.plan_id, e)
 
     def load_active_plans(self) -> List[GoalPlan]:
-        """Load all unfinished active plans belonging to the current user."""
-        owner_id = self.client.user_id if self.client.is_authenticated else None
-        raw_plans = self.plan_store.load_active_plans(owner_id=owner_id)
+        """Load all unfinished active plans belonging to the current user (fail-closed)."""
+        if not self.client.is_authenticated or not self.client.user_id:
+            return []
+        raw_plans = self.plan_store.load_active_plans(owner_id=self.client.user_id)
         return [GoalPlan.from_dict(p) for p in raw_plans]
 
     def resume_plan(self, plan_id: str) -> Optional[GoalPlan]:
-        """Load and reconstruct a specific plan by ID for the current user."""
-        owner_id = self.client.user_id if self.client.is_authenticated else None
-        raw = self.plan_store.load_plan(plan_id, owner_id=owner_id)
+        """Load and reconstruct a specific plan by ID for the current user (fail-closed)."""
+        if not self.client.is_authenticated or not self.client.user_id:
+            return None
+        raw = self.plan_store.load_plan(plan_id, owner_id=self.client.user_id)
         if not raw:
             return None
         return GoalPlan.from_dict(raw)
