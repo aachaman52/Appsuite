@@ -1,0 +1,907 @@
+Building an Intelligent AI Routing and Distributed Context System
+
+How PyFlare plans to coordinate local AI, cloud models, development tools, hardware and shared project memory without wasting compute or context
+
+Modern AI development tools are becoming increasingly powerful.
+
+But there is a problem.
+
+Most AI systems still operate around a surprisingly simple architecture:
+
+User Request
+     ↓
+One AI Model
+     ↓
+Response
+
+Even systems that support multiple models often leave an important decision to the developer:
+
+Which model should handle this task?
+
+Should a simple file classification request use a large cloud model?
+
+Should a 3D asset request be sent to a generative 3D service?
+
+Should Blender generate it procedurally?
+
+Should a local model handle the task?
+
+Should the system use Claude, Gemini, GPT, or another provider?
+
+And once multiple AI agents begin working on the same project, another problem appears:
+
+How does every agent know what the others have discovered without repeatedly sending the entire project history to every model?
+
+These are two of the architectural problems we are currently designing PyFlare to solve.
+
+Our planned solution consists of two closely connected systems:
+
+1. PyFlare Intelligent Routing
+2. PyFlare Distributed Context Management
+
+Together, they are intended to allow Jarvis to coordinate different models, tools and machines while keeping resource usage under control.
+
+---
+
+Part I: Why AI Routing Matters
+
+Imagine asking Jarvis:
+
+«Build the settings page and connect it to the existing configuration system.»
+
+There are many possible ways PyFlare could execute that request.
+
+A powerful cloud coding model could handle everything.
+
+But that doesn't automatically make it the best execution strategy.
+
+The task might contain several smaller operations:
+
+Understand request
+      ↓
+Find relevant files
+      ↓
+Inspect configuration schema
+      ↓
+Generate UI
+      ↓
+Modify code
+      ↓
+Run tests
+      ↓
+Check integration
+
+Different parts of that workflow require different levels of intelligence.
+
+Finding files may require almost no expensive reasoning.
+
+Classifying files might be handled by a tiny local model or even deterministic code.
+
+Understanding a complicated architecture might require a much stronger model.
+
+Running tests doesn't require an LLM at all.
+
+This led to one of the main principles behind our routing architecture:
+
+«Use the smallest and cheapest capable execution path that can reliably complete the task.»
+
+The goal is not simply to find the most powerful AI.
+
+The goal is to find the right intelligence and tool for the specific operation.
+
+---
+
+Part II: The PyFlare Routing Pipeline
+
+The planned routing pipeline looks roughly like this:
+
+                     USER REQUEST
+                           │
+                           ▼
+                  TASK UNDERSTANDING
+                           │
+                           ▼
+                  STRUCTURED INTENT
+                           │
+                           ▼
+              LOCAL TASK EVALUATION
+                           │
+                           ▼
+               DETERMINISTIC ROUTER
+                           │
+          ┌────────────────┼────────────────┐
+          │                │                │
+          ▼                ▼                ▼
+      LOCAL AI         CLOUD AI          TOOLS
+          │                │                │
+          └────────────────┼────────────────┘
+                           │
+                           ▼
+                       JARVIS
+                           │
+                           ▼
+                      EXECUTION
+                           │
+                           ▼
+                      VALIDATION
+
+There is an important architectural decision here.
+
+The final router is not an AI.
+
+This is intentional.
+
+If one AI asks another AI which AI should perform the task, we have created another uncertain reasoning layer.
+
+Then we could theoretically need another AI to verify that decision.
+
+And another AI to verify that AI.
+
+Congratulations. We have invented bureaucracy for computers.
+
+Instead, small models can provide recommendations, but deterministic software makes the final routing decision.
+
+---
+
+Part III: Structured Task Understanding
+
+Before routing begins, Jarvis needs to understand what the user actually wants.
+
+Instead of immediately forwarding the raw prompt to another model, PyFlare can convert it into structured task information.
+
+For example:
+
+{
+  "task": "implement_feature",
+  "domain": "game_development",
+  "engine": "godot",
+  "languages": ["gdscript"],
+  "complexity": "medium",
+  "requires_project_context": true,
+  "requires_visual_context": false,
+  "requires_internet": false,
+  "requires_code_changes": true,
+  "requires_validation": true
+}
+
+This representation gives the router something much easier to reason about programmatically.
+
+The system can now ask questions such as:
+
+Does this require code generation?
+
+Does it require deep architectural reasoning?
+
+Does it require visual understanding?
+
+Can it run locally?
+
+Does the required tool exist?
+
+How much RAM is currently available?
+
+How much VRAM is currently available?
+
+Is the GPU currently occupied by the game engine?
+
+Does the task require internet access?
+
+Is a cloud provider configured?
+
+Does the user allow cloud processing for this project?
+
+The routing problem becomes a measurable software problem instead of a vague AI decision.
+
+---
+
+Part IV: Small Models as Evaluators
+
+PyFlare can use several lightweight local models as independent evaluators.
+
+Suppose three local evaluators examine a task.
+
+They might return:
+
+[
+  {
+    "recommended_model": "local_coder",
+    "confidence": 0.81,
+    "reason": "small isolated code modification"
+  },
+  {
+    "recommended_model": "claude",
+    "confidence": 0.94,
+    "reason": "requires understanding multiple project systems"
+  },
+  {
+    "recommended_model": "local_coder",
+    "confidence": 0.76,
+    "reason": "relevant context appears limited"
+  }
+]
+
+The router does not blindly perform a majority vote.
+
+It evaluates the recommendations against actual system state.
+
+---
+
+Part V: Why Confidence Is Not Enough
+
+One issue we identified while designing the router is that AI confidence cannot be treated as truth.
+
+Imagine an evaluator produces:
+
+{
+  "recommended_model": "claude",
+  "confidence": 1.0,
+  "reason": "Claude performs well with Godot development"
+}
+
+That statement might technically be reasonable.
+
+But imagine the actual task was:
+
+«Rename this variable.»
+
+Calling a large cloud model because it is generally strong at Godot would be ridiculous.
+
+Therefore routing needs more than:
+
+highest confidence = winner
+
+Instead, PyFlare can calculate a suitability score.
+
+Conceptually:
+
+Routing Score =
+    Task Relevance
+  + Capability Match
+  + Reason Quality
+  + Model Suitability
+  + Resource Availability
+  + Historical Reliability
+  - Cost Penalty
+  - Latency Penalty
+  - Hardware Pressure
+
+The exact weighting will eventually need benchmarking rather than being pulled from the ancient scientific discipline of "this number looks nice."
+
+---
+
+Part VI: Hardware-Aware Routing
+
+This is one of the most important parts of the PyFlare design.
+
+Two developers may request exactly the same thing while using completely different computers.
+
+Developer A might have:
+
+4 CPU cores
+8 GB RAM
+Integrated graphics
+Old laptop
+
+Developer B might have:
+
+16 CPU cores
+64 GB RAM
+High-end GPU
+Large VRAM capacity
+Fast NVMe storage
+
+The user's ambition should not have to change because of that difference.
+
+The execution strategy should.
+
+PyFlare can maintain a hardware capability profile such as:
+
+{
+  "cpu_threads": 8,
+  "ram_gb": 16,
+  "gpu_vram_gb": 4,
+  "local_inference": true,
+  "blender_available": true,
+  "blender_mcp": true,
+  "cloud_available": true,
+  "local_3d_generation": false
+}
+
+The router then uses this information during every important decision.
+
+---
+
+Part VII: Same Goal, Different Execution
+
+Suppose the developer asks:
+
+«Generate a medieval village environment.»
+
+A powerful machine might execute:
+
+Request
+   ↓
+Local Planning Model
+   ↓
+Local 3D Generation
+   ↓
+Texture Generation
+   ↓
+Mesh Optimization
+   ↓
+Engine Import
+
+A weaker computer could execute:
+
+Request
+   ↓
+Tiny Local Planning Model
+   ↓
+Cloud Reasoning if required
+   ↓
+Blender MCP
+   ↓
+Procedural Geometry
+   ↓
+Low-resolution Preview
+   ↓
+Engine Import
+
+If a supported external 3D provider is available:
+
+Request
+   ↓
+Provider Detection
+   ↓
+External 3D Generation
+   ↓
+Download Asset
+   ↓
+Validation
+   ↓
+Optimization
+   ↓
+Engine Import
+
+The developer still requested the same medieval village.
+
+Only the route changed.
+
+This leads to one of the principles we want PyFlare to represent:
+
+«Hardware should limit execution speed, not ambition.»
+
+A developer with an old computer should not simply receive:
+
+ERROR:
+Insufficient GPU.
+Buy better hardware.
+
+The system should instead determine:
+
+This machine cannot efficiently perform this operation locally.
+
+Alternative execution path found.
+
+Continuing.
+
+Low specifications might mean waiting longer.
+
+They should not automatically mean abandoning an ambitious project.
+
+---
+
+Part VIII: Resource-Aware Scheduling
+
+Hardware detection alone isn't enough.
+
+Available hardware also changes constantly.
+
+Imagine a workstation with 8 GB of VRAM.
+
+Technically it might be capable of running a local model.
+
+But if the developer currently has:
+
+Godot
+Blender
+Browser
+IDE
+Texture editor
+
+open simultaneously, launching another large model could destroy responsiveness.
+
+Therefore PyFlare needs to understand current resource pressure, not merely maximum specifications.
+
+The scheduler could monitor:
+
+CPU usage
+RAM usage
+VRAM usage
+GPU utilization
+disk pressure
+thermal conditions
+running development tools
+active AI workers
+background jobs
+
+An operation might normally run locally but temporarily move elsewhere.
+
+For example:
+
+Local AI requested
+       ↓
+VRAM pressure detected
+       ↓
+Can task wait?
+   │          │
+  YES        NO
+   │          │
+ Queue      Alternative route
+              ↓
+         CPU / Cloud / Remote
+
+The computer should remain usable while PyFlare works.
+
+The AI system exists to help development, not to consume every available resource and turn the mouse cursor into a slideshow.
+
+---
+
+Part IX: Continuous Screen Understanding
+
+Another part of the architecture is lightweight screen understanding.
+
+Jarvis could benefit enormously from knowing what the developer is currently doing.
+
+But continuously sending screenshots to large cloud models would be expensive and unnecessary.
+
+Instead, a small local model could perform lightweight analysis.
+
+For example:
+
+SCREEN
+  ↓
+Small Local Vision Model
+  ↓
+Compact Interpretation
+  ↓
+Context Manager
+
+Instead of storing thousands of screenshots, PyFlare might store something closer to:
+
+{
+  "active_application": "godot",
+  "scene": "player_controller",
+  "activity": "debugging",
+  "visible_error": "null instance reference",
+  "confidence": 0.89
+}
+
+Jarvis now understands the situation without requiring a massive multimodal model to continuously watch the desktop.
+
+If deeper visual reasoning becomes necessary, the router can escalate the task to a more capable model.
+
+Again:
+
+small intelligence first, expensive intelligence when justified.
+
+---
+
+Part X: The Second Problem: Context Explosion
+
+Routing solves one problem.
+
+It creates another.
+
+Suppose PyFlare eventually has:
+
+Jarvis
+Claude
+Gemini
+GPT
+Local coding model
+Local vision model
+Architecture agent
+Testing agent
+Asset agent
+Godot agent
+Blender agent
+Browser agent
+
+All of these systems may discover useful information.
+
+The obvious solution would be to share their conversations.
+
+That becomes disastrous surprisingly quickly.
+
+Imagine:
+
+Agent A context = 200K tokens
+Agent B context = 150K tokens
+Agent C context = 300K tokens
+Agent D context = 100K tokens
+
+Copying everything between every agent creates duplicated information, higher inference costs, slower processing and increasing amounts of irrelevant context.
+
+Even extremely large context windows don't fundamentally solve the architecture problem.
+
+A bigger bucket does not make dumping everything into the bucket intelligent.
+
+---
+
+Part XI: Distributed Context Management
+
+Our proposed solution is a Distributed Context Manager.
+
+Instead of treating conversations as project memory, PyFlare extracts useful knowledge from AI activity.
+
+Conceptually:
+
+                    AI OUTPUT
+                        │
+                        ▼
+                 INFORMATION EXTRACTION
+                        │
+                        ▼
+                     VALIDATION
+                        │
+                        ▼
+                    COMPRESSION
+                        │
+                        ▼
+                 STRUCTURED MEMORY
+                        │
+                        ▼
+                  CONTEXT MANAGER
+                        │
+                        ▼
+                RELEVANT RETRIEVAL
+                        │
+                        ▼
+                    NEXT AGENT
+
+Agents therefore share knowledge, not entire conversations.
+
+---
+
+Part XII: What Gets Stored?
+
+Not every sentence generated by an AI deserves permanent memory.
+
+The Context Manager can classify information into categories.
+
+For example:
+
+FACT
+FINDING
+DECISION
+WARNING
+DEPENDENCY
+TASK_STATE
+UNVERIFIED_CLAIM
+
+A model might produce several thousand tokens while debugging authentication.
+
+The useful result might only be:
+
+{
+  "type": "finding",
+  "project": "example_app",
+  "system": "authentication",
+  "file": "auth/session.ts",
+  "issue": "session_lost_after_redirect",
+  "evidence": "token_missing_after_callback",
+  "discovered_by": "agent_07",
+  "status": "unverified",
+  "timestamp": "..."
+}
+
+That compact fact is much more useful to another model than the complete debugging conversation.
+
+---
+
+Part XIII: Validation Matters
+
+AI-generated project memory cannot automatically be trusted.
+
+A model can misunderstand code.
+
+It can make an incorrect assumption.
+
+It can report an issue that doesn't exist.
+
+Therefore findings need states.
+
+For example:
+
+UNVERIFIED
+    ↓
+INVESTIGATING
+    ↓
+VALIDATED
+    ↓
+RESOLVED
+
+Or:
+
+UNVERIFIED
+    ↓
+REJECTED
+
+This prevents one hallucination from becoming permanent "truth" that every future agent receives.
+
+A finding could contain:
+
+{
+  "finding": "physics update causes frame instability",
+  "status": "unverified",
+  "confidence": 0.72,
+  "evidence": [
+    "player_controller.gd:182",
+    "physics_test_42"
+  ]
+}
+
+After testing:
+
+{
+  "finding": "physics update causes frame instability",
+  "status": "validated",
+  "validated_by": "test_runner",
+  "test": "physics_test_42"
+}
+
+Project memory therefore becomes evidence-oriented rather than simply AI-generated notes.
+
+---
+
+Part XIV: Agents Can Observe Without Modifying
+
+Another important design decision is separating observation from execution.
+
+Imagine Claude is implementing authentication.
+
+That doesn't mean every other model must become blind.
+
+PyFlare could allow:
+
+                 PROJECT
+                    │
+        ┌───────────┼───────────┐
+        ▼           ▼           ▼
+     Claude      Gemini      Local AI
+        │           │           │
+     EXECUTE      OBSERVE      OBSERVE
+        │           │           │
+        │        Finding     Architecture
+        │           │          Check
+        └───────────┼───────────┘
+                    ▼
+              Context Manager
+
+Claude may be the only model allowed to modify the relevant files.
+
+Gemini might independently review the implementation.
+
+A local model might check architecture rules.
+
+A test runner might inspect runtime behavior.
+
+None of the observers need permission to modify the project.
+
+Their findings go into shared context.
+
+This reduces conflicts while still taking advantage of parallel intelligence.
+
+---
+
+Part XV: Context Retrieval
+
+Storing knowledge is only half the problem.
+
+PyFlare also needs to retrieve the right knowledge.
+
+Suppose an agent is editing:
+
+src/auth/session.ts
+
+It probably doesn't need:
+
+lighting settings from Level 7
+vehicle texture decisions
+audio compression settings
+old UI experiments
+discarded database ideas
+
+It might need:
+
+authentication architecture
+previous session bugs
+API dependencies
+security decisions
+related files
+recent changes
+failed implementations
+current task state
+
+Therefore context retrieval should consider relationships.
+
+Conceptually:
+
+Current Task
+     │
+     ├── Relevant Files
+     ├── Related Systems
+     ├── Dependencies
+     ├── Recent Decisions
+     ├── Known Problems
+     ├── Previous Failures
+     └── Validated Facts
+              │
+              ▼
+       Context Package
+              │
+              ▼
+          AI Agent
+
+The agent receives a purpose-built context package, not the entire history of the project.
+
+---
+
+Part XVI: Context Priority
+
+Not every piece of memory should have equal importance.
+
+Context could be ranked according to factors such as:
+
+Relevance
+Recency
+Validation Status
+Dependency Distance
+Source Reliability
+Task Relationship
+File Relationship
+
+A validated architecture decision directly affecting the current file should rank extremely highly.
+
+An unverified observation from six months earlier should rank much lower.
+
+This also means PyFlare can preserve enormous amounts of project knowledge without stuffing all of it into an AI context window.
+
+---
+
+Part XVII: Context Versioning
+
+Project knowledge changes.
+
+Suppose the architecture originally says:
+
+Authentication uses JWT stored in local storage.
+
+Three months later, the team changes the architecture.
+
+Simply keeping both statements as equal facts would confuse agents.
+
+The Context Manager therefore needs history.
+
+Conceptually:
+
+AUTH_DECISION_001
+JWT + local storage
+SUPERSEDED
+
+        ↓
+
+AUTH_DECISION_014
+Secure session architecture
+CURRENT
+
+Older information remains available because it can explain previous code and decisions.
+
+But agents receive the current decision by default.
+
+This creates something closer to version-controlled project knowledge.
+
+---
+
+Part XVIII: Connecting Routing and Context
+
+Routing and context management become much more powerful when combined.
+
+Consider this request:
+
+«Fix the multiplayer synchronization issue.»
+
+PyFlare could execute:
+
+1. Understand task
+
+2. Query Context Manager
+
+3. Retrieve:
+   - networking architecture
+   - previous synchronization bugs
+   - relevant files
+   - recent changes
+   - failed fixes
+   - validated decisions
+
+4. Estimate complexity
+
+5. Inspect hardware availability
+
+6. Ask lightweight evaluators for recommendations
+
+7. Deterministic router selects execution path
+
+8. Selected agent receives compact context package
+
+9. Agent modifies isolated files
+
+10. Tests run
+
+11. Observer agents inspect result
+
+12. Findings are validated
+
+13. Context Manager updates project memory
+
+This creates a feedback loop:
+
+                 USER
+                   │
+                   ▼
+                 TASK
+                   │
+                   ▼
+          CONTEXT RETRIEVAL
+                   │
+                   ▼
+               ROUTER
+                   │
+                   ▼
+             EXECUTION
+                   │
+                   ▼
+             VALIDATION
+                   │
+                   ▼
+              NEW FACTS
+                   │
+                   ▼
+          CONTEXT MANAGER
+                   │
+                   └──────────────┐
+                                  │
+                         Future Tasks
+
+The project becomes progressively easier for Jarvis to understand because validated knowledge accumulates.
+
+---
+
+Part XIX: Tool Routing, Not Just Model Routing
+
+The system should not only choose between AI models.
+
+Sometimes the correct model is no model at all.
+
+For example:
+
+Run tests
+→ Test runner
+
+Search exact symbol
+→ Code index
+
+Format code
+→ Formatter
+
+Compile project
+→ Compiler
+
+Check Git state
+→ Version-control system
+
+Import asset
+→ Engine tooling
+
