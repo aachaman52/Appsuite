@@ -11,7 +11,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-
 _SECRET_MARKERS = ("token", "secret", "password", "api_key", "authorization")
 
 
