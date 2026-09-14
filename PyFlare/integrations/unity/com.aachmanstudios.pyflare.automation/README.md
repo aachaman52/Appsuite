@@ -12,7 +12,7 @@ compatibility requires explicit editor benchmarking and validation.
 | Operation | Behavior | Disk persistence |
 | --- | --- | --- |
 | editor.state.inspect | Returns edit/play/transition state, compilation state, Asset Database update state, active scene path and saved scene hash | None |
-| game_object.create | Creates one GameObject, optional world position and optional parent by Unity GlobalObjectId | Marks scene dirty; does not save |
+| game_object.create | Creates one GameObject in a scene saved at least once, with optional world position and optional parent by Unity GlobalObjectId | Marks scene dirty; does not save |
 
 The bridge intentionally rejects save_scene: true in version 0.1. This makes the first
 mutation visible and undoable before it is written to disk. Component changes, prefabs,
@@ -78,7 +78,7 @@ Unity APIs execute through EditorApplication.update on the editor main thread.
 
 - A valid route does not authorize this bridge. The control plane must separately issue
   task-scoped permissions before sending a command.
-- Mutating v0.1 commands require Unity Undo registration.
+- Mutating v0.1 commands require a scene saved at least once and Unity Undo registration.
 - A repeated idempotency key with a different payload is rejected.
 - Stored idempotency data contains responses and fingerprints, not the authentication
   token, and lives under the disposable Unity Library directory.
@@ -86,3 +86,11 @@ Unity APIs execute through EditorApplication.update on the editor main thread.
 - Stopping the bridge closes queued requests instead of silently executing them later.
 - The first release must be tested on the exact supported Unity editor versions and
   Ubuntu image before its status can move beyond experimental.
+
+## Unity API references checked
+
+The v0.1 implementation follows Unity 6's documented GlobalObjectId lifetime and Undo
+workflow:
+
+- [GlobalObjectId](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/GlobalObjectId.html)
+- [Undo.RegisterCreatedObjectUndo](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Undo.RegisterCreatedObjectUndo.html)

@@ -398,6 +398,16 @@ namespace AachmanStudios.PyFlare.Unity
                 );
             }
 
+            var activeSceneState = CaptureEditorState();
+            if (string.IsNullOrEmpty(activeSceneState.open_scene_path) ||
+                string.IsNullOrEmpty(activeSceneState.open_scene_hash))
+            {
+                return Rejected(
+                    command.request_id,
+                    "active_scene_must_be_saved_once"
+                );
+            }
+
             var arguments = command.arguments ?? new UnityArguments();
             var objectName = (arguments.name ?? string.Empty).Trim();
             if (objectName.Length == 0 || objectName.Length > 256)
@@ -467,6 +477,10 @@ namespace AachmanStudios.PyFlare.Unity
                     );
                 }
 
+                Undo.RegisterFullObjectHierarchyUndo(
+                    gameObject,
+                    "PyFlare: Configure " + objectName
+                );
                 gameObject.transform.position = position;
                 EditorSceneManager.MarkSceneDirty(gameObject.scene);
                 Undo.CollapseUndoOperations(undoGroup);

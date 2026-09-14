@@ -38,6 +38,8 @@ class UnityPackageContractTests(unittest.TestCase):
         self.assertIn("MaximumRequestBytes", security)
         self.assertIn("IPAddress.IsLoopback", security)
         self.assertIn("Undo.RegisterCreatedObjectUndo", source)
+        self.assertIn("Undo.RegisterFullObjectHierarchyUndo", source)
+        self.assertIn("active_scene_must_be_saved_once", source)
         self.assertIn("save_scene_not_supported_in_bridge_v0_1", source)
 
     def test_idempotency_store_does_not_reference_bridge_secret(self) -> None:

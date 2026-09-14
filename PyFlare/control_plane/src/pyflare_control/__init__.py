@@ -2,7 +2,6 @@
 
 from .codec import ContractValidationError, TaskSpecCodec
 from .journal import (
-    IdempotencyConflictError,
     JournalConflictError,
     TaskJournal,
     TaskNotFoundError,
@@ -34,7 +33,6 @@ __all__ = [
     "ExecutionKind",
     "FailureKind",
     "HardwareSnapshot",
-    "IdempotencyConflictError",
     "JournalConflictError",
     "LatencyClass",
     "PrivacyClass",
