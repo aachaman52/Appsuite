@@ -4,8 +4,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from pyflare_control.models import Permission, ResourceBudget, TaskSpec
 from pyflare_control.journal import JournalConflictError, TaskJournal
+from pyflare_control.models import Permission, ResourceBudget, TaskSpec
 from pyflare_control.workflow import (
     InvalidTransitionError,
     TaskStatus,

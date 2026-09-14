@@ -4,10 +4,12 @@ on:
   push:
     paths:
       - "PyFlare/control_plane/**"
+      - "PyFlare/integrations/unity/**"
       - ".github/workflows/pyflare-control-plane.yml"
   pull_request:
     paths:
       - "PyFlare/control_plane/**"
+      - "PyFlare/integrations/unity/**"
       - ".github/workflows/pyflare-control-plane.yml"
 
 permissions:

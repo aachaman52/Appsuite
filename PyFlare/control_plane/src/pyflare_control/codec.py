@@ -252,7 +252,7 @@ class TaskSpecCodec:
     @staticmethod
     def _enum_value(
         value: Any,
-        enum_type: type[PrivacyClass] | type[LatencyClass],
+        enum_type: type[PrivacyClass | LatencyClass],
         field: str,
         issues: list[str],
     ) -> PrivacyClass | LatencyClass:

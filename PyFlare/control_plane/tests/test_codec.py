@@ -5,7 +5,6 @@ import unittest
 from pyflare_control.codec import ContractValidationError, TaskSpecCodec
 from pyflare_control.models import Permission, PrivacyClass
 
-
 VALID_TASK = {
     "schema_version": "1.0",
     "task_id": "task-1",

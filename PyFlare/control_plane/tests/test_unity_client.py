@@ -2,6 +2,7 @@ import json
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from typing import ClassVar
 
 from pyflare_control.unity_client import (
     UnityBridgeClient,
@@ -9,18 +10,14 @@ from pyflare_control.unity_client import (
     UnityBridgeProtocolError,
     UnityBridgeSecurityError,
 )
-from pyflare_control.unity_protocol import (
-    OperationStatus,
-    UnityCommand,
-)
-
+from pyflare_control.unity_protocol import OperationStatus, UnityCommand
 
 TOKEN = "unit-test-token-with-at-least-32-characters"
 
 
 class _BridgeHandler(BaseHTTPRequestHandler):
     received_token = ""
-    received_payload: dict[str, object] = {}
+    received_payload: ClassVar[dict[str, object]] = {}
 
     def do_GET(self) -> None:
         self.__class__.received_token = self.headers.get("X-PyFlare-Token", "")
