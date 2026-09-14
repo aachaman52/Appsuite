@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import unittest
 
 from pyflare_control.models import Permission
 from pyflare_control.security import PermissionGrant

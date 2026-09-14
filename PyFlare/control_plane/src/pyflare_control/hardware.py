@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 import os
-from pathlib import Path
 import shutil
+from datetime import UTC, datetime
+from pathlib import Path
 
 from .models import HardwareSnapshot
 

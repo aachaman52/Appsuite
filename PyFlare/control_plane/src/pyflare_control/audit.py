@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import json
+import os
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import UTC, datetime
 from enum import Enum
-import json
-import os
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 
 _SECRET_MARKERS = ("token", "secret", "password", "api_key", "authorization")
