@@ -10,22 +10,42 @@
 
 ## Overview
 
-PyFlare, developed under Aachman Studios, is a long-term development operating environment designed to convert developer intent into coordinated, validated work across deterministic tools, AI models, Unity, Blender, compilers, project knowledge, version control, assets and local or remote compute.
+PyFlare, developed under Aachman Studios, is a long-term development operating
+environment designed to convert developer intent into coordinated, validated work
+across deterministic tools, AI models, Unity, Blender, compilers, project knowledge,
+version control, assets and local or remote compute.
 
-PyFlare is not one AI doing everything and is not merely an Ubuntu distribution with AI applications installed. Its core architecture is a deterministic control plane that selects the smallest reliable capability, protects workstation resources, grants bounded permissions and requires validation before output becomes project state.
+PyFlare is not one AI doing everything and is not merely an Ubuntu distribution with
+AI applications installed. Its core architecture is a deterministic control plane that
+selects the smallest reliable capability, protects workstation resources, grants bounded
+permissions and requires validation before output becomes project state.
 
-The operating-system image and branding are an existing foundation. The complete orchestration platform is under active development and must not be treated as production-ready.
+The operating-system image and branding are an existing foundation. The complete
+orchestration platform is under active development and must not be treated as
+production-ready.
 
 ## Current implementation
 
-The first control-plane foundation is under [control_plane](control_plane/README.md). It includes typed TaskSpec contracts, registries, deterministic routing, resource admission, scoped authorization, audit primitives and Unity protocol state gates.
+The control-plane foundation is under [control_plane](control_plane/README.md). It now
+includes strict TaskSpec decoding, registries, deterministic routing, resource admission,
+scoped authorization, audit primitives, a durable task journal, workflow state,
+validation and retry policies, Unity protocol gates and an authenticated Python Unity
+client.
 
-See [Implementation Status](docs/IMPLEMENTATION_STATUS.md) for an explicit separation between implemented, planned and research-stage components.
+The first Unity Editor package is under
+[integrations/unity/com.aachmanstudios.pyflare.automation](integrations/unity/com.aachmanstudios.pyflare.automation/README.md).
+It is experimental until it compiles and passes integration tests inside supported Unity
+6 editor versions.
+
+See [Implementation Status](docs/IMPLEMENTATION_STATUS.md) for the explicit separation
+between implemented, planned and research-stage components. See
+[Last Work](../Last_Work.md) for the dated implementation and validation walkthrough.
 
 ## Repository structure
 
     PyFlare/
-    ├── control_plane/         Deterministic orchestration foundation and Unity contracts
+    ├── control_plane/         Deterministic orchestration foundation and Python client
+    ├── integrations/unity/    Experimental structured Unity Editor package
     ├── branding/              Logos, icons, wallpapers, themes and cursors
     ├── branding_generator/    Branding generation pipeline
     ├── config/                OS build configuration
@@ -78,4 +98,5 @@ Build the experimental ISO on Linux:
 
 ## License
 
-PyFlare is distributed under the repository's PyFlare license. Third-party components retain their own licenses.
+PyFlare is distributed under the repository's PyFlare license. Third-party components
+retain their own licenses.
