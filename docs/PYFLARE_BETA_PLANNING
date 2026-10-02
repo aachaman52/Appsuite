@@ -1,0 +1,881 @@
+# PyFlare
+
+## Beta Product Definition & Scope Lock
+
+**Product:** PyFlare
+**Company:** Aachman Studios
+**Target Beta Release:** 2 February 2027
+**Document Status:** Scope Locked
+**Version:** 1.0
+**Classification:** Product Planning / Engineering Reference
+
+---
+
+## 1. Executive Summary
+
+PyFlare is an AI-native development operating environment designed to adapt its capabilities to the user's hardware, workflow, and intended use case.
+
+The February 2027 beta will focus exclusively on the **PyFlare for Game Developers** edition.
+
+The beta is not intended to represent the complete long-term PyFlare product family. It exists to prove the core PyFlare architecture through a complete, installable, hardware-aware and usable product.
+
+The beta must demonstrate that a user can:
+
+1. Install and boot PyFlare.
+2. Authenticate and configure the environment.
+3. Detect and evaluate their hardware.
+4. Select or automatically configure suitable local AI software.
+5. Open or create a development project.
+6. Provide PyFlare with a task.
+7. Build structured context from the project.
+8. Convert the request into an executable TaskSpec.
+9. Route the task deterministically to the appropriate model, tool or execution environment.
+10. Execute the task.
+11. Validate the result.
+12. Safely apply or reject the resulting changes.
+13. Record the operation in the audit/task system.
+
+The beta succeeds when this complete workflow operates reliably on real hardware.
+
+---
+
+# 2. Product Vision
+
+PyFlare is intended to become a family of specialized AI operating environments built around a common execution core.
+
+The long-term product family is planned as:
+
+### PyFlare for Game Developers
+
+Designed for game developers and creators.
+
+Primary integrations:
+
+* Unity
+* Game-development tooling
+* Project-aware AI
+* Code generation and modification
+* Scene manipulation
+* Asset workflows
+* Debugging
+* Hardware-aware local AI
+
+**This is the February 2027 beta edition.**
+
+### PyFlare for Developers
+
+Designed for:
+
+* Software developers
+* Programmers
+* Experimenters
+* Technical professionals
+* Corporate development environments
+
+Potential capabilities include:
+
+* Coding workflows
+* Development environments
+* Automation
+* APIs
+* Software engineering tools
+* Local and cloud AI
+* Advanced workflows
+
+### PyFlare Everyday
+
+Designed for general users who do not want to manage technical infrastructure.
+
+Potential capabilities include:
+
+* General AI assistance
+* File management
+* Application automation
+* Personal workflows
+* Simplified AI configuration
+* Hardware-aware model selection
+
+### PyFlare Student
+
+Designed around education and student workflows.
+
+Planned integration:
+
+* DayMentor
+* Study planning
+* Textbook understanding
+* Revision
+* Educational AI workflows
+* Student productivity tools
+
+The four editions should share the same underlying PyFlare Core rather than becoming four independent products.
+
+---
+
+# 3. Beta Scope
+
+## 3.1 Beta Edition
+
+The February 2027 beta is:
+
+> **PyFlare for Game Developers**
+
+The beta will not attempt to launch all four planned editions.
+
+The purpose of the beta is to establish a stable foundation that can later support the other editions.
+
+---
+
+# 4. PyFlare Core Architecture
+
+The beta is built around a common core.
+
+```text
+                         PYFLARE
+                            │
+              ┌─────────────┼─────────────┐
+              │             │             │
+        Authentication   Context       Hardware
+                         Manager        Manager
+              │             │             │
+              └─────────────┼─────────────┘
+                            │
+                         TaskSpec
+                            │
+                  Deterministic Router
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+        Local Models     API Models       Tools
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+                         Executor
+                            │
+                         Validator
+                            │
+                    Audit / Task Journal
+                            │
+                     User-visible Result
+```
+
+The architecture must remain modular.
+
+Edition-specific functionality should be implemented as profiles, packages or integrations on top of the core.
+
+---
+
+# 5. Beta Feature Requirements
+
+## 5.1 Context Management
+
+**Priority: REQUIRED**
+
+PyFlare must understand the project it is working on instead of treating every request as an isolated conversation.
+
+### Required capabilities
+
+* Project indexing
+* Project structure awareness
+* Relevant file discovery
+* Context retrieval
+* Task-specific context assembly
+* Persistent project context
+* Project isolation
+* Context refresh/re-indexing
+* Context size management
+* Relevant-context selection before model execution
+
+### Beta acceptance criterion
+
+A user opens an existing game project and asks PyFlare to perform a task.
+
+PyFlare must:
+
+1. Understand the project structure.
+2. Identify relevant files/assets.
+3. Retrieve appropriate context.
+4. Provide that context to the selected execution path.
+5. Produce a result based on the actual project rather than generic assumptions.
+
+A full knowledge graph is **not required for beta**.
+
+---
+
+# 6. Deterministic Router
+
+**Priority: REQUIRED**
+
+The Deterministic Router is a central component of PyFlare.
+
+Its purpose is to decide how a task should be executed using explicit, reproducible rules.
+
+```text
+User Request
+      ↓
+TaskSpec
+      ↓
+Capability Detection
+      ↓
+Provider Availability
+      ↓
+Hardware / Resource Check
+      ↓
+Permission Check
+      ↓
+Deterministic Route
+      ↓
+Execution
+```
+
+The router must consider:
+
+* Required capability
+* Available providers
+* Available tools
+* Hardware constraints
+* Resource requirements
+* Permissions
+* Model availability
+* Task type
+* Execution environment
+* Failure/retry policy
+
+The router must not depend on an uncontrolled autonomous agent to determine critical execution routing.
+
+### Beta acceptance criterion
+
+Given the same:
+
+* TaskSpec
+* system state
+* provider availability
+* hardware state
+* permissions
+
+the router should produce the same routing decision.
+
+---
+
+# 7. Hardware-Aware AI
+
+**Priority: REQUIRED**
+
+PyFlare must adapt AI configuration to the hardware available on the user's machine.
+
+The objective is not to promise that every computer can run an enormous model.
+
+The objective is:
+
+> **PyFlare should determine what AI configuration the user's hardware can realistically support.**
+
+### Hardware detection
+
+PyFlare should identify, where available:
+
+* CPU
+* CPU cores/threads
+* RAM
+* GPU
+* GPU VRAM
+* Storage
+* Available storage
+* Operating environment
+* Relevant instruction-set capabilities
+* Accelerator availability
+
+### Hardware evaluation
+
+PyFlare should estimate:
+
+* Model memory requirements
+* Available memory
+* GPU suitability
+* CPU suitability
+* Quantization options
+* Offloading possibilities
+* Context-window constraints
+* Expected performance
+
+### Automatic configuration
+
+PyFlare should be able to select:
+
+* Model
+* Quantization
+* Runtime
+* CPU/GPU configuration
+* Offload strategy
+* Context configuration
+
+The user must retain control over the final configuration.
+
+---
+
+# 8. Large-Model Optimization Research
+
+**Priority: Experimental**
+
+PyFlare may investigate techniques that allow models significantly larger than the machine's available RAM/VRAM to operate through techniques such as:
+
+* Quantization
+* CPU/GPU offloading
+* Memory mapping
+* SSD-backed model data
+* Layer offloading
+* Sparse/MoE execution
+* Optimized inference runtimes
+* Context optimization
+* Hardware-specific kernels
+
+Projects demonstrating unusually large models operating on constrained hardware may be evaluated for integration.
+
+However:
+
+> **The February 2027 beta must not depend on the claim that a 500B-class model can run on low-end hardware.**
+
+Such capabilities are considered experimental research.
+
+The beta requirement is hardware-aware inference selection, not a specific model-size achievement.
+
+---
+
+# 9. Local Model Installation
+
+**Priority: REQUIRED**
+
+PyFlare should not force every user to install the same model.
+
+During installation or first boot, the user should be presented with hardware-aware choices.
+
+Example:
+
+```text
+PYFLARE INITIAL SETUP
+
+Hardware detected:
+CPU: Intel Core i5
+RAM: 16 GB
+GPU: Integrated Graphics
+Storage: 512 GB
+
+RECOMMENDED LOCAL AI
+
+[ ] Small Model
+    Fast / Low Memory
+
+[ ] Medium Model
+    Balanced
+
+[ ] Large Model
+    Slower / Higher Resource Usage
+
+[ ] Do Not Install Local Model
+
+              [ Continue ]
+```
+
+PyFlare may provide recommendations based on hardware, but the user makes the final selection.
+
+---
+
+# 10. First-Boot Software Configuration
+
+**Priority: REQUIRED**
+
+The installation process should allow users to select optional software according to their needs.
+
+Example:
+
+```text
+PYFLARE SOFTWARE SETUP
+
+CORE
+[x] PyFlare Core
+[x] Git
+[x] Python
+[x] Node.js
+[x] Development utilities
+
+GAME DEVELOPMENT
+[x] Game development tools
+[ ] Blender
+[ ] Additional asset tools
+
+AI
+[ ] Local AI model
+[ ] Additional model runtime
+
+OTHER
+[ ] Docker
+[ ] Additional developer tools
+
+                 [ Install ]
+```
+
+The final software selection will depend on what can be reliably packaged and supported before beta release.
+
+---
+
+# 11. PyFlare ISO
+
+**Priority: REQUIRED**
+
+The beta must produce a complete, reproducible and testable PyFlare installation image.
+
+The ISO must:
+
+* Boot successfully
+* Install successfully
+* Detect supported hardware
+* Start PyFlare services
+* Launch the PyFlare interface
+* Persist configuration
+* Configure software
+* Configure local AI where selected
+* Support authentication
+* Open a project
+* Execute a PyFlare task
+
+The ISO is considered incomplete until tested on real hardware and/or a reproducible virtual machine environment.
+
+---
+
+# 12. Authentication
+
+**Priority: REQUIRED**
+
+PyFlare beta requires an authentication and identity system.
+
+Required areas:
+
+* Account authentication
+* Login
+* Logout
+* Session management
+* Local user identity
+* Provider/API configuration
+* Secure credential storage
+* Project-level identity/permissions where required
+
+Basic local PyFlare functionality should not become unusable simply because a cloud service is unavailable.
+
+Authentication architecture must therefore distinguish between:
+
+* PyFlare account identity
+* Local machine identity
+* AI provider credentials
+* Project permissions
+
+---
+
+# 13. Unity Integration
+
+**Priority: REQUIRED**
+
+Unity is the primary execution environment for the Game Developer beta.
+
+The beta must establish a real communication path:
+
+```text
+PyFlare
+   ↓
+TaskSpec
+   ↓
+Deterministic Router
+   ↓
+Unity Integration
+   ↓
+Unity Editor
+   ↓
+Change
+   ↓
+Validation
+   ↓
+Audit
+```
+
+### Minimum supported operations
+
+* Create GameObjects
+* Modify GameObjects
+* Add components
+* Remove components
+* Modify properties
+* Create or modify basic scripts
+* Inspect relevant scene/project state
+* Validate changes
+* Support Undo where appropriate
+
+The Unity package must be compiled and tested against the supported Unity version.
+
+---
+
+# 14. Execution Safety
+
+**Priority: REQUIRED**
+
+PyFlare must not blindly apply arbitrary AI output.
+
+Required mechanisms include:
+
+* Capability permissions
+* Filesystem boundaries
+* Task authorization
+* Destructive-action confirmation
+* Task journal
+* Audit logs
+* Validation
+* Retry policies
+* Idempotency where applicable
+* Clear failure reporting
+
+---
+
+# 15. TaskSpec
+
+**Priority: REQUIRED**
+
+Natural-language requests should eventually become structured tasks.
+
+Example:
+
+```text
+User:
+"Create a player character with a camera."
+
+          ↓
+
+TaskSpec
+
+capability:
+  unity.scene.modify
+
+actions:
+  - create GameObject
+  - add component
+  - configure camera
+
+requirements:
+  project: current
+  authorization: required
+
+validation:
+  object exists
+  required components exist
+```
+
+TaskSpec is the interface between user intent and deterministic execution.
+
+---
+
+# 16. Validation
+
+**Priority: REQUIRED**
+
+PyFlare must verify whether an operation succeeded.
+
+Validation may include:
+
+* File existence
+* Code compilation
+* Unity object existence
+* Component state
+* Scene state
+* Expected output
+* Tool execution status
+* Error detection
+
+A successful model response must not automatically be treated as a successful task.
+
+---
+
+# 17. Audit and Task Journal
+
+**Priority: REQUIRED**
+
+PyFlare should maintain a record of important operations.
+
+The system should be able to answer:
+
+* What task was requested?
+* What TaskSpec was created?
+* What route was selected?
+* Which provider/model was used?
+* Which tools were executed?
+* What changed?
+* Was authorization required?
+* Did validation pass?
+* Did the task fail?
+* Was a retry performed?
+
+This creates traceability and makes debugging possible.
+
+---
+
+# 18. Beta User Experience
+
+The beta should feel like a coherent product rather than an engineering prototype.
+
+Required polish areas:
+
+* Installation experience
+* First-run experience
+* Hardware detection
+* Model selection
+* Software selection
+* Authentication
+* Project selection
+* Task interface
+* Execution status
+* Error messages
+* Logs
+* Settings
+* Basic branding
+* Documentation
+
+The UI does not need to contain every possible feature.
+
+Reliability takes priority over visual complexity.
+
+---
+
+# 19. Explicitly Out of Scope for Beta
+
+The following are not required to achieve the February 2027 beta milestone:
+
+* Full Blender automation
+* Multiple game engines
+* Distributed multi-machine workers
+* Enterprise collaboration platform
+* Full knowledge graph
+* Advanced autonomous-agent ecosystem
+* Complete asset marketplace
+* Large-scale model ecosystem
+* Full corporate deployment system
+* Perfect hardware optimization
+* Autonomous end-to-end game creation
+* PyFlare's own foundation model
+* All four PyFlare editions
+* 500B-class local model support
+
+These features may be considered after beta.
+
+---
+
+# 20. PyFlare's Own Local Model
+
+A dedicated PyFlare local model is a **post-beta initiative**.
+
+The current long-term direction is a relatively small model, potentially around the 5B parameter class, optimized specifically for PyFlare workflows.
+
+Potential specialization:
+
+* TaskSpec generation
+* Tool calling
+* Project-context reasoning
+* Routing assistance
+* Code assistance
+* PyFlare-specific instructions
+* Local execution
+
+The model should not be developed at the expense of the February 2027 beta.
+
+---
+
+# 21. Beta Acceptance Definition
+
+PyFlare Beta is considered technically ready when a clean installation can demonstrate the following complete workflow:
+
+```text
+Install ISO
+    ↓
+Boot PyFlare
+    ↓
+Hardware Detection
+    ↓
+Software / Model Configuration
+    ↓
+Authentication
+    ↓
+Open Game Project
+    ↓
+Context Indexing
+    ↓
+User Task
+    ↓
+TaskSpec
+    ↓
+Deterministic Router
+    ↓
+Model / Tool Selection
+    ↓
+Execution
+    ↓
+Unity Integration
+    ↓
+Validation
+    ↓
+Audit / Journal
+    ↓
+User-visible Result
+```
+
+This workflow must be demonstrated with reproducible evidence.
+
+---
+
+# 22. Scope Lock Rules
+
+The February 2027 beta scope is considered locked.
+
+New features should not automatically enter the beta.
+
+A new feature may enter beta only if:
+
+1. It is required for the acceptance workflow.
+2. It replaces an existing beta requirement.
+3. A beta requirement is explicitly removed.
+4. The milestone owner explicitly approves a scope change.
+
+The following are not sufficient reasons to add a feature:
+
+* "It would be cool."
+* "We might need it later."
+* "Another AI OS has it."
+* "It is easy to implement."
+* "We already started it."
+
+The beta exists to prove the product, not maximize feature count.
+
+---
+
+# 23. Engineering Evidence Standard
+
+A feature is **not considered complete merely because it exists in code**.
+
+Feature status must be classified as:
+
+### VERIFIED
+
+Evidence exists in GitHub, tests, builds, or reproducible runtime demonstrations.
+
+### IMPLEMENTED / UNVERIFIED
+
+Code exists, but required runtime validation has not yet been demonstrated.
+
+### CHAT-REPORTED
+
+Progress was reported during development but has not yet been verified through repository or runtime evidence.
+
+### PLANNED
+
+The feature has been defined but implementation has not been demonstrated.
+
+### BLOCKED
+
+Implementation cannot proceed because a dependency or unresolved technical issue remains.
+
+Weekly PyFlare audits must use these classifications.
+
+---
+
+# 24. Beta Success Criteria
+
+The beta should prioritize the following order:
+
+1. **Bootability**
+2. **Reliability**
+3. **Context correctness**
+4. **Deterministic routing**
+5. **Hardware-aware AI**
+6. **Real execution**
+7. **Validation**
+8. **Security/authentication**
+9. **Usability**
+10. **Performance**
+11. **Visual polish**
+
+A visually impressive system that cannot reliably execute tasks is not beta-ready.
+
+---
+
+# 25. Post-Beta Product Direction
+
+After the Game Developer beta, PyFlare Core can expand into the planned product family.
+
+```text
+                    PYFLARE CORE
+                         │
+       ┌─────────────────┼─────────────────┐
+       │                 │                 │
+   Game Dev           Developer         Everyday
+       │                 │                 │
+       └─────────────────┼─────────────────┘
+                         │
+                      Student
+                         │
+                      DayMentor
+```
+
+All editions should share core infrastructure where practical:
+
+* Context Management
+* Deterministic Router
+* Authentication
+* Hardware Detection
+* Model Management
+* Execution Engine
+* Permissions
+* Validation
+* Audit
+* Update System
+
+Edition-specific capabilities should remain modular.
+
+---
+
+# 26. Final Beta Definition
+
+**PyFlare Beta is not a collection of unfinished features.**
+
+It is a complete demonstration that PyFlare can function as a hardware-aware AI development environment.
+
+The February 2027 beta must prove five fundamental ideas:
+
+### 1. PyFlare understands context.
+
+It can work with a real project rather than isolated prompts.
+
+### 2. PyFlare routes deterministically.
+
+Tasks are sent through explicit, inspectable execution paths.
+
+### 3. PyFlare adapts to hardware.
+
+AI configuration is selected according to the machine instead of assuming identical hardware.
+
+### 4. PyFlare executes real work.
+
+The system can interact with a real development environment, initially Unity.
+
+### 5. PyFlare is a real product.
+
+It can be installed, configured, authenticated, used and recovered from failures by an actual user.
+
+---
+
+## Beta Milestone
+
+**Target:** 2 February 2027
+
+**Beta Edition:** PyFlare for Game Developers
+
+**Primary Objective:**
+
+> Deliver a complete, installable, hardware-aware AI development environment capable of understanding a game project, deterministically routing tasks, executing them through supported tools and Unity, validating the result, and providing an auditable user experience.
+
+Everything else is secondary to proving this workflow.
+
+**Document Owner:** Aachman Studios
+**Status:** Beta Scope Lock v1.0
