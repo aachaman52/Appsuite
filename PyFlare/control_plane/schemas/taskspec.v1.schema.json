@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.pyflare.dev/taskspec/v1",
+  "title": "PyFlare TaskSpec v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "project_id",
+    "domain",
+    "operation",
+    "required_capabilities",
+    "permissions",
+    "resource_budget"
+  ],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "project_id": {"type": "string", "minLength": 1},
+    "domain": {"type": "string", "minLength": 1},
+    "operation": {"type": "string", "minLength": 1},
+    "required_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": ["read", "write", "execute", "network", "install", "system_change"]
+      }
+    },
+    "privacy": {
+      "enum": ["local_only", "local_preferred", "cloud_allowed"],
+      "default": "local_preferred"
+    },
+    "latency": {
+      "enum": ["interactive", "foreground", "batch"],
+      "default": "foreground"
+    },
+    "allow_cloud": {"type": "boolean", "default": false},
+    "allow_remote_compute": {"type": "boolean", "default": false},
+    "requires_validation": {"type": "boolean", "default": true},
+    "expected_input_tokens": {"type": "integer", "minimum": 0, "default": 0},
+    "expected_output_tokens": {"type": "integer", "minimum": 0, "default": 0},
+    "required_applications": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string"}
+    },
+    "resource_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_ram_mb", "max_cpu_percent", "max_cost_usd"],
+      "properties": {
+        "max_ram_mb": {"type": "integer", "minimum": 0},
+        "max_vram_mb": {"type": "integer", "minimum": 0, "default": 0},
+        "max_cpu_percent": {"type": "integer", "minimum": 1, "maximum": 100},
+        "max_cost_usd": {"type": "number", "minimum": 0}
+      }
+    },
+    "metadata": {"type": "object"}
+  }
+}
