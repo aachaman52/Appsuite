@@ -126,10 +126,70 @@ class RouterTests(unittest.TestCase):
         decision = self.router.route(task(), hardware(online=False))
         self.assertEqual(decision.fallback_provider_ids, ())
 
-    def test_no_route_contains_evaluations(self) -> None:
-        with self.assertRaises(NoRouteError) as caught:
-            self.router.route(task(), hardware(ram=100))
-        self.assertTrue(caught.exception.evaluations)
+    def test_deterministic_reproducibility_same_inputs_same_route(self) -> None:
+        """Section 5 Acceptance: Identical inputs produce identical routing decisions."""
+        t = task()
+        hw = hardware()
+        first_decision = self.router.route(t, hw)
+
+        for _ in range(50):
+            repeated = self.router.route(t, hw)
+            self.assertEqual(repeated.primary_provider_id, first_decision.primary_provider_id)
+            self.assertEqual(repeated.fallback_provider_ids, first_decision.fallback_provider_ids)
+            for e1, e2 in zip(first_decision.evaluations, repeated.evaluations, strict=True):
+                self.assertEqual(e1.provider_id, e2.provider_id)
+                self.assertEqual(e1.accepted, e2.accepted)
+                self.assertEqual(e1.score, e2.score)
+                self.assertEqual(e1.reasons, e2.reasons)
+
+    def test_circuit_breaker_and_unavailable_provider_fallback(self) -> None:
+        """Section 5 Acceptance: Unavailable providers trigger explicit fallback rules."""
+        # Create a router where primary deterministic tool has open circuit
+        broken_primary = Provider(
+            provider_id="roslyn",
+            kind=ExecutionKind.DETERMINISTIC,
+            capabilities=frozenset({"code.rename"}),
+            metrics=ProviderMetrics(quality=0.99, historical_success=0.1, latency_fitness=0.95),
+            ram_mb=100,
+            circuit_open=True,  # Tripped circuit breaker
+        )
+        working_fallback = provider("cloud-large", ExecutionKind.CLOUD_MODEL, quality=0.95, latency=0.7, cost=0.1, network=True)
+
+        router = DeterministicRouter(
+            self.router.capabilities,
+            ProviderRegistry([broken_primary, working_fallback]),
+        )
+        decision = router.route(task(), hardware())
+        self.assertEqual(decision.primary_provider_id, "cloud-large")
+        roslyn_eval = next(e for e in decision.evaluations if e.provider_id == "roslyn")
+        self.assertFalse(roslyn_eval.accepted)
+        self.assertIn("provider_circuit_open", roslyn_eval.reasons)
+
+    def test_unauthorized_task_never_routes(self) -> None:
+        """Section 5 Acceptance: Unauthorized tasks are rejected before execution."""
+        # Task lacks WRITE permission required by code.rename capability
+        unauthorized_task = TaskSpec(
+            task_id="unauth-1",
+            project_id="p-1",
+            domain="software",
+            operation="rename",
+            required_capabilities=frozenset({"code.rename"}),
+            permissions=frozenset({Permission.READ}),  # Missing WRITE!
+            resource_budget=ResourceBudget(1000, 0, 10, 0),
+        )
+        with self.assertRaises(ValueError) as ctx:
+            self.router.route(unauthorized_task, hardware())
+        self.assertIn("lacks permissions", str(ctx.exception))
+
+    def test_insufficient_resources_produces_structured_explanation(self) -> None:
+        """Section 5 Acceptance: Insufficient resources produce explainable structured evaluation."""
+        # Task demands more RAM than available
+        with self.assertRaises(NoRouteError) as ctx:
+            self.router.route(task(), hardware(ram=50))  # Only 50 MB available
+        evals = ctx.exception.evaluations
+        for ev in evals:
+            self.assertFalse(ev.accepted)
+            self.assertTrue(any("ram" in r for r in ev.reasons))
 
 
 if __name__ == "__main__":

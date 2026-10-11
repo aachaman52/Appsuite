@@ -1,6 +1,16 @@
 """PyFlare deterministic control-plane foundation."""
 
 from .codec import ContractValidationError, TaskSpecCodec
+from .context import (
+    IndexReport,
+    ProjectContextError,
+    ProjectContextManager,
+    ProjectInfo,
+    ProjectNotFoundError,
+    RetrievedSource,
+    StaleIndexError,
+    TaskContext,
+)
 from .journal import (
     JournalConflictError,
     TaskJournal,
@@ -33,18 +43,26 @@ __all__ = [
     "ExecutionKind",
     "FailureKind",
     "HardwareSnapshot",
+    "IndexReport",
     "JournalConflictError",
     "LatencyClass",
     "PrivacyClass",
+    "ProjectContextError",
+    "ProjectContextManager",
+    "ProjectInfo",
+    "ProjectNotFoundError",
     "Provider",
     "ProviderRegistry",
     "ResourceBudget",
     "ResourceScheduler",
+    "RetrievedSource",
     "RetryAction",
     "RetryBudget",
     "RetryPolicy",
     "RouteDecision",
     "RouterPolicy",
+    "StaleIndexError",
+    "TaskContext",
     "TaskJournal",
     "TaskNotFoundError",
     "TaskRecord",

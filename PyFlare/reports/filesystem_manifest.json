@@ -1,41 +1,29 @@
 {
-  "generated": "2026-08-02T14:31:21.708871+00:00Z",
+  "generated": "2026-10-11T13:14:05.399489+00:00Z",
   "root": "build/rootfs/",
-  "total_file_count": 8,
-  "total_size_bytes": 1185009673,
-  "total_size_mb": 1130.11,
+  "total_file_count": 5,
+  "total_size_bytes": 4259957,
+  "total_size_mb": 4.06,
   "files": {
-    "etc": {
-      "file_count": 1006,
-      "size_bytes": 3704206
-    },
-    "dev": {
-      "file_count": 11,
-      "size_bytes": 0
-    },
-    "root": {
-      "file_count": 2,
-      "size_bytes": 3267
-    },
-    "opt": {
-      "file_count": 125,
-      "size_bytes": 33494
-    },
-    "var": {
-      "file_count": 1946,
-      "size_bytes": 328125418
-    },
-    "usr": {
-      "file_count": 15146,
-      "size_bytes": 853141372
-    },
-    "run": {
-      "file_count": 2,
-      "size_bytes": 922
-    },
     "boot": {
       "file_count": 1,
       "size_bytes": 994
+    },
+    "etc": {
+      "file_count": 39,
+      "size_bytes": 16081
+    },
+    "opt": {
+      "file_count": 218,
+      "size_bytes": 819519
+    },
+    "usr": {
+      "file_count": 196,
+      "size_bytes": 3418750
+    },
+    "var": {
+      "file_count": 1,
+      "size_bytes": 4613
     }
   }
 }

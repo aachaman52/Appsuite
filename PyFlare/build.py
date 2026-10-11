@@ -545,16 +545,32 @@ exec python3 /opt/pyflare/apps/{slug}/src/main.py "$@"
                     packaged_apps.append(slug)
                     self.pkg_log.info(f"Packaged application: {slug} -> /opt/pyflare/apps/{slug}")
 
+        # Package PyFlare Control Plane Foundation
+        cp_src = ROOT / "control_plane"
+        if cp_src.exists():
+            cp_dst = ROOTFS_DIR / "opt" / "pyflare" / "control_plane"
+            safe_copy(cp_src, cp_dst)
+            wrapper = target_bin_dir / "pyflare-control"
+            wrapper_content = """#!/usr/bin/env bash
+export PYFLARE_HOME="/opt/pyflare"
+export PYTHONPATH="/opt/pyflare/control_plane/src:${PYTHONPATH:-}"
+exec python3 -m pyflare_control.cli "$@"
+"""
+            with open(wrapper, "w", encoding="utf-8", newline="\n") as f:
+                f.write(wrapper_content)
+            self.pkg_log.info("Packaged control plane -> /opt/pyflare/control_plane")
+
         pkg_summary = {
             "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
             "total_apps": len(packaged_apps),
             "applications": packaged_apps,
             "apps_directory": str(target_apps_dir.relative_to(ROOTFS_DIR)),
+            "control_plane": "staged",
         }
         with open(REPORT_DIR / "applications_manifest.json", "w", encoding="utf-8") as f:
             json.dump(pkg_summary, f, indent=2)
 
-        return True, f"Packaged {len(packaged_apps)} applications into /opt/pyflare/apps/", pkg_summary
+        return True, f"Packaged {len(packaged_apps)} applications and control plane into /opt/pyflare/", pkg_summary
 
     # -----------------------------------------------------------------------
     # Stage 6: Desktop Integration

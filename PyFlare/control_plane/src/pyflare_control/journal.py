@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 import sqlite3
 import uuid
-from collections.abc import Mapping
+from collections.abc import Iterator, Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -147,6 +148,12 @@ class TaskJournal:
             raise TaskNotFoundError(task_id)
         return self._task_from_row(row)
 
+    def get_task(self, task_id: str) -> TaskRecord | None:
+        try:
+            return self.require_task(task_id)
+        except TaskNotFoundError:
+            return None
+
     def transition(
         self,
         task_id: str,
@@ -281,12 +288,17 @@ class TaskJournal:
         assert row is not None
         return self._idempotency_from_row(row)
 
-    def _connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connect(self) -> Iterator[sqlite3.Connection]:
         connection = sqlite3.connect(self.path, timeout=10)
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys = ON")
         connection.execute("PRAGMA journal_mode = WAL")
-        return connection
+        try:
+            with connection:
+                yield connection
+        finally:
+            connection.close()
 
     @staticmethod
     def _now() -> str:

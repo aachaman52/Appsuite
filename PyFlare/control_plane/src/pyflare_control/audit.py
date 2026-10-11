@@ -61,6 +61,49 @@ class JsonlAuditSink:
             stream.flush()
             os.fsync(stream.fileno())
 
+    def log(
+        self,
+        *,
+        event_type: str,
+        task_id: str,
+        actor: str,
+        payload: Mapping[str, Any],
+    ) -> AuditEvent:
+        event = new_event(
+            event_id=f"audit_{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}_{os.urandom(4).hex()}",
+            event_type=event_type,
+            task_id=task_id,
+            actor=actor,
+            payload=payload,
+        )
+        self.append(event)
+        return event
+
+    def read_events(self) -> list[AuditEvent]:
+        if not self.path.exists():
+            return []
+        events: list[AuditEvent] = []
+        with self.path.open("r", encoding="utf-8") as stream:
+            for line in stream:
+                line = line.strip()
+                if not line:
+                    continue
+                data = json.loads(line)
+                events.append(
+                    AuditEvent(
+                        event_id=data["event_id"],
+                        event_type=data["event_type"],
+                        task_id=data["task_id"],
+                        actor=data["actor"],
+                        payload=data["payload"],
+                        occurred_at=data["occurred_at"],
+                    )
+                )
+        return events
+
+
+AuditLog = JsonlAuditSink
+
 
 def new_event(
     *,
