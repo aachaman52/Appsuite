@@ -1,6 +1,6 @@
 {
   "schema": "pyflare-package-manifest/1.0",
-  "generated": "2026-10-11T13:27:03.915209+00:00Z",
+  "generated": "2026-10-11T14:30:01.951351+00:00Z",
   "vendor": "Aachman Studios",
   "package_categories": {
     "base": [
@@ -65,8 +65,10 @@
       "vulkan-tools",
       "libvulkan1",
       "nvidia-driver-535",
-      "amdgpu-pro",
-      "intel-media-va-driver"
+      "intel-media-va-driver",
+      "virtualbox-guest-utils",
+      "virtualbox-guest-x11",
+      "zram-tools"
     ],
     "plymouth": [
       "plymouth",

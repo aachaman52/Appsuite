@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-11T13:26:59.978850+00:00Z",
+  "timestamp": "2026-10-11T14:29:58.190197+00:00Z",
   "total": 14,
   "passed": 14,
   "failed": 0,
@@ -9,98 +9,98 @@
       "label": "Branding assets",
       "passed": true,
       "errors": [],
-      "duration": 0.03507351875305176
+      "duration": 0.03611302375793457
     },
     {
       "validator": "validate_icons",
       "label": "Icon theme",
       "passed": true,
       "errors": [],
-      "duration": 0.015245914459228516
+      "duration": 0.011321544647216797
     },
     {
       "validator": "validate_wallpapers",
       "label": "Wallpapers",
       "passed": true,
       "errors": [],
-      "duration": 0.016700267791748047
+      "duration": 0.010925769805908203
     },
     {
       "validator": "validate_json",
       "label": "JSON files",
       "passed": true,
       "errors": [],
-      "duration": 3.3741295337677
+      "duration": 2.8978538513183594
     },
     {
       "validator": "validate_svg",
       "label": "SVG files",
       "passed": true,
       "errors": [],
-      "duration": 3.9979374408721924
+      "duration": 3.8135361671447754
     },
     {
       "validator": "validate_desktop",
       "label": "Desktop entries",
       "passed": true,
       "errors": [],
-      "duration": 0.06838512420654297
+      "duration": 0.07105398178100586
     },
     {
       "validator": "validate_packages",
       "label": "Package manifests",
       "passed": true,
       "errors": [],
-      "duration": 0.025553464889526367
+      "duration": 0.026334524154663086
     },
     {
       "validator": "validate_filesystem",
       "label": "Filesystem overlay",
       "passed": true,
       "errors": [],
-      "duration": 0.2087233066558838
+      "duration": 0.04057717323303223
     },
     {
       "validator": "validate_theme",
       "label": "GTK/GNOME theme",
       "passed": true,
       "errors": [],
-      "duration": 0.09093761444091797
+      "duration": 0.044962406158447266
     },
     {
       "validator": "validate_configs",
       "label": "Config files",
       "passed": true,
       "errors": [],
-      "duration": 0.10129714012145996
+      "duration": 0.09290790557861328
     },
     {
       "validator": "validate_services",
       "label": "Systemd services",
       "passed": true,
       "errors": [],
-      "duration": 0.05392193794250488
+      "duration": 0.05332303047180176
     },
     {
       "validator": "validate_permissions",
       "label": "File permissions",
       "passed": true,
       "errors": [],
-      "duration": 0.030321598052978516
+      "duration": 0.027301549911499023
     },
     {
       "validator": "validate_desktop_entries",
       "label": "Desktop entry syntax",
       "passed": true,
       "errors": [],
-      "duration": 0.05384087562561035
+      "duration": 0.04409027099609375
     },
     {
       "validator": "validate_boot",
       "label": "Boot configuration",
       "passed": true,
       "errors": [],
-      "duration": 0.030934810638427734
+      "duration": 0.025259971618652344
     }
   ]
 }

@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "codename": "Ember",
   "vendor": "Aachman Studios",
-  "timestamp": "2026-10-11T13:27:16.397903+00:00Z",
-  "total_duration_seconds": 24.57,
+  "timestamp": "2026-10-11T14:30:16.418718+00:00Z",
+  "total_duration_seconds": 25.46,
   "host_platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
   "python_version": "3.14.4",
   "status": "SUCCESS",
@@ -12,9 +12,9 @@
     "Validation Suite": {
       "success": true,
       "message": "All 14 validators passed cleanly",
-      "elapsed": 8.124956369400024,
+      "elapsed": 7.210407495498657,
       "details": {
-        "timestamp": "2026-10-11T13:26:59.978850+00:00Z",
+        "timestamp": "2026-10-11T14:29:58.190197+00:00Z",
         "total": 14,
         "passed": 14,
         "failed": 0,
@@ -24,106 +24,106 @@
             "label": "Branding assets",
             "passed": true,
             "errors": [],
-            "duration": 0.03507351875305176
+            "duration": 0.03611302375793457
           },
           {
             "validator": "validate_icons",
             "label": "Icon theme",
             "passed": true,
             "errors": [],
-            "duration": 0.015245914459228516
+            "duration": 0.011321544647216797
           },
           {
             "validator": "validate_wallpapers",
             "label": "Wallpapers",
             "passed": true,
             "errors": [],
-            "duration": 0.016700267791748047
+            "duration": 0.010925769805908203
           },
           {
             "validator": "validate_json",
             "label": "JSON files",
             "passed": true,
             "errors": [],
-            "duration": 3.3741295337677
+            "duration": 2.8978538513183594
           },
           {
             "validator": "validate_svg",
             "label": "SVG files",
             "passed": true,
             "errors": [],
-            "duration": 3.9979374408721924
+            "duration": 3.8135361671447754
           },
           {
             "validator": "validate_desktop",
             "label": "Desktop entries",
             "passed": true,
             "errors": [],
-            "duration": 0.06838512420654297
+            "duration": 0.07105398178100586
           },
           {
             "validator": "validate_packages",
             "label": "Package manifests",
             "passed": true,
             "errors": [],
-            "duration": 0.025553464889526367
+            "duration": 0.026334524154663086
           },
           {
             "validator": "validate_filesystem",
             "label": "Filesystem overlay",
             "passed": true,
             "errors": [],
-            "duration": 0.2087233066558838
+            "duration": 0.04057717323303223
           },
           {
             "validator": "validate_theme",
             "label": "GTK/GNOME theme",
             "passed": true,
             "errors": [],
-            "duration": 0.09093761444091797
+            "duration": 0.044962406158447266
           },
           {
             "validator": "validate_configs",
             "label": "Config files",
             "passed": true,
             "errors": [],
-            "duration": 0.10129714012145996
+            "duration": 0.09290790557861328
           },
           {
             "validator": "validate_services",
             "label": "Systemd services",
             "passed": true,
             "errors": [],
-            "duration": 0.05392193794250488
+            "duration": 0.05332303047180176
           },
           {
             "validator": "validate_permissions",
             "label": "File permissions",
             "passed": true,
             "errors": [],
-            "duration": 0.030321598052978516
+            "duration": 0.027301549911499023
           },
           {
             "validator": "validate_desktop_entries",
             "label": "Desktop entry syntax",
             "passed": true,
             "errors": [],
-            "duration": 0.05384087562561035
+            "duration": 0.04409027099609375
           },
           {
             "validator": "validate_boot",
             "label": "Boot configuration",
             "passed": true,
             "errors": [],
-            "duration": 0.030934810638427734
+            "duration": 0.025259971618652344
           }
         ]
       }
     },
     "Root Filesystem Preparation": {
       "success": true,
-      "message": "Prepared rootfs hierarchy with 19 root dirs and 60 files",
-      "elapsed": 3.9028725624084473,
+      "message": "Prepared rootfs hierarchy with 19 root dirs and 61 files",
+      "elapsed": 3.7275054454803467,
       "details": {
         "rootfs_path": "/var/tmp/pyflare_rootfs",
         "directories": [
@@ -147,16 +147,16 @@
           "sys",
           "dev"
         ],
-        "total_files": 60
+        "total_files": 61
       }
     },
     "Package Preparation": {
       "success": true,
-      "message": "Manifest generated & packages installed (150 APT packages)",
-      "elapsed": 0.09954261779785156,
+      "message": "Manifest generated & packages installed (152 APT packages)",
+      "elapsed": 0.10431337356567383,
       "details": {
         "schema": "pyflare-package-manifest/1.0",
-        "generated": "2026-10-11T13:27:03.915209+00:00Z",
+        "generated": "2026-10-11T14:30:01.951351+00:00Z",
         "vendor": "Aachman Studios",
         "package_categories": {
           "base": [
@@ -221,8 +221,10 @@
             "vulkan-tools",
             "libvulkan1",
             "nvidia-driver-535",
-            "amdgpu-pro",
-            "intel-media-va-driver"
+            "intel-media-va-driver",
+            "virtualbox-guest-utils",
+            "virtualbox-guest-x11",
+            "zram-tools"
           ],
           "plymouth": [
             "plymouth",
@@ -369,9 +371,9 @@
     "Branding Deployment": {
       "success": true,
       "message": "Deployed branding (176 assets across 5 categories)",
-      "elapsed": 4.15476655960083,
+      "elapsed": 4.102754592895508,
       "details": {
-        "timestamp": "2026-10-11T13:27:08.145435+00:00Z",
+        "timestamp": "2026-10-11T14:30:06.130239+00:00Z",
         "categories": [
           "logos/svg",
           "logos/png",
@@ -387,9 +389,9 @@
     "Application Packaging": {
       "success": true,
       "message": "Packaged 11 applications and control plane into /opt/pyflare/",
-      "elapsed": 5.857388257980347,
+      "elapsed": 7.412456512451172,
       "details": {
-        "timestamp": "2026-10-11T13:27:13.999338+00:00Z",
+        "timestamp": "2026-10-11T14:30:13.544867+00:00Z",
         "total_apps": 11,
         "applications": [
           "ai-assistant",
@@ -411,7 +413,7 @@
     "Desktop Integration": {
       "success": true,
       "message": "Integrated 11 desktop launchers & GNOME overrides",
-      "elapsed": 0.013874530792236328,
+      "elapsed": 0.0078067779541015625,
       "details": {
         "desktop_launchers": 11,
         "gsettings_overrides": 1,
@@ -421,8 +423,8 @@
     },
     "Boot Configuration": {
       "success": true,
-      "message": "Boot params, GRUB, Plymouth, and 4 systemd services configured",
-      "elapsed": 0.0007932186126708984,
+      "message": "Boot params, GRUB, Plymouth, and 3 systemd services configured",
+      "elapsed": 0.0008764266967773438,
       "details": {
         "grub_configured": true,
         "plymouth_configured": true,
@@ -431,32 +433,31 @@
         "enabled_services": [
           "pyflare-engine.service",
           "pyflare-firstrun.service",
-          "pyflare-update.service",
           "pyflare-update.timer"
         ]
       }
     },
     "Filesystem Manifest & Checksums": {
       "success": true,
-      "message": "Manifest generated for 5 files (4.09 MB)",
-      "elapsed": 0.08711957931518555,
+      "message": "Manifest generated for 5 files (4.56 MB)",
+      "elapsed": 0.09159660339355469,
       "details": {
         "file_count": 5,
-        "total_mb": 4.09
+        "total_mb": 4.56
       }
     },
     "SquashFS Creation": {
       "success": true,
-      "message": "Compressed rootfs -> filesystem.squashfs (1.61 MB)",
-      "elapsed": 0.5116784572601318,
+      "message": "Compressed rootfs -> filesystem.squashfs (1.66 MB)",
+      "elapsed": 1.0242929458618164,
       "details": {
-        "squashfs_size_mb": 1.61
+        "squashfs_size_mb": 1.66
       }
     },
     "ISO Creation": {
       "success": true,
-      "message": "ISO created successfully: pyflare-os-1.0.0-ember-amd64.iso (13.95 MB)",
-      "elapsed": 1.766057014465332,
+      "message": "ISO created successfully: pyflare-os-1.0.0-ember-amd64.iso (14.0 MB)",
+      "elapsed": 1.7305958271026611,
       "details": {
         "iso_path": "/mnt/c/Users/Aachman_the_great/Desktop/Appsuite-1/PyFlare/output/pyflare-os-1.0.0-ember-amd64.iso"
       }
