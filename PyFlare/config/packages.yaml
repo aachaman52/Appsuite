@@ -81,8 +81,10 @@ packages:
     - vulkan-tools
     - libvulkan1
     - nvidia-driver-535        # NVIDIA (auto-fallback to mesa if absent)
-    - amdgpu-pro               # AMD (optional)
     - intel-media-va-driver    # Intel VA-API
+    - virtualbox-guest-utils   # VirtualBox host integration & display services
+    - virtualbox-guest-x11     # VirtualBox X11/DRM display driver and mouse integration
+    - zram-tools               # Compressed RAM swap for low-memory hosts (<=4GB)
 
   # ============================================================
   # PLYMOUTH BOOT SPLASH

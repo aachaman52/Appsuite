@@ -2,11 +2,15 @@
 Description=PyFlare User Session Service
 After=graphical-session.target
 PartOf=graphical-session.target
+ConditionPathExists=/opt/pyflare/bin/pyflare-session
 
 [Service]
 Type=simple
 ExecStart=/opt/pyflare/bin/pyflare-session
 Restart=on-failure
+RestartSec=10
+StartLimitBurst=3
+StartLimitIntervalSec=60
 Environment=DISPLAY=:0
 
 [Install]

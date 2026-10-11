@@ -129,8 +129,40 @@ def _total_memory_mb(meminfo: Path = Path("/proc/meminfo")) -> int:
     return 8192
 
 
-def detect_gpu() -> tuple[str | None, int | None, str | None]:
-    """Detect GPU vendor, name, VRAM (MB), and accelerator kind."""
+import importlib.util
+import time
+
+_CACHE_TTL_SECONDS = 60.0
+_CACHED_GPU: tuple[str | None, int | None, str | None] | None = None
+_CACHED_GPU_TIME: float = 0.0
+_CACHED_RUNTIMES: tuple[str, ...] | None = None
+_CACHED_RUNTIMES_TIME: float = 0.0
+_CACHED_APPS: frozenset[str] | None = None
+_CACHED_APPS_TIME: float = 0.0
+
+
+def clear_hardware_cache() -> None:
+    """Clear in-memory profiling caches (primarily for testing)."""
+    global _CACHED_GPU, _CACHED_GPU_TIME, _CACHED_RUNTIMES, _CACHED_RUNTIMES_TIME, _CACHED_APPS, _CACHED_APPS_TIME
+    _CACHED_GPU = None
+    _CACHED_GPU_TIME = 0.0
+    _CACHED_RUNTIMES = None
+    _CACHED_RUNTIMES_TIME = 0.0
+    _CACHED_APPS = None
+    _CACHED_APPS_TIME = 0.0
+
+
+def detect_gpu(*, refresh: bool = False) -> tuple[str | None, int | None, str | None]:
+    """Detect GPU vendor, name, VRAM (MB), and accelerator kind with caching."""
+    global _CACHED_GPU, _CACHED_GPU_TIME
+    now = time.monotonic()
+    if not refresh and _CACHED_GPU is not None and (now - _CACHED_GPU_TIME) < _CACHE_TTL_SECONDS:
+        return _CACHED_GPU
+
+    gpu_name = None
+    vram_mb = None
+    accelerator = None
+
     # 1. NVIDIA via nvidia-smi
     nvidia_smi = shutil.which("nvidia-smi")
     if nvidia_smi:
@@ -139,7 +171,7 @@ def detect_gpu() -> tuple[str | None, int | None, str | None]:
                 [nvidia_smi, "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"],
                 capture_output=True,
                 text=True,
-                timeout=3,
+                timeout=2,
                 check=False,
             )
             if res.returncode == 0 and res.stdout.strip():
@@ -147,20 +179,26 @@ def detect_gpu() -> tuple[str | None, int | None, str | None]:
                 parts = line.split(",")
                 gpu_name = parts[0].strip()
                 vram_mb = int(parts[1].strip()) if len(parts) > 1 else None
-                return gpu_name, vram_mb, "cuda"
+                accelerator = "cuda"
         except (subprocess.SubprocessError, ValueError, OSError):
             pass
 
     # 2. Apple Metal / macOS
-    if platform.system() == "Darwin":
-        return "Apple Silicon GPU", None, "metal"
+    if accelerator is None and platform.system() == "Darwin":
+        gpu_name, vram_mb, accelerator = "Apple Silicon GPU", None, "metal"
 
-    # 3. No dedicated accelerator detected
-    return None, None, None
+    _CACHED_GPU = (gpu_name, vram_mb, accelerator)
+    _CACHED_GPU_TIME = now
+    return _CACHED_GPU
 
 
-def discover_supported_runtimes() -> tuple[str, ...]:
-    """Identify available local AI inference runtimes."""
+def discover_supported_runtimes(*, refresh: bool = False) -> tuple[str, ...]:
+    """Identify available local AI inference runtimes with zero-import spec checks."""
+    global _CACHED_RUNTIMES, _CACHED_RUNTIMES_TIME
+    now = time.monotonic()
+    if not refresh and _CACHED_RUNTIMES is not None and (now - _CACHED_RUNTIMES_TIME) < _CACHE_TTL_SECONDS:
+        return _CACHED_RUNTIMES
+
     runtimes: list[str] = []
 
     # Command line binaries
@@ -169,25 +207,34 @@ def discover_supported_runtimes() -> tuple[str, ...]:
     if shutil.which("llama-cli") or shutil.which("llama-server"):
         runtimes.append("llama.cpp")
 
-    # Python packages
+    # Lightweight package detection without heavy imports
     try:
-        import onnxruntime  # noqa: F401
-        runtimes.append("onnxruntime")
-    except ImportError:
+        if importlib.util.find_spec("onnxruntime") is not None:
+            runtimes.append("onnxruntime")
+    except (ImportError, ValueError, AttributeError):
         pass
 
     try:
-        import torch  # noqa: F401
-        runtimes.append("pytorch")
-    except ImportError:
+        if importlib.util.find_spec("torch") is not None:
+            runtimes.append("pytorch")
+    except (ImportError, ValueError, AttributeError):
         pass
 
     # PyFlare builtin deterministic rule engine is always available
     runtimes.append("deterministic-local")
-    return tuple(sorted(runtimes))
+    result = tuple(sorted(runtimes))
+    _CACHED_RUNTIMES = result
+    _CACHED_RUNTIMES_TIME = now
+    return result
 
 
-def discover_applications() -> frozenset[str]:
+def discover_applications(*, refresh: bool = False) -> frozenset[str]:
+    """Discover installed creator applications with cached path resolution."""
+    global _CACHED_APPS, _CACHED_APPS_TIME
+    now = time.monotonic()
+    if not refresh and _CACHED_APPS is not None and (now - _CACHED_APPS_TIME) < _CACHE_TTL_SECONDS:
+        return _CACHED_APPS
+
     commands = {
         "blender": ("blender",),
         "git": ("git",),
@@ -199,7 +246,10 @@ def discover_applications() -> frozenset[str]:
         for application, alternatives in commands.items()
         if any(shutil.which(command) for command in alternatives)
     }
-    return frozenset(installed)
+    result = frozenset(installed)
+    _CACHED_APPS = result
+    _CACHED_APPS_TIME = now
+    return result
 
 
 def detect_hardware(*, online: bool = True, target_path: Path | None = None) -> HardwareReport:

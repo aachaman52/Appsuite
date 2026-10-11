@@ -26,7 +26,7 @@ primary-color='#0C0F1E'
 lock-delay=uint32 30
 
 [org.gnome.shell]
-enabled-extensions=['dash-to-dock@micxgx.gmail.com','user-theme@gnome-shell-extensions.gcampax.github.com','blur-my-shell@aunetx']
+enabled-extensions=['dash-to-dock@micxgx.gmail.com','user-theme@gnome-shell-extensions.gcampax.github.com']
 favorite-apps=['dev.pyflare.Files.desktop','dev.pyflare.Terminal.desktop','dev.pyflare.Browser.desktop','dev.pyflare.Store.desktop','dev.pyflare.Settings.desktop','dev.pyflare.AIAssistant.desktop']
 had-bluetooth-devices-setup=false
 welcome-dialog-last-shown-version='99.0'

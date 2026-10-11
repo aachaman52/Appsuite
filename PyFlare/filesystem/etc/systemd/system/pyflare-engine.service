@@ -4,12 +4,13 @@ After=network.target dbus.service
 Wants=network.target
 
 [Service]
-Type=dbus
-BusName=dev.pyflare.Engine
+Type=simple
 ExecStart=/opt/pyflare/engine/pyflare-engine --daemon
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
-RestartSec=5
+RestartSec=10
+StartLimitBurst=3
+StartLimitIntervalSec=60
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=pyflare-engine

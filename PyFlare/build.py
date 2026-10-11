@@ -618,7 +618,6 @@ exec python3 -m pyflare_control.cli "$@"
         services_to_enable = [
             ("pyflare-engine.service", "/etc/systemd/system/pyflare-engine.service"),
             ("pyflare-firstrun.service", "/etc/systemd/system/pyflare-firstrun.service"),
-            ("pyflare-update.service", "/etc/systemd/system/pyflare-update.service"),
             ("pyflare-update.timer", "/etc/systemd/system/pyflare-update.timer"),
         ]
 

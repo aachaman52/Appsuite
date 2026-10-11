@@ -204,7 +204,7 @@ set timeout=5
 set default=0
 
 menuentry "Start PyFlare OS Desktop" {
-    linux /casper/vmlinuz boot=casper ignore_uuid live-media-path=/casper quiet splash nomodeset ---
+    linux /casper/vmlinuz boot=casper ignore_uuid live-media-path=/casper quiet splash ---
     initrd /casper/initrd
 }
 

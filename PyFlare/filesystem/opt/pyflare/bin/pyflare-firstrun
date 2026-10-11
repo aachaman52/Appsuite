@@ -134,6 +134,7 @@ def execute_first_boot(
                 "tier": rec.selected_tier.value,
                 "recommended_model": asdict(rec.recommended_model) if rec.recommended_model else None,
                 "explanation": rec.explanation,
+                "auto_download_on_boot": False,
             },
             "user_created": user_info.username if user_info else username,
             "configured_providers": list(auth_mgr.list_configured_providers()),
