@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.pyflare.dev/unity-command/v1",
+  "title": "PyFlare Unity Command v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "request_id",
+    "task_id",
+    "project_id",
+    "operation",
+    "arguments",
+    "idempotency_key"
+  ],
+  "properties": {
+    "protocol": {"const": "pyflare-unity/1.0"},
+    "request_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "project_id": {"type": "string", "minLength": 1},
+    "operation": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+    },
+    "arguments": {"type": "object"},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "register_undo": {"type": "boolean", "default": true},
+    "save_scene": {"type": "boolean", "default": false},
+    "preconditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "editor_mode": {"enum": ["edit", "play", "transitioning"]},
+        "compilation_must_be_idle": {"type": "boolean"},
+        "scene_path": {"type": ["string", "null"]},
+        "scene_hash": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

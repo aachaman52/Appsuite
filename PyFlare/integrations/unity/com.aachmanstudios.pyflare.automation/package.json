@@ -1,0 +1,9 @@
+{
+  "name": "com.aachmanstudios.pyflare.automation",
+  "displayName": "PyFlare Unity Automation",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "description": "Experimental authenticated Unity Editor bridge for structured PyFlare operations.",
+  "keywords": ["pyflare", "automation", "editor"],
+  "author": {"name": "Aachman Studios"}
+}
