@@ -214,13 +214,14 @@ class ExecutionEngine:
             self._record_failure(task.task_id, err, f"user:{request.user_id}", request)
             return self._build_rejected_result(request, err, context, task_record)
 
-        task_record = self.journal.transition(
-            task.task_id,
-            TaskStatus.AUTHORIZED,
-            expected_revision=task_record.revision,
-            actor="authorization-service",
-            reason="grant valid",
-        )
+        if task_record.status == TaskStatus.DRAFT:
+            task_record = self.journal.transition(
+                task.task_id,
+                TaskStatus.AUTHORIZED,
+                expected_revision=task_record.revision,
+                actor="authorization-service",
+                reason="grant valid",
+            )
 
         # ── Step 4: Deterministic Routing & Resource Admission ────────────────
         try:
@@ -248,22 +249,24 @@ class ExecutionEngine:
             self._record_failure(task.task_id, err, "scheduler", request)
             return self._build_rejected_result(request, err, context, task_record)
 
-        task_record = self.journal.transition(
-            task.task_id,
-            TaskStatus.QUEUED,
-            expected_revision=task_record.revision,
-            actor="scheduler",
-            reason=f"admitted to provider {provider.provider_id}",
-        )
+        if task_record.status == TaskStatus.AUTHORIZED:
+            task_record = self.journal.transition(
+                task.task_id,
+                TaskStatus.QUEUED,
+                expected_revision=task_record.revision,
+                actor="scheduler",
+                reason=f"admitted to provider {provider.provider_id}",
+            )
 
         # ── Step 5: Execution ─────────────────────────────────────────────────
-        task_record = self.journal.transition(
-            task.task_id,
-            TaskStatus.RUNNING,
-            expected_revision=task_record.revision,
-            actor="execution-engine",
-            reason="executing on primary provider",
-        )
+        if task_record.status == TaskStatus.QUEUED:
+            task_record = self.journal.transition(
+                task.task_id,
+                TaskStatus.RUNNING,
+                expected_revision=task_record.revision,
+                actor="execution-engine",
+                reason="executing on primary provider",
+            )
 
         unity_resp: UnityResponse | None = None
         result_payload: dict[str, Any] = {}
@@ -313,13 +316,14 @@ class ExecutionEngine:
             result_payload = {"status": "succeeded", "provider": provider.provider_id}
 
         # ── Step 6: Validation ────────────────────────────────────────────────
-        task_record = self.journal.transition(
-            task.task_id,
-            TaskStatus.VALIDATING,
-            expected_revision=task_record.revision,
-            actor="validation-service",
-            reason="validating operation results",
-        )
+        if task_record.status == TaskStatus.RUNNING:
+            task_record = self.journal.transition(
+                task.task_id,
+                TaskStatus.VALIDATING,
+                expected_revision=task_record.revision,
+                actor="validation-service",
+                reason="validating operation results",
+            )
 
         validation_passed = True
         if unity_resp is not None:
@@ -342,13 +346,14 @@ class ExecutionEngine:
             )
 
         # ── Step 7: Finalization, Idempotency & Audit ──────────────────────────
-        task_record = self.journal.transition(
-            task.task_id,
-            TaskStatus.COMPLETED,
-            expected_revision=task_record.revision,
-            actor="execution-engine",
-            reason="execution and validation succeeded",
-        )
+        if task_record.status == TaskStatus.VALIDATING:
+            task_record = self.journal.transition(
+                task.task_id,
+                TaskStatus.COMPLETED,
+                expected_revision=task_record.revision,
+                actor="execution-engine",
+                reason="execution and validation succeeded",
+            )
 
         self.journal.complete_operation(
             idempotency_key=request.idempotency_key,

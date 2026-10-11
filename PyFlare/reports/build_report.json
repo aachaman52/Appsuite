@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "codename": "Ember",
   "vendor": "Aachman Studios",
-  "timestamp": "2026-10-11T13:14:05.449925+00:00Z",
-  "total_duration_seconds": 1.66,
-  "host_platform": "Windows-10-10.0.19045-SP0",
-  "python_version": "3.15.0a8",
+  "timestamp": "2026-10-11T13:27:16.397903+00:00Z",
+  "total_duration_seconds": 24.57,
+  "host_platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python_version": "3.14.4",
   "status": "SUCCESS",
   "stage_results": {
     "Validation Suite": {
       "success": true,
       "message": "All 14 validators passed cleanly",
-      "elapsed": 0.34633374214172363,
+      "elapsed": 8.124956369400024,
       "details": {
-        "timestamp": "2026-10-11T13:14:04.184271+00:00Z",
+        "timestamp": "2026-10-11T13:26:59.978850+00:00Z",
         "total": 14,
         "passed": 14,
         "failed": 0,
@@ -24,112 +24,108 @@
             "label": "Branding assets",
             "passed": true,
             "errors": [],
-            "duration": 0.003065347671508789
+            "duration": 0.03507351875305176
           },
           {
             "validator": "validate_icons",
             "label": "Icon theme",
             "passed": true,
             "errors": [],
-            "duration": 0.0012476444244384766
+            "duration": 0.015245914459228516
           },
           {
             "validator": "validate_wallpapers",
             "label": "Wallpapers",
             "passed": true,
             "errors": [],
-            "duration": 0.0008718967437744141
+            "duration": 0.016700267791748047
           },
           {
             "validator": "validate_json",
             "label": "JSON files",
             "passed": true,
             "errors": [],
-            "duration": 0.12435364723205566
+            "duration": 3.3741295337677
           },
           {
             "validator": "validate_svg",
             "label": "SVG files",
             "passed": true,
             "errors": [],
-            "duration": 0.11499333381652832
+            "duration": 3.9979374408721924
           },
           {
             "validator": "validate_desktop",
             "label": "Desktop entries",
             "passed": true,
             "errors": [],
-            "duration": 0.003152608871459961
+            "duration": 0.06838512420654297
           },
           {
             "validator": "validate_packages",
             "label": "Package manifests",
             "passed": true,
             "errors": [],
-            "duration": 0.0017383098602294922
+            "duration": 0.025553464889526367
           },
           {
             "validator": "validate_filesystem",
             "label": "Filesystem overlay",
             "passed": true,
             "errors": [],
-            "duration": 0.0014863014221191406
+            "duration": 0.2087233066558838
           },
           {
             "validator": "validate_theme",
             "label": "GTK/GNOME theme",
             "passed": true,
             "errors": [],
-            "duration": 0.0019421577453613281
+            "duration": 0.09093761444091797
           },
           {
             "validator": "validate_configs",
             "label": "Config files",
             "passed": true,
             "errors": [],
-            "duration": 0.07614874839782715
+            "duration": 0.10129714012145996
           },
           {
             "validator": "validate_services",
             "label": "Systemd services",
             "passed": true,
             "errors": [],
-            "duration": 0.008051872253417969
+            "duration": 0.05392193794250488
           },
           {
             "validator": "validate_permissions",
             "label": "File permissions",
             "passed": true,
-            "errors": [
-              "opt/pyflare/engine/pyflare-engine not executable (fixable at install)",
-              "opt/pyflare/bin/pyflare-updater not executable (fixable at install)",
-              "opt/pyflare/bin/pyflare-firstrun not executable (fixable at install)"
-            ],
-            "duration": 0.001422882080078125
+            "errors": [],
+            "duration": 0.030321598052978516
           },
           {
             "validator": "validate_desktop_entries",
             "label": "Desktop entry syntax",
             "passed": true,
             "errors": [],
-            "duration": 0.0013470649719238281
+            "duration": 0.05384087562561035
           },
           {
             "validator": "validate_boot",
             "label": "Boot configuration",
             "passed": true,
             "errors": [],
-            "duration": 0.0022110939025878906
+            "duration": 0.030934810638427734
           }
         ]
       }
     },
     "Root Filesystem Preparation": {
       "success": true,
-      "message": "Prepared rootfs hierarchy with 19 root dirs and 59 files",
-      "elapsed": 0.3757946491241455,
+      "message": "Prepared rootfs hierarchy with 19 root dirs and 60 files",
+      "elapsed": 3.9028725624084473,
       "details": {
-        "rootfs_path": "C:\\Users\\Aachman_the_great\\Desktop\\Appsuite-1\\PyFlare\\build\\rootfs",
+        "rootfs_path": "/var/tmp/pyflare_rootfs",
         "directories": [
           "etc",
           "usr",
@@ -151,16 +147,16 @@
           "sys",
           "dev"
         ],
-        "total_files": 59
+        "total_files": 60
       }
     },
     "Package Preparation": {
       "success": true,
-      "message": "Package manifest staged (150 APT packages). Host package installation skipped on Windows/non-root.",
-      "elapsed": 0.021826744079589844,
+      "message": "Manifest generated & packages installed (150 APT packages)",
+      "elapsed": 0.09954261779785156,
       "details": {
         "schema": "pyflare-package-manifest/1.0",
-        "generated": "2026-10-11T13:14:04.577057+00:00Z",
+        "generated": "2026-10-11T13:27:03.915209+00:00Z",
         "vendor": "Aachman Studios",
         "package_categories": {
           "base": [
@@ -373,9 +369,9 @@
     "Branding Deployment": {
       "success": true,
       "message": "Deployed branding (176 assets across 5 categories)",
-      "elapsed": 0.26001572608947754,
+      "elapsed": 4.15476655960083,
       "details": {
-        "timestamp": "2026-10-11T13:14:04.843814+00:00Z",
+        "timestamp": "2026-10-11T13:27:08.145435+00:00Z",
         "categories": [
           "logos/svg",
           "logos/png",
@@ -391,9 +387,9 @@
     "Application Packaging": {
       "success": true,
       "message": "Packaged 11 applications and control plane into /opt/pyflare/",
-      "elapsed": 0.3779733180999756,
+      "elapsed": 5.857388257980347,
       "details": {
-        "timestamp": "2026-10-11T13:14:05.221690+00:00Z",
+        "timestamp": "2026-10-11T13:27:13.999338+00:00Z",
         "total_apps": 11,
         "applications": [
           "ai-assistant",
@@ -408,25 +404,25 @@
           "store",
           "terminal"
         ],
-        "apps_directory": "opt\\pyflare\\apps",
+        "apps_directory": "opt/pyflare/apps",
         "control_plane": "staged"
       }
     },
     "Desktop Integration": {
       "success": true,
       "message": "Integrated 11 desktop launchers & GNOME overrides",
-      "elapsed": 0.0013151168823242188,
+      "elapsed": 0.013874530792236328,
       "details": {
         "desktop_launchers": 11,
         "gsettings_overrides": 1,
         "icon_theme_present": true,
-        "schemas_compiled": false
+        "schemas_compiled": true
       }
     },
     "Boot Configuration": {
       "success": true,
       "message": "Boot params, GRUB, Plymouth, and 4 systemd services configured",
-      "elapsed": 0.01011204719543457,
+      "elapsed": 0.0007932186126708984,
       "details": {
         "grub_configured": true,
         "plymouth_configured": true,
@@ -442,29 +438,27 @@
     },
     "Filesystem Manifest & Checksums": {
       "success": true,
-      "message": "Manifest generated for 5 files (4.06 MB)",
-      "elapsed": 0.21316313743591309,
+      "message": "Manifest generated for 5 files (4.09 MB)",
+      "elapsed": 0.08711957931518555,
       "details": {
         "file_count": 5,
-        "total_mb": 4.06
+        "total_mb": 4.09
       }
     },
     "SquashFS Creation": {
       "success": true,
-      "message": "[SKIP] Windows host detected \u2014 mksquashfs skipped. Rootfs is fully prepared in build/rootfs/.",
-      "elapsed": 8.058547973632812e-05,
+      "message": "Compressed rootfs -> filesystem.squashfs (1.61 MB)",
+      "elapsed": 0.5116784572601318,
       "details": {
-        "skipped": true,
-        "reason": "non-linux-host"
+        "squashfs_size_mb": 1.61
       }
     },
     "ISO Creation": {
       "success": true,
-      "message": "[SKIP] Windows environment detected \u2014 xorriso/ISO creation requires Linux host (or WSL2). Rootfs and source tree are 100% build-ready.",
-      "elapsed": 7.462501525878906e-05,
+      "message": "ISO created successfully: pyflare-os-1.0.0-ember-amd64.iso (13.95 MB)",
+      "elapsed": 1.766057014465332,
       "details": {
-        "skipped": true,
-        "reason": "non-linux-host"
+        "iso_path": "/mnt/c/Users/Aachman_the_great/Desktop/Appsuite-1/PyFlare/output/pyflare-os-1.0.0-ember-amd64.iso"
       }
     }
   }

@@ -1,7 +1,180 @@
 #!/usr/bin/env python3
-# PyFlare OS first-run wizard — stub
-# Runs once after first boot.
+"""PyFlare OS First-Run Setup Engine.
+
+Executes during first boot to:
+1. Detect and log system hardware capabilities.
+2. Select conservative AI model tier or configure API-only operation.
+3. Establish default local user identity and optional provider credentials.
+4. Record first-boot state and handle failure recovery gracefully.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
 import os
 import sys
-print("Welcome to PyFlare OS!")
-print("First-run setup complete.")
+from dataclasses import asdict
+from pathlib import Path
+
+# Add control plane src to PYTHONPATH if installed in standard location
+PYFLARE_HOME = Path(os.environ.get("PYFLARE_HOME", "/opt/pyflare"))
+if (PYFLARE_HOME / "control_plane" / "src").exists():
+    sys.path.insert(0, str(PYFLARE_HOME / "control_plane" / "src"))
+
+try:
+    from pyflare_control.auth import AuthError, AuthManager
+    from pyflare_control.hardware import detect_hardware
+    from pyflare_control.model_registry import ModelCapabilityRegistry, ModelTier
+except ImportError:
+    # Fallback if running standalone or in development workspace
+    repo_src = Path(__file__).resolve().parents[4] / "control_plane" / "src"
+    if repo_src.exists():
+        sys.path.insert(0, str(repo_src))
+    from pyflare_control.auth import AuthError, AuthManager
+    from pyflare_control.hardware import detect_hardware
+    from pyflare_control.model_registry import ModelCapabilityRegistry, ModelTier
+
+
+def setup_logger(log_file: Path) -> logging.Logger:
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    logger = logging.getLogger(f"pyflare.firstrun.{os.getpid()}")
+    logger.setLevel(logging.INFO)
+    logger.handlers.clear()
+    
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    
+    fh = logging.FileHandler(log_file, encoding="utf-8")
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+    
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    return logger
+
+
+def close_logger(logger: logging.Logger) -> None:
+    for handler in list(logger.handlers):
+        handler.close()
+        logger.removeHandler(handler)
+
+
+def execute_first_boot(
+    *,
+    data_dir: Path = Path("/var/lib/pyflare"),
+    username: str = "pyflare",
+    password: str = "pyflare2027",
+    provider_id: str | None = None,
+    api_key: str | None = None,
+    force_api_only: bool = False,
+    override_tier: str | None = None,
+) -> dict:
+    data_dir.mkdir(parents=True, exist_ok=True)
+    logger = setup_logger(data_dir / "firstrun.log")
+    logger.info("Initializing PyFlare OS First-Boot Configuration...")
+
+    try:
+        # 1. Hardware Detection
+        logger.info("Step 1: Detecting system hardware...")
+        hardware = detect_hardware()
+        logger.info(
+            f"Detected: {hardware.cpu_threads} CPU threads, {hardware.ram_available_mb} MB RAM, "
+            f"{hardware.storage_available_mb} MB free storage"
+        )
+
+        # 2. Model Selection & Failure Recovery
+        logger.info("Step 2: Evaluating local model recommendations...")
+        registry = ModelCapabilityRegistry()
+        user_tier = None
+        if override_tier:
+            try:
+                user_tier = ModelTier(override_tier)
+            except ValueError:
+                logger.warning(f"Unrecognized tier '{override_tier}', using automated recommendation.")
+
+        rec = registry.recommend(
+            hardware,
+            user_override_tier=user_tier,
+            api_only=force_api_only,
+        )
+        logger.info(f"Model Tier Selected: {rec.selected_tier.value} — {rec.explanation}")
+
+        # Recovery: if local model recommended but storage has low margin, downgrade gracefully
+        if rec.recommended_model and hardware.storage_available_mb < rec.recommended_model.min_disk_free_mb:
+            logger.warning("Low disk margin detected; falling back to API-only mode for safety.")
+            rec = registry.recommend(hardware, api_only=True)
+
+        # 3. Authentication & Credential Storage
+        logger.info("Step 3: Initializing authentication store...")
+        auth_db = data_dir / "auth.sqlite3"
+        auth_mgr = AuthManager(auth_db)
+        
+        user_info = None
+        try:
+            user_info = auth_mgr.register_user(
+                username=username,
+                password=password,
+                display_name="PyFlare Game Developer",
+            )
+            logger.info(f"Local user identity created: {user_info.username} ({user_info.user_id})")
+        except AuthError as exc:
+            logger.warning(f"User identity note: {exc}")
+
+        if provider_id and api_key:
+            logger.info(f"Storing credentials for provider '{provider_id}'...")
+            auth_mgr.set_provider_credential(provider_id, api_key)
+
+        # 4. Save Final State
+        state = {
+            "status": "completed",
+            "hardware": asdict(hardware),
+            "model_selection": {
+                "tier": rec.selected_tier.value,
+                "recommended_model": asdict(rec.recommended_model) if rec.recommended_model else None,
+                "explanation": rec.explanation,
+            },
+            "user_created": user_info.username if user_info else username,
+            "configured_providers": list(auth_mgr.list_configured_providers()),
+        }
+
+        state_file = data_dir / "firstboot_state.json"
+        with open(state_file, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2, default=str)
+
+        logger.info(f"First-boot configuration successfully written to {state_file}")
+        return state
+    finally:
+        close_logger(logger)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="PyFlare OS First-Run Configuration")
+    parser.add_argument("--data-dir", type=Path, default=Path("/var/lib/pyflare"))
+    parser.add_argument("--username", default="pyflare")
+    parser.add_argument("--password", default="pyflare2027")
+    parser.add_argument("--provider-id")
+    parser.add_argument("--api-key")
+    parser.add_argument("--api-only", action="store_true")
+    parser.add_argument("--tier", choices=("small", "medium", "large", "api_only"))
+    
+    args = parser.parse_args()
+    try:
+        execute_first_boot(
+            data_dir=args.data_dir,
+            username=args.username,
+            password=args.password,
+            provider_id=args.provider_id,
+            api_key=args.api_key,
+            force_api_only=args.api_only,
+            override_tier=args.tier,
+        )
+        return 0
+    except Exception as exc:
+        print(f"First-boot error: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -78,6 +78,37 @@ namespace AachmanStudios.PyFlare.Unity
             );
         }
 
+        public static void RunBatchmodeBridge()
+        {
+            var scenePath = "Assets/Scenes/Main.unity";
+            if (!File.Exists(scenePath))
+            {
+                Directory.CreateDirectory("Assets/Scenes");
+                var newScene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
+                EditorSceneManager.SaveScene(newScene, scenePath);
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                EditorSceneManager.OpenScene(scenePath);
+            }
+
+            Start();
+            Debug.Log("[PyFlare] Unity Bridge started in batchmode. Listening on " + Prefix);
+
+            var exitSignalFile = Path.Combine(Directory.GetCurrentDirectory(), "stop_unity_bridge.txt");
+            var timeout = DateTime.UtcNow.AddMinutes(5);
+            while (DateTime.UtcNow < timeout && !File.Exists(exitSignalFile))
+            {
+                DrainRequestQueue();
+                System.Threading.Thread.Sleep(25);
+            }
+
+            Debug.Log("[PyFlare] Stopping Unity Bridge batchmode.");
+            Stop();
+            EditorApplication.Exit(0);
+        }
+
         private static void Start()
         {
             if (listener != null)

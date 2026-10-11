@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-11T13:14:05.221690+00:00Z",
+  "timestamp": "2026-10-11T13:27:13.999338+00:00Z",
   "total_apps": 11,
   "applications": [
     "ai-assistant",
@@ -14,6 +14,6 @@
     "store",
     "terminal"
   ],
-  "apps_directory": "opt\\pyflare\\apps",
+  "apps_directory": "opt/pyflare/apps",
   "control_plane": "staged"
 }
