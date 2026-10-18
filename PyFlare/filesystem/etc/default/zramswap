@@ -1,0 +1,6 @@
+# /etc/default/zramswap
+# Configuration for zram-tools compressed RAM swap
+# Optimal for low-resource environments (<=4GB RAM)
+ALGO=zstd
+PERCENT=50
+PRIORITY=100

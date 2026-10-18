@@ -270,7 +270,10 @@ class PyFlareBuildPipeline:
         ROOTFS_DIR.mkdir(parents=True, exist_ok=True)
 
         if self.is_linux and os.geteuid() == 0:
-            base_iso = ROOT / "Iso`s" / "ubuntu-24.04.4-live-server-amd64.iso"
+            base_iso = ROOT / "Isos" / "ubuntu-24.04.4-live-server-amd64.iso"
+            if not base_iso.exists():
+                # Also check parent directory if located in workspace root
+                base_iso = ROOT.parent / "Isos" / "ubuntu-24.04.4-live-server-amd64.iso"
             if base_iso.exists():
                 self.build_log.info("Extracting true Linux base OS from ISO...")
                 mnt_dir = Path("/tmp/ubuntu_iso")

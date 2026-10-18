@@ -1,6 +1,6 @@
 [Unit]
 Description=PyFlare OS First-Run Setup
-After=graphical.target
+After=systemd-user-sessions.service
 ConditionPathExists=!/var/lib/pyflare/.firstrun-complete
 
 [Service]
@@ -13,4 +13,4 @@ StandardOutput=journal
 StandardError=journal
 
 [Install]
-WantedBy=graphical.target
+WantedBy=multi-user.target

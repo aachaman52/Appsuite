@@ -107,7 +107,7 @@ class ISOPackager:
         # 2. Extract Kernel and Initrd from the base Ubuntu ISO
         # CRITICAL: Stage through /tmp (native Linux) first to avoid VirtualBox shared folder
         # corruption of large binary files. Direct copy to sf_* paths produces invalid magic numbers.
-        base_iso = self.base_dir / "Iso`s" / "ubuntu-24.04.4-live-server-amd64.iso"
+        base_iso = self.base_dir / "Isos" / "ubuntu-24.04.4-live-server-amd64.iso"
         if base_iso.exists():
             self.logger.info(f"Extracting kernel from base ISO: {base_iso.name}")
             mnt_dir = Path("/tmp/ubuntu_iso")
@@ -204,7 +204,7 @@ set timeout=5
 set default=0
 
 menuentry "Start PyFlare OS Desktop" {
-    linux /casper/vmlinuz boot=casper ignore_uuid live-media-path=/casper quiet splash ---
+    linux /casper/vmlinuz boot=casper ignore_uuid live-media-path=/casper systemd.unit=graphical.target fsck.mode=skip mitigations=off quiet splash ---
     initrd /casper/initrd
 }
 

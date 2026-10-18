@@ -1,0 +1,15 @@
+[Unit]
+Description=PyFlare Compressed ZRAM Swap
+DefaultDependencies=no
+Before=swap.target local-fs.target
+After=systemd-modules-load.service
+ConditionPathExists=/opt/pyflare/bin/pyflare-zram-setup
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/pyflare/bin/pyflare-zram-setup
+ExecStop=/bin/sh -c '/sbin/swapoff /dev/zram0 2>/dev/null; /usr/sbin/zramctl --reset /dev/zram0 2>/dev/null || true'
+
+[Install]
+WantedBy=swap.target multi-user.target

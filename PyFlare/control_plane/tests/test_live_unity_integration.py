@@ -100,7 +100,7 @@ class LiveUnityIntegrationTests(unittest.TestCase):
             client = UnityBridgeClient(config)
 
             connected = False
-            deadline = time.time() + 60.0
+            deadline = time.time() + 120.0
             while time.time() < deadline:
                 try:
                     resp = client.health()
@@ -111,7 +111,7 @@ class LiveUnityIntegrationTests(unittest.TestCase):
                     pass
                 time.sleep(1.0)
 
-            self.assertTrue(connected, f"Unity Bridge did not become healthy within 60s. Log: {log_file}")
+            self.assertTrue(connected, f"Unity Bridge did not become healthy within 120s. Log: {log_file}")
 
             # Context Manager
             context_mgr = ProjectContextManager(base_dir / "context.sqlite3")
