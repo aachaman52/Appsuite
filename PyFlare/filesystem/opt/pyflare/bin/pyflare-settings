@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# PyFlare Settings Launcher
+exec gnome-control-center "$@"

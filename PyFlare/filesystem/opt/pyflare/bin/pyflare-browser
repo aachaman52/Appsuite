@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# PyFlare Web Browser Launcher
+if command -v epiphany-browser >/dev/null 2>&1; then
+    exec epiphany-browser "$@"
+elif command -v firefox >/dev/null 2>&1; then
+    exec firefox "$@"
+elif command -v chromium-browser >/dev/null 2>&1; then
+    exec chromium-browser "$@"
+else
+    zenity --error --text="No supported web browser found. Install Epiphany or Firefox." 2>/dev/null || echo "No browser found"
+    exit 1
+fi

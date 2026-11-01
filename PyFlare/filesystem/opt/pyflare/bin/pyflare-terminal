@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# PyFlare Terminal Launcher
+if command -v gnome-terminal >/dev/null 2>&1; then
+    exec gnome-terminal "$@"
+elif command -v xterm >/dev/null 2>&1; then
+    exec xterm "$@"
+else
+    exec /bin/sh
+fi

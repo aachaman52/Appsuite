@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# PyFlare Files Launcher
+if command -v nautilus >/dev/null 2>&1; then
+    exec nautilus "$@"
+else
+    zenity --error --text="Nautilus file manager not installed." 2>/dev/null || echo "No file manager found"
+    exit 1
+fi
