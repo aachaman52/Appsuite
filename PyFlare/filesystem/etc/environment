@@ -22,3 +22,11 @@ CURSOR_THEME="PyFlare"
 # XDG Base Directories
 XDG_DATA_DIRS="/usr/local/share:/usr/share:/opt/pyflare/share"
 XDG_CONFIG_DIRS="/etc/xdg:/etc/pyflare/xdg"
+
+# Graphics & Software Rendering for VirtualBox
+LIBGL_ALWAYS_SOFTWARE="1"
+GALLIUM_DRIVER="llvmpipe"
+MESA_LOADER_DRIVER_OVERRIDE="llvmpipe"
+MUTTER_DEBUG_FORCE_EGL_STREAM="0"
+CLUTTER_ENABLE_DIAGNOSTIC="0"
+

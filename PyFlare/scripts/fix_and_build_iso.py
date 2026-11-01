@@ -94,6 +94,8 @@ def main():
     # 3. Build the PyFlare Overlay layer
     print("Constructing PyFlare Desktop & Boot Configuration Overlay...")
     overlay_dir = stage_root / "overlay"
+    if overlay_dir.exists():
+        subprocess.run(["rm", "-rf", str(overlay_dir)], check=True)
     overlay_dir.mkdir(parents=True, exist_ok=True)
 
     # Copy files from repository filesystem/ overlay
@@ -189,13 +191,67 @@ exec python3 -m pyflare_control.cli "$@"
             unit_path.unlink()
         os.symlink("/dev/null", str(unit_path))
 
-    # Mask gsd-usb-protection (crashes with SEGV under VirtualBox USB tablet emulation, triggering gnome-session-failed)
+    # Neutralize VM-incompatible Settings Daemons so GNOME session initialization never blocks
     user_sysd = overlay_dir / "etc" / "systemd" / "user"
     user_sysd.mkdir(parents=True, exist_ok=True)
-    usb_mask = user_sysd / "org.gnome.SettingsDaemon.UsbProtection.service"
-    if usb_mask.exists() or usb_mask.is_symlink():
-        usb_mask.unlink()
-    os.symlink("/dev/null", str(usb_mask))
+    dummy_units = [
+        "org.gnome.SettingsDaemon.UsbProtection.service",
+        "org.gnome.SettingsDaemon.Smartcard.service",
+        "org.gnome.SettingsDaemon.Wacom.service",
+        "org.gnome.SettingsDaemon.PrintNotifications.service",
+        "org.gnome.SettingsDaemon.Rfkill.service",
+        "org.gnome.SettingsDaemon.Sharing.service",
+        "org.gnome.SettingsDaemon.Wwan.service",
+    ]
+    for unit_name in dummy_units:
+        u_path = user_sysd / unit_name
+        u_path.write_text("""[Unit]
+Description=GNOME VM Dummy Service
+PartOf=gnome-session-initialized.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+RemainAfterExit=yes
+
+[Install]
+WantedBy=gnome-session-initialized.target
+""")
+
+    # Mask gnome-session-failed screen in user systemd so minor issues can NEVER block desktop
+    for gsf in [
+        "gnome-session-failed.service",
+        "gnome-session-failed.target"
+    ]:
+        for prefix in [overlay_dir / "etc" / "systemd" / "user", overlay_dir / "usr" / "lib" / "systemd" / "user"]:
+            prefix.mkdir(parents=True, exist_ok=True)
+            gsf_path = prefix / gsf
+            if gsf_path.exists() or gsf_path.is_symlink():
+                gsf_path.unlink()
+            os.symlink("/dev/null", str(gsf_path))
+
+    # Physically replace gnome-session-failed binary with exit 0 dummy
+    for bin_dir in [overlay_dir / "usr" / "libexec", overlay_dir / "usr" / "lib" / "gnome-session"]:
+        bin_dir.mkdir(parents=True, exist_ok=True)
+        gsf_bin = bin_dir / "gnome-session-failed"
+        gsf_bin.write_text("#!/bin/sh\nexit 0\n")
+        gsf_bin.chmod(0o755)
+
+    # System-wide and session-wide environment overrides
+    env_d = overlay_dir / "etc" / "environment.d"
+    env_d.mkdir(parents=True, exist_ok=True)
+    (env_d / "60-virtualbox.conf").write_text("""LIBGL_ALWAYS_SOFTWARE=1
+GALLIUM_DRIVER=llvmpipe
+MESA_LOADER_DRIVER_OVERRIDE=llvmpipe
+MUTTER_DEBUG_FORCE_EGL_STREAM=0
+CLUTTER_ENABLE_DIAGNOSTIC=0
+""")
+
+    # Blacklist efi_pstore to prevent BIOS VM boot pause
+    modprobe_d = overlay_dir / "etc" / "modprobe.d"
+    modprobe_d.mkdir(parents=True, exist_ok=True)
+    (modprobe_d / "blacklist-vbox.conf").write_text("blacklist efi_pstore\n")
+
 
     # Enable PyFlare systemd units
     multi_user_wants = sysd_dir / "multi-user.target.wants"
@@ -265,7 +321,7 @@ export BUILD_SYSTEM=Ubuntu
     print("Extracting base user database and PAM configs to apply GDM fixes...")
     subprocess.run([
         "unsquashfs", "-f", "-d", str(overlay_dir), str(dst_base_sq),
-        "etc/passwd", "etc/group", "etc/shadow", "etc/pam.d", "etc/gdm3"
+        "etc/passwd", "etc/group", "etc/shadow", "etc/pam.d", "etc/gdm3", "etc/xdg/autostart"
     ], check=True, stdout=subprocess.DEVNULL)
 
     # Ensure system users needed by GNOME, GDM, colord, and D-Bus services exist
@@ -309,8 +365,8 @@ export BUILD_SYSTEM=Ubuntu
         if f"{u_name}:" not in sh_content:
             sh_content += f"{u_name}:*:20000:0:99999:7:::\n"
     
-    # Set known verified password 'appsuite' for pyflare and root
-    appsuite_hash = "$6$3CWN9PWsPl2JHlmr$E6Z4NyMqnMVc2pLffXiEP3DM8YASuAJjRhfPM7oNejBkl4Pts3g0N8dAaWK4l2Spa5WHcuc0T9N8jIgRt4DEB/"
+    # Set verified SHA-512 crypt password 'appsuite' for pyflare and root
+    appsuite_hash = "$6$pyflareos$mGFxw8mj4h5FI8JQt5gW9PkbvdCoq.br97hcR4.5Ru1nkMuMdTD9N1/iMccBtRfdzh8LLSFwgg.MtNHkFlNZ51"
     new_sh_lines = []
     for line in sh_content.splitlines():
         if line.startswith("pyflare:"):
@@ -411,19 +467,37 @@ WantedBy=graphical.target
         pq_wants.unlink()
     os.symlink("/etc/systemd/system/plymouth-quit-pyflare.service", str(pq_wants))
 
+    # AccountsService configuration for user pyflare (forces gnome-xorg session)
+    acc_dir = overlay_dir / "var" / "lib" / "AccountsService" / "users"
+    acc_dir.mkdir(parents=True, exist_ok=True)
+    (acc_dir / "pyflare").write_text("""[User]
+Session=gnome-xorg
+XSession=gnome-xorg
+SystemAccount=false
+""")
+
     # Set proper ownership: system files owned by root, /home/pyflare owned by 1000:1000
     subprocess.run(["chown", "-R", "0:0", str(overlay_dir)], check=True)
+    # Fix systemd unit permissions so systemd doesn't warn about executable/world-writable units
+    subprocess.run(["find", str(overlay_dir / "etc" / "systemd"), "-type", "f", "-name", "*.service", "-exec", "chmod", "644", "{}", "+"], check=False)
+    subprocess.run(["find", str(overlay_dir / "etc" / "systemd"), "-type", "f", "-name", "*.timer", "-exec", "chmod", "644", "{}", "+"], check=False)
+    # Ensure all scripts in /opt/pyflare/bin are 755
+    if (overlay_dir / "opt" / "pyflare" / "bin").exists():
+        subprocess.run(["chmod", "-R", "755", str(overlay_dir / "opt" / "pyflare" / "bin")], check=False)
     home_pyflare = overlay_dir / "home" / "pyflare"
     if home_pyflare.exists():
         subprocess.run(["chown", "-R", "1000:1000", str(home_pyflare)], check=True)
         subprocess.run(["chmod", "750", str(home_pyflare)], check=True)
 
+
     # 4. Compress overlay into SquashFS
     print("Compressing overlay SquashFS layer...")
     overlay_sq = stage_root / "overlay.squashfs"
+    if overlay_sq.exists():
+        overlay_sq.unlink()
     subprocess.run([
         "mksquashfs", str(overlay_dir), str(overlay_sq),
-        "-comp", "xz", "-b", "512K", "-no-recovery"
+        "-noappend", "-comp", "xz", "-b", "512K", "-no-recovery"
     ], check=True, stdout=subprocess.DEVNULL)
     print(f"Overlay layer compressed: {overlay_sq.stat().st_size // 1024} KB")
 

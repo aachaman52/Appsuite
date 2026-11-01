@@ -1,23 +1,37 @@
 #!/bin/sh
 # PyFlare OS — Dynamic Compressed ZRAM Swap Setup
 # Allocates 50% of physical RAM (capped at 4096MB) as compressed RAM swap.
-set -e
 
-if ! modprobe zram num_devices=1 2>/dev/null; then
-    echo "[pyflare-zram] zram kernel module not available"
-    exit 0
-fi
+modprobe zram num_devices=1 2>/dev/null || true
 
 if [ -b /dev/zram0 ]; then
-    mem_total_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-    zram_size_mb=$((mem_total_kb / 2048))
-    [ "$zram_size_mb" -gt 4096 ] && zram_size_mb=4096
-    [ "$zram_size_mb" -lt 512 ] && zram_size_mb=512
+    mem_total_kb=""
+    while read -r key val rest; do
+        if [ "$key" = "MemTotal:" ]; then
+            mem_total_kb="$val"
+            break
+        fi
+    done < /proc/meminfo
 
-    /usr/sbin/zramctl /dev/zram0 --size "${zram_size_mb}M" --algorithm zstd 2>/dev/null || \
-    /usr/sbin/zramctl /dev/zram0 --size "${zram_size_mb}M" 2>/dev/null || true
+    if [ -n "$mem_total_kb" ] && [ "$mem_total_kb" -gt 0 ] 2>/dev/null; then
+        zram_size_mb=$((mem_total_kb / 2048))
+    else
+        zram_size_mb=1024
+    fi
 
-    /sbin/mkswap -L zram0 /dev/zram0 2>/dev/null || true
-    /sbin/swapon -p 100 /dev/zram0 2>/dev/null || true
+    if [ "$zram_size_mb" -gt 4096 ] 2>/dev/null; then
+        zram_size_mb=4096
+    fi
+    if [ "$zram_size_mb" -lt 512 ] 2>/dev/null; then
+        zram_size_mb=512
+    fi
+
+    zramctl /dev/zram0 --size "${zram_size_mb}M" --algorithm zstd 2>/dev/null || \
+    zramctl /dev/zram0 --size "${zram_size_mb}M" 2>/dev/null || true
+
+    mkswap -L zram0 /dev/zram0 2>/dev/null || true
+    swapon -p 100 /dev/zram0 2>/dev/null || true
     echo "[pyflare-zram] Allocated ${zram_size_mb} MB zram swap on /dev/zram0"
 fi
+
+exit 0
