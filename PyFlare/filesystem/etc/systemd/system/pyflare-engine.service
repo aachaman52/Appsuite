@@ -2,16 +2,14 @@
 Description=PyFlare Engine Background Service
 After=network.target dbus.service
 Wants=network.target
+StartLimitBurst=3
+StartLimitIntervalSec=60
 
 [Service]
 Type=simple
 ExecStart=/opt/pyflare/engine/pyflare-engine --daemon
-ExecReload=/bin/kill -HUP $MAINPID
-RemainAfterExit=yes
 Restart=on-failure
-RestartSec=10
-StartLimitBurst=3
-StartLimitIntervalSec=60
+RestartSec=5
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=pyflare-engine

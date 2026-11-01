@@ -1,7 +1,7 @@
 [Unit]
 Description=PyFlare Compressed ZRAM Swap
 DefaultDependencies=no
-Before=swap.target local-fs.target
+Before=swap.target
 After=systemd-modules-load.service
 ConditionPathExists=/opt/pyflare/bin/pyflare-zram-setup
 

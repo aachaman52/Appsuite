@@ -12,6 +12,8 @@ def patch_initrd_file(initrd_path: Path) -> bytes:
     offset = 0
     new_cpio = bytearray()
     patched_casper = False
+    patched_functions = False
+    patched_adduser = False
     patched_preseed = False
     patched_selections = False
     patched_modules = False
@@ -58,6 +60,118 @@ def patch_initrd_file(initrd_path: Path) -> bytes:
                 print("target_cleanup was already replaced or absent.")
 
             new_content = text.encode('utf-8')
+            new_filesize = len(new_content)
+            new_file_pad_len = (4 - (new_filesize % 4)) % 4
+            new_header = bytearray(header)
+            new_header[54:62] = f"{new_filesize:08x}".encode('ascii')
+
+            new_cpio.extend(new_header)
+            new_cpio.extend(name_raw)
+            new_cpio.extend(b'\x00' * name_pad_len)
+            new_cpio.extend(new_content)
+            new_cpio.extend(b'\x00' * new_file_pad_len)
+
+            offset = next_offset
+            continue
+
+        elif name == "scripts/casper-functions":
+            text = content.decode('utf-8', errors='ignore')
+            target_lcm = """load_confmodule() {
+\t# Only do this once.
+\tif [ -z "$DEBCONF_REDIR" ]; then
+\t\texec <&4
+\t\texport DEBIAN_HAS_FRONTEND=1
+\t\texport DEBCONF_REDIR=1
+\tfi
+
+\t. /root/usr/share/debconf/confmodule
+}"""
+            replacement_lcm = """load_confmodule() {
+\texport DEBIAN_HAS_FRONTEND=1
+\texport DEBCONF_REDIR=1
+\tdb_get() { RET=""; return 0; }
+\tdb_set() { return 0; }
+\tdb_input() { return 0; }
+\tdb_go() { return 0; }
+\tdb_register() { return 0; }
+\tdb_unregister() { return 0; }
+\tdb_fget() { RET=""; return 0; }
+\tdb_fset() { return 0; }
+\tdb_stop() { return 0; }
+\tdb_reset() { return 0; }
+\tdb_subst() { return 0; }
+\tdb_progress() { return 0; }
+\tdb_capb() { return 0; }
+\tdb_title() { return 0; }
+\treturn 0
+}"""
+            if target_lcm in text:
+                text = text.replace(target_lcm, replacement_lcm, 1)
+                patched_functions = True
+            elif "db_get() { RET=\"\"; return 0; }" in text:
+                patched_functions = True
+            else:
+                # Fallback: replace any load_confmodule block
+                idx = text.find("load_confmodule() {")
+                if idx != -1:
+                    end_idx = text.find("}", idx)
+                    if end_idx != -1:
+                        text = text[:idx] + replacement_lcm + text[end_idx+1:]
+                        patched_functions = True
+
+            new_content = text.encode('utf-8')
+            new_filesize = len(new_content)
+            new_file_pad_len = (4 - (new_filesize % 4)) % 4
+            new_header = bytearray(header)
+            new_header[54:62] = f"{new_filesize:08x}".encode('ascii')
+
+            new_cpio.extend(new_header)
+            new_cpio.extend(name_raw)
+            new_cpio.extend(b'\x00' * name_pad_len)
+            new_cpio.extend(new_content)
+            new_cpio.extend(b'\x00' * new_file_pad_len)
+
+            offset = next_offset
+            continue
+
+        elif name == "scripts/casper-bottom/25adduser":
+            new_content = b"""#!/bin/sh
+PREREQ=""
+prereqs() { echo "$PREREQ"; }
+case $1 in prereqs) prereqs; exit 0 ;; esac
+
+. /scripts/casper-functions
+log_begin_msg "Setting up user permissions"
+if [ -d /root/etc/sudoers.d ]; then
+    echo "pyflare ALL=(ALL) NOPASSWD: ALL" > /root/etc/sudoers.d/casper
+    chmod 0440 /root/etc/sudoers.d/casper
+fi
+chroot /root chown -R 1000:1000 /home/pyflare 2>/dev/null || true
+log_end_msg
+exit 0
+"""
+            new_filesize = len(new_content)
+            new_file_pad_len = (4 - (new_filesize % 4)) % 4
+            new_header = bytearray(header)
+            new_header[54:62] = f"{new_filesize:08x}".encode('ascii')
+
+            new_cpio.extend(new_header)
+            new_cpio.extend(name_raw)
+            new_cpio.extend(b'\x00' * name_pad_len)
+            new_cpio.extend(new_content)
+            new_cpio.extend(b'\x00' * new_file_pad_len)
+
+            patched_adduser = True
+            offset = next_offset
+            continue
+
+        elif name in ("scripts/casper-bottom/24preseed", "scripts/casper-bottom/22sslcert"):
+            new_content = b"""#!/bin/sh
+PREREQ=""
+prereqs() { echo "$PREREQ"; }
+case $1 in prereqs) prereqs; exit 0 ;; esac
+exit 0
+"""
             new_filesize = len(new_content)
             new_file_pad_len = (4 - (new_filesize % 4)) % 4
             new_header = bytearray(header)
@@ -133,6 +247,8 @@ def patch_initrd_file(initrd_path: Path) -> bytes:
             break
 
     assert patched_casper, "Failed to patch scripts/casper"
+    assert patched_functions, "Failed to patch scripts/casper-functions"
+    assert patched_adduser, "Failed to patch scripts/casper-bottom/25adduser"
     assert patched_preseed, "Failed to patch usr/bin/casper-preseed"
     assert patched_selections, "Failed to patch usr/bin/casper-set-selections"
     print(f"Patched modules: {patched_modules}")

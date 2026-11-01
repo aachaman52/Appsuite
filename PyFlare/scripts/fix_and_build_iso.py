@@ -58,15 +58,17 @@ def main():
     (disk_dir / "info").write_text("PyFlare OS 1.0.0 Ember - Game Dev Edition")
 
     dst_base_sq = casper_dir / "ubuntu-server-minimal.squashfs"
-    if not (dst_base_sq.exists() and (casper_dir / "vmlinuz").exists() and (casper_dir / "initrd").exists()):
+    pristine_initrd = stage_root / "initrd.pristine"
+    if not (dst_base_sq.exists() and (casper_dir / "vmlinuz").exists() and pristine_initrd.exists()):
         mnt_dir = stage_root / "mnt_source"
         mnt_dir.mkdir(parents=True, exist_ok=True)
-        print("Mounting base ISO to extract rootfs...")
+        print("Mounting base ISO to extract rootfs and pristine boot assets...")
         subprocess.run(["mount", "-o", "loop,ro", str(source_iso), str(mnt_dir)], check=True)
         try:
-            print("Extracting kernel and initrd...")
+            print("Extracting kernel and pristine initrd...")
             shutil.copy2(mnt_dir / "casper" / "vmlinuz", casper_dir / "vmlinuz")
-            shutil.copy2(mnt_dir / "casper" / "initrd", casper_dir / "initrd")
+            shutil.copy2(mnt_dir / "casper" / "initrd", pristine_initrd)
+            shutil.copy2(pristine_initrd, casper_dir / "initrd")
 
             src_base_sq = mnt_dir / "casper" / "ubuntu-server-minimal.squashfs"
             print(f"Staging base Ubuntu rootfs ({src_base_sq.stat().st_size // (1024*1024)} MB)...")
@@ -80,6 +82,7 @@ def main():
             subprocess.run(["umount", str(mnt_dir)], check=False)
     else:
         print(f"Base Ubuntu rootfs already cached at {dst_base_sq} ({dst_base_sq.stat().st_size // (1024*1024)} MB). Fast rebuild enabled!")
+        shutil.copy2(pristine_initrd, casper_dir / "initrd")
 
     # Patch initrd Casper debconf FIFO non-blocking fix
     print("Applying Casper initrd non-blocking FIFO patch...")
@@ -213,6 +216,9 @@ exec python3 -m pyflare_control.cli "$@"
     zram_bin = overlay_dir / "opt" / "pyflare" / "bin" / "pyflare-zram-setup"
     if zram_bin.exists():
         zram_bin.chmod(0o755)
+    engine_bin = overlay_dir / "opt" / "pyflare" / "engine" / "pyflare-engine"
+    if engine_bin.exists():
+        engine_bin.chmod(0o755)
 
     # FIX 2: GDM3 configuration (Disable Wayland for VirtualBox, Enable AutoLogin)
     gdm_dir = overlay_dir / "etc" / "gdm3"
@@ -282,14 +288,44 @@ export BUILD_SYSTEM=Ubuntu
     for u_name, _, u_gid, _, _, _ in sys_users:
         if f"{u_name}:" not in gr_content:
             gr_content += f"{u_name}:x:{u_gid}:\n"
-    gr_file.write_text(gr_content)
+    
+    # Ensure pyflare is in necessary interactive & hardware groups
+    gr_lines = []
+    for line in gr_content.splitlines():
+        parts = line.split(":")
+        if len(parts) >= 4 and parts[0] in ("video", "render", "audio", "input", "adm", "sudo", "dip", "plugdev"):
+            members = [m for m in parts[3].split(",") if m]
+            if "pyflare" not in members:
+                members.append("pyflare")
+            parts[3] = ",".join(members)
+            gr_lines.append(":".join(parts))
+        else:
+            gr_lines.append(line)
+    gr_file.write_text("\n".join(gr_lines) + "\n")
 
     sh_file = overlay_dir / "etc" / "shadow"
     sh_content = sh_file.read_text()
     for u_name, _, _, _, _, _ in sys_users:
         if f"{u_name}:" not in sh_content:
             sh_content += f"{u_name}:*:20000:0:99999:7:::\n"
-    sh_file.write_text(sh_content)
+    
+    # Set known verified password 'appsuite' for pyflare and root
+    appsuite_hash = "$6$3CWN9PWsPl2JHlmr$E6Z4NyMqnMVc2pLffXiEP3DM8YASuAJjRhfPM7oNejBkl4Pts3g0N8dAaWK4l2Spa5WHcuc0T9N8jIgRt4DEB/"
+    new_sh_lines = []
+    for line in sh_content.splitlines():
+        if line.startswith("pyflare:"):
+            parts = line.split(":")
+            parts[1] = appsuite_hash
+            new_sh_lines.append(":".join(parts))
+        elif line.startswith("root:"):
+            parts = line.split(":")
+            parts[1] = appsuite_hash
+            new_sh_lines.append(":".join(parts))
+        else:
+            new_sh_lines.append(line)
+    if not any(l.startswith("pyflare:") for l in new_sh_lines):
+        new_sh_lines.append(f"pyflare:{appsuite_hash}:20000:0:99999:7:::")
+    sh_file.write_text("\n".join(new_sh_lines) + "\n")
 
     # Rename all .dpkg-new files in /etc/pam.d and /etc/gdm3 so PAM and GDM can find them
     for dpkg_f in overlay_dir.glob("etc/**/*.dpkg-new"):
@@ -302,6 +338,14 @@ export BUILD_SYSTEM=Ubuntu
     xsession = overlay_dir / "etc" / "gdm3" / "Xsession"
     if xsession.exists():
         xsession.chmod(0o755)
+
+    # Ensure PyFlare cursor theme symlink points to Adwaita
+    icons_dir = overlay_dir / "usr" / "share" / "icons"
+    icons_dir.mkdir(parents=True, exist_ok=True)
+    pyflare_cursor = icons_dir / "PyFlare"
+    if pyflare_cursor.exists() or pyflare_cursor.is_symlink():
+        pyflare_cursor.unlink()
+    pyflare_cursor.symlink_to("Adwaita")
 
     # Re-apply custom.conf and casper.conf over extracted ones
     gdm_conf.write_text("""# PyFlare GDM3 Configuration
@@ -347,12 +391,39 @@ export BUILD_SYSTEM=Ubuntu
         for sf in sd.iterdir():
             os.chmod(str(sf), 0o440)
 
-    # 4. Compress overlay into SquashFS with all files owned by root
+    # Plymouth quit safety service to prevent splash hang
+    pq_service = sysd_dir / "plymouth-quit-pyflare.service"
+    pq_service.write_text("""[Unit]
+Description=PyFlare Plymouth Quit Safety
+After=gdm3.service
+Wants=gdm3.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "/usr/bin/plymouth quit || true"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=graphical.target
+""")
+    pq_wants = graphical_wants / "plymouth-quit-pyflare.service"
+    if pq_wants.exists() or pq_wants.is_symlink():
+        pq_wants.unlink()
+    os.symlink("/etc/systemd/system/plymouth-quit-pyflare.service", str(pq_wants))
+
+    # Set proper ownership: system files owned by root, /home/pyflare owned by 1000:1000
+    subprocess.run(["chown", "-R", "0:0", str(overlay_dir)], check=True)
+    home_pyflare = overlay_dir / "home" / "pyflare"
+    if home_pyflare.exists():
+        subprocess.run(["chown", "-R", "1000:1000", str(home_pyflare)], check=True)
+        subprocess.run(["chmod", "750", str(home_pyflare)], check=True)
+
+    # 4. Compress overlay into SquashFS
     print("Compressing overlay SquashFS layer...")
     overlay_sq = stage_root / "overlay.squashfs"
     subprocess.run([
         "mksquashfs", str(overlay_dir), str(overlay_sq),
-        "-all-root", "-comp", "xz", "-b", "512K", "-no-recovery"
+        "-comp", "xz", "-b", "512K", "-no-recovery"
     ], check=True, stdout=subprocess.DEVNULL)
     print(f"Overlay layer compressed: {overlay_sq.stat().st_size // 1024} KB")
 

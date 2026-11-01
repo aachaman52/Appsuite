@@ -8,5 +8,5 @@ Encoding=UTF-8
 GtkTheme=PyFlare-Dark
 MetacityTheme=PyFlare-Dark
 IconTheme=PyFlare-Icons
-CursorTheme=PyFlare
-ButtonLayout=appmenu:minimize,maximize,close
+CursorTheme=Adwaita
+ButtonLayout=:minimize,maximize,close

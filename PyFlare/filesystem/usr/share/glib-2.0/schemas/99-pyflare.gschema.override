@@ -1,13 +1,13 @@
 [org.gnome.desktop.interface]
 gtk-theme='PyFlare-Dark'
 icon-theme='PyFlare-Icons'
-cursor-theme='PyFlare'
+cursor-theme='Adwaita'
 cursor-size=24
 font-name='Inter 11'
 document-font-name='Inter 11'
 monospace-font-name='JetBrains Mono 11'
 color-scheme='prefer-dark'
-enable-animations=false
+enable-animations=true
 show-battery-percentage=true
 clock-show-weekday=true
 clock-format='12h'
@@ -30,7 +30,7 @@ favorite-apps=['dev.pyflare.Files.desktop','dev.pyflare.Terminal.desktop','dev.p
 welcome-dialog-last-shown-version='99.0'
 
 [org.gnome.desktop.wm.preferences]
-button-layout='appmenu:minimize,maximize,close'
+button-layout=':minimize,maximize,close'
 theme='PyFlare-Dark'
 num-workspaces=4
 focus-mode='click'
@@ -44,9 +44,8 @@ workspaces-only-on-primary=true
 idle-delay=uint32 300
 
 [org.gnome.settings-daemon.plugins.color]
-night-light-enabled=true
-night-light-schedule-automatic=true
-night-light-temperature=uint32 3500
+night-light-enabled=false
+night-light-schedule-automatic=false
 
 [org.gnome.software]
 allow-updates=false

@@ -1,9 +1,10 @@
-# PyFlare OS — Architecture
+# PyFlare OS — Architecture & Systems Specification
 
-**Version:** 1.0.0 (Ember)
-**Status:** Production
-**Author:** Aachman Studios
-**Last Updated:** 2026-08-04
+**Version:** 1.0.0 (Ember Beta)  
+**Status:** Beta Engineering Baseline  
+**Author:** Aachman Studios  
+**Last Updated:** 2026-11-01  
+**Target Release:** 2 February 2027  
 
 ---
 
@@ -12,26 +13,38 @@
 1. [Overview](#overview)
 2. [High-Level Architecture](#high-level-architecture)
 3. [Subsystem Breakdown](#subsystem-breakdown)
+   - [Base System & Kernel Layer](#1-base-system--kernel-layer)
+   - [Desktop Environment Layer (GNOME 46)](#2-desktop-environment-layer)
+   - [PyFlare Control Plane Architecture](#3-pyflare-control-plane-architecture)
+   - [Deterministic Routing & Policy Engine](#4-deterministic-routing--policy-engine)
+   - [Execution Engine & Lifecycle Journal](#5-execution-engine--lifecycle-journal)
+   - [Project Context Manager](#6-project-context-manager)
+   - [Hardware-Aware Intelligence & Model Registry](#7-hardware-aware-intelligence--model-registry)
+   - [Game Engine Integration (Unity 6 Editor Bridge)](#8-game-engine-integration-unity-6-editor-bridge)
+   - [Branding System](#9-branding-system)
+   - [Filesystem Overlay & Packaging](#10-filesystem-overlay--packaging)
+   - [Installer Architecture (Calamares)](#11-installer-architecture)
 4. [Component Dependency Graph](#component-dependency-graph)
 5. [Data Flow](#data-flow)
-6. [Build Architecture](#build-architecture)
-7. [Application Framework Architecture](#application-framework-architecture)
-8. [AI Integration Architecture](#ai-integration-architecture)
-9. [Design Principles](#design-principles)
-10. [Related Documents](#related-documents)
+6. [Design Principles](#design-principles)
+7. [Release Management Artifacts](#release-management-artifacts)
 
 ---
 
 ## Overview
 
-PyFlare OS is a custom Linux distribution built on Ubuntu 24.04 LTS (Noble Numbat). The system is structured as a multi-layer stack: a remastered Ubuntu base, a GNOME desktop layer with custom branding and configuration, a set of bundled PyFlare applications, and an AI runtime integration layer powered by Ollama.
+PyFlare OS is an AI-powered developer and game-development operating system built on an Ubuntu 24.04 LTS (Noble Numbat) foundation with GNOME 46. It is designed to adapt its capabilities to the host's physical or virtualized hardware constraints, managing local task execution, deterministic routing, project context, and native game engine automation.
 
-The repository is split into two primary sub-projects:
+The repository is structured with the canonical OS and control plane in `PyFlare/`:
 
-| Sub-project | Role |
-|---|---|
-| **PyFlare/** | The operating system itself — build pipeline, branding, filesystem, packages, installer |
-| **AppSuite_JarvisV1/** | The autonomous AI engineering engine that powers the `AppSuite` application suite within the OS |
+| Sub-system | Path | Role |
+|---|---|---|
+| **Control Plane Core** | `PyFlare/control_plane/src/pyflare_control/` | Deterministic router, execution engine, context manager, hardware profiler, model registry, journal, and audit trail |
+| **Unity Automation Bridge** | `PyFlare/integrations/unity/` | C# Unity package (`com.aachmanstudios.pyflare.automation`) providing authenticated loopback RPC for Unity 6 Editor |
+| **Filesystem Overlay** | `PyFlare/filesystem/` | Root filesystem overlay with systemd services, GDM3/Xorg configs, dconf schemas, and user profile skeletons |
+| **Remaster Pipeline** | `PyFlare/scripts/` | Fast ISO remastering, Casper initrd patching, and hybrid xorriso assembly |
+| **Desktop Applications** | `PyFlare/applications/` | Bundled developer applications (AI Assistant, Store, Terminal, Settings, Files) |
+| **Branding System** | `PyFlare/branding_generator/` | Procedural visual identity generator (GTK themes, icons, wallpapers, cursors, plymouth animations) |
 
 ---
 
@@ -39,162 +52,109 @@ The repository is split into two primary sub-projects:
 
 ```mermaid
 graph TD
-    subgraph "Repository Root"
-        PF["PyFlare/ — OS Layer"]
-        AS["AppSuite_JarvisV1/ — AI Engine Layer"]
-        LG["langgraph-main/ — DAG Runtime"]
+    subgraph "Developer Interface"
+        UI["GNOME 46 Shell Desktop (Xorg)"]
+        CLI["pyflare-control CLI / pyflare-firstrun"]
+        APPS["Bundled Apps (Terminal, Assistant, Store)"]
     end
 
-    subgraph "PyFlare OS Stack"
-        BC["Ubuntu 24.04 LTS Base"]
-        DE["GNOME Desktop Environment"]
-        BR["PyFlare Branding System"]
-        AP["Bundled Applications (11)"]
-        AI["Ollama AI Runtime"]
+    subgraph "PyFlare Control Plane"
+        TS["TaskSpec Contract & Codec"]
+        ROUTER["Deterministic Router & Filter"]
+        SCHED["Resource Scheduler & Headroom Gate"]
+        ENGINE["Execution Engine"]
+        CTX["Project Context Manager (SQLite Indexer)"]
+        HW["Hardware Profiler & Model Registry"]
+        JOURNAL["Task Journal (SQLite3)"]
+        AUDIT["Audit Log (Append-only JSONL)"]
     end
 
-    subgraph "AppSuite Jarvis Engine"
-        JB["Jarvis Brain (LLM Planner)"]
-        ORC["Graph Orchestrator (DAG)"]
-        AGT["Specialized Agents (6+)"]
-        WKR["Execution Workers (8)"]
-        MEM["4-Tier Memory System"]
-        DB["SQLite Knowledge Graph"]
+    subgraph "Execution Adapters"
+        UNITY["Unity 6 Bridge Client (Loopback HTTP:47831)"]
+        LOCAL["Local Deterministic Tools & Python Workers"]
+        MODELS["Local LLMs (Ollama) / Cloud Models (NIM, OpenAI)"]
     end
 
-    PF --> BC
-    BC --> DE
-    DE --> BR
-    DE --> AP
-    AP --> AI
-    AS --> JB
-    JB --> ORC
-    ORC --> AGT
-    AGT --> WKR
-    WKR --> MEM
-    MEM --> DB
-    LG --> ORC
+    subgraph "Operating System & Hypervisor Foundation"
+        UBUNTU["Ubuntu 24.04 LTS Noble Numbat"]
+        ZRAM["Dynamic ZRAM Swap (50% RAM, zstd)"]
+        CASPER["Casper OverlayFS Live Stack"]
+        INITRD["Patched initrd (Non-blocking FIFO)"]
+    end
+
+    UI --> CLI
+    APPS --> CLI
+    CLI --> TS
+    TS --> ROUTER
+    ROUTER --> SCHED
+    SCHED --> ENGINE
+    ENGINE --> CTX
+    ENGINE --> HW
+    ENGINE --> JOURNAL
+    ENGINE --> AUDIT
+    ENGINE --> UNITY
+    ENGINE --> LOCAL
+    ENGINE --> MODELS
+    ENGINE --> UBUNTU
+    UBUNTU --> ZRAM
+    UBUNTU --> CASPER
+    CASPER --> INITRD
 ```
 
 ---
 
 ## Subsystem Breakdown
 
-### 1. Base System Layer
-
-| Component | Implementation |
-|---|---|
-| Base distribution | Ubuntu 24.04.2 LTS (Noble Numbat) |
-| Kernel | `linux-generic-hwe-24.04` |
-| Init system | systemd |
-| Architecture | amd64 (x86_64) |
-| ISO flavor | Live/Install DVD |
-| Bootloader | GRUB 2 (BIOS + EFI) |
-
-The base system is sourced from `ubuntu-24.04.2-live-server-amd64.iso` and remastered. The live ISO is extracted, a chroot environment is created, packages are installed/removed, overlay files are injected from `filesystem/`, and a new `filesystem.squashfs` is generated.
+### 1. Base System & Kernel Layer
+- **Distribution:** Ubuntu 24.04.2 LTS (Noble Numbat).
+- **Kernel:** `linux-generic-hwe-24.04` (6.8.0-100-generic).
+- **Init System:** systemd 255.
+- **Memory Architecture:** Dynamic ZRAM (`pyflare-zram.service`) creates a zstd compressed block device (`/dev/zram0`) sized to 50% physical RAM (capped at 4096 MB) with swapon priority 100. This eliminates out-of-memory kernel panics on 4 GB RAM VMs.
+- **Initrd Patches:** `patch_initrd.py` injects non-blocking dummy `load_confmodule()` stubs into `scripts/casper-functions` and stubs out `scripts/casper-bottom/24preseed` / `22sslcert`, resolving infinite debconf spinlocks on uninitialized file descriptor 4.
 
 ### 2. Desktop Environment Layer
+- **Shell:** GNOME Shell 46 with PyFlare-Dark theme.
+- **Display Manager:** GDM3 with `WaylandEnable=false` and `AutomaticLogin=pyflare`.
+- **Display Server:** Xorg (`gnome-xorg.desktop`), providing rock-solid rendering on VirtualBox VMSVGA and physical GPU adapters.
+- **Theme Integrity:** `@import url("resource:///org/gnome/shell/theme/gnome-shell.css");` ensures all St/Clutter widgets inherit default styles without missing asset crashes.
 
-PyFlare OS ships GNOME Shell as its primary desktop environment.
+### 3. PyFlare Control Plane Architecture
+The control plane is implemented in Python 3.12+ as a modular library in `pyflare_control`:
+- **`models.py`:** Strongly-typed dataclasses for `TaskSpec`, `ExecutionRequest`, `ExecutionResult`, `Capability`, `Provider`, and `ResourceBudget`.
+- **`codec.py`:** Strict JSON serialization and deserialization enforcing schema constraints and disallowing unknown parameters.
+- **`auth.py`:** Session manager handling user authentication, session expiration, and provider API key isolation.
+- **`security.py`:** Path allowlist and denylist enforcement preventing tasks from escaping designated project roots.
 
-| Component | Details |
-|---|---|
-| Shell | GNOME Shell (latest for Ubuntu 24.04) |
-| Display manager | GDM3 |
-| Session type | Wayland (X11 fallback) |
-| GTK version | GTK 4 (primary), GTK 3 (legacy compat) |
-| gsettings overrides | `filesystem/etc/dconf/db/local.d/` |
-| Application menu | Custom XDG menus via `desktop/menus/` |
-| Dock | GNOME Dash-to-Dock configuration in `desktop/dock/` |
+### 4. Deterministic Routing & Policy Engine
+Implemented in `pyflare_control.router`:
+- **Hard Filters:** Enforces task permissions, privacy classes (`LOCAL_ONLY` strictly blocks cloud endpoints), offline states, and required applications.
+- **Scoring Policy:** Deterministic local tools always outrank generative AI models for deterministic operations.
+- **Circuit Breaker:** Tracks historical provider success rates and automatically routes around unavailable workers.
 
-### 3. Branding System
+### 5. Execution Engine & Lifecycle Journal
+Implemented in `pyflare_control.execution_engine`:
+- **State Machine:** Persists execution states (`PENDING`, `ADMITTED`, `RUNNING`, `COMPLETED`, `FAILED`) in SQLite via `TaskJournal`.
+- **Idempotency:** Replaying completed tasks returns cached execution results without re-executing side effects.
+- **Audit Logging:** Emits structured JSON Lines events with secret redaction (API keys, bearer tokens, passwords masked).
 
-The branding system is the most sophisticated subsystem in the repository. It is a fully automated, procedural visual identity generator.
+### 6. Project Context Manager
+Implemented in `pyflare_control.context`:
+- Indexes project directory hierarchies into SQLite database (`context.sqlite3`).
+- Tracks file contents, SHA-256 hashes, line counts, and AST symbols (functions, classes, Unity C# components).
+- Automatically filters out node_modules, build artifacts, `.git`, and private credentials (`.env`, `*.pem`, `*.key`).
 
-```
-branding_generator/
-├── main.py           — CLI entry point and pipeline orchestrator
-├── config.py         — Brand color tokens and configuration constants
-├── themes.py         — GTK3/4 + GNOME Shell CSS theme generation
-├── icons.py          — Full XDG icon theme (800+ SVG/PNG icons)
-├── wallpapers.py     — 4K wallpaper generation (abstract flame motifs)
-├── cursors.py        — X11 cursor theme generation
-├── fonts.py          — Font manifest and installation helpers
-├── animations.py     — Plymouth boot animation script generation
-├── sounds.py         — Notification sound schema
-├── exporters.py      — Cross-format export (PNG, ICO, ICNS, WebP)
-├── manifest.py       — Brand manifest JSON generation
-├── previews.py       — Preview sheet generation
-├── extras.py         — Badge, social card, favicon generation
-├── utils.py          — Shared drawing primitives (Cairo)
-├── validator.py      — Post-generation validation
-└── docs.py           — Auto-generated branding documentation
-```
+### 7. Hardware-Aware Intelligence & Model Registry
+Implemented in `pyflare_control.hardware` and `model_registry`:
+- Queries CPU cores, system RAM, GPU brand, and dedicated VRAM.
+- Assigns systems to appropriate tiers: `API_ONLY`, `MINIMAL`, `BALANCED`, `CREATOR`, `STUDIO`.
+- Verifies free disk storage before initiating local model weights downloads.
+- Caches hardware profiles in memory with TTL to reduce query latency.
 
-**Generated output** lands in `branding/` with 24 sub-directories covering every visual category needed by the OS.
-
-### 4. Package System
-
-Packages are defined in `config/packages.yaml` and are organized into logical groups:
-
-| Group | Purpose |
-|---|---|
-| `base` | Core system, kernel, bootloader |
-| `desktop` | GNOME Shell, GDM3, core GNOME apps |
-| `graphics` | Xorg, Mesa, NVIDIA/AMD/Intel drivers |
-| `audio` | PipeWire, WirePlumber, PulseAudio compat |
-| `networking` | NetworkManager, WPA supplicant, OpenSSH |
-| `development` | Python 3, GCC, Git, build tools |
-| `containers` | Docker, Flatpak |
-| `pyflare` | Python bindings for GTK4/libadwaita |
-| `utilities` | Vim, timeshift, gdebi |
-
-Beyond APT packages, the system also manages Snap packages and Flatpak applications from Flathub.
-
-### 5. Filesystem Overlay
-
-The `filesystem/` directory mirrors a Linux root filesystem and is overlaid onto the base Ubuntu rootfs during the build.
-
-```
-filesystem/
-├── boot/          — GRUB theme, Plymouth splash
-├── etc/           — systemd units, dconf overrides, os-release, hosts
-├── home/          — Default user skeleton (.config, .local)
-├── opt/           — PyFlare application bundles
-├── root/          — Root user configuration
-└── usr/           — Shared data, icons, themes, fonts, applications
-```
-
-### 6. Installer
-
-PyFlare OS ships with a Calamares-based graphical installer.
-
-| Component | Path | Purpose |
-|---|---|---|
-| Installer config | `installer/config/` | Calamares YAML modules |
-| Branding | `installer/` | Product name, logo, colors for installer UI |
-| Slides | `installer/slides/` | Installation slideshow HTML/CSS/JS |
-
-### 7. Validation System
-
-14 automated validators cover every asset category:
-
-| Validator | Checks |
-|---|---|
-| `validate_boot.py` | GRUB config, Plymouth theme integrity |
-| `validate_branding.py` | Logo, icon, wallpaper file presence |
-| `validate_configs.py` | YAML/JSON schema correctness |
-| `validate_desktop.py` | Desktop files, autostart entries |
-| `validate_desktop_entries.py` | XDG `.desktop` file syntax |
-| `validate_filesystem.py` | Required paths in overlay |
-| `validate_icons.py` | Icon theme completeness |
-| `validate_json.py` | JSON parse validation |
-| `validate_packages.py` | Package name and format checking |
-| `validate_permissions.py` | File permission correctness |
-| `validate_services.py` | systemd unit file syntax |
-| `validate_svg.py` | SVG namespace and structure |
-| `validate_theme.py` | GTK theme file completeness |
-| `validate_wallpapers.py` | Wallpaper resolution requirements |
+### 8. Game Engine Integration (Unity 6 Editor Bridge)
+- **Editor Package:** `com.aachmanstudios.pyflare.automation` installed into Unity projects.
+- **Bridge Server:** Lightweight HTTP loopback daemon listening on `127.0.0.1:47831`.
+- **Security:** Requires high-entropy shared secret token passed in `Authorization: Bearer <token>`.
+- **Reversibility:** Executes commands inside Unity Undo groups (`Undo.IncrementCurrentGroup()`), allowing game developers to instantly roll back AI modifications in the editor.
 
 ---
 
@@ -202,150 +162,41 @@ PyFlare OS ships with a Calamares-based graphical installer.
 
 ```mermaid
 graph LR
-    config["config/branding.yaml\n(Source of Truth)"]
-    gen["branding_generator/"]
-    branding["branding/"]
-    filesystem["filesystem/"]
-    packages["config/packages.yaml"]
-    installer["installer/"]
-    build["build.py"]
-    iso["pyflare-os-1.0.0-ember-amd64.iso"]
-    validation["validation/"]
+    subgraph "Control Plane"
+        TS["TaskSpec"]
+        ROUTER["Router"]
+        ENGINE["Execution Engine"]
+        JOURNAL["Task Journal"]
+        AUDIT["Audit Log"]
+        CTX["Context Manager"]
+    end
 
-    config --> gen
-    gen --> branding
-    branding --> filesystem
-    config --> packages
-    filesystem --> build
-    packages --> build
-    branding --> installer
-    installer --> build
-    build --> iso
-    validation -.->|validates| branding
-    validation -.->|validates| filesystem
-    validation -.->|validates| installer
+    subgraph "External Integrations"
+        UNITY["Unity 6 Bridge"]
+        LOCAL["Local CLI Tools"]
+        MODELS["AI Models"]
+    end
+
+    TS --> ROUTER
+    ROUTER --> ENGINE
+    ENGINE --> JOURNAL
+    ENGINE --> AUDIT
+    ENGINE --> CTX
+    ENGINE --> UNITY
+    ENGINE --> LOCAL
+    ENGINE --> MODELS
 ```
 
 ---
 
-## Data Flow
+## Release Management Artifacts
 
-### Build Pipeline Data Flow
+The following documents govern the delivery of PyFlare Beta 1.0 (2 February 2027):
 
-```
-1. config/branding.yaml
-       ↓ read by
-2. branding_generator/main.py
-       ↓ generates
-3. branding/ (800+ assets: SVG, PNG, CSS, INI, cursor theme)
-       ↓ copied by scripts/copy_branding.py into
-4. filesystem/usr/share/ (icons, themes, wallpapers, fonts)
-       ↓ overlaid onto
-5. build/rootfs/ (Ubuntu base extracted + chrooted)
-       ↓ squashfsd by
-6. build/filesystem.squashfs
-       ↓ packed into
-7. build/iso_extracted/ (GRUB, EFI, casper/)
-       ↓ xorrisoed into
-8. pyflare-os-1.0.0-ember-amd64.iso
-```
-
-### Boot Data Flow
-
-```
-BIOS/UEFI firmware
-    ↓
-GRUB 2 bootloader (PyFlare themed)
-    ↓
-Linux kernel (linux-generic-hwe-24.04) + initramfs
-    ↓
-Plymouth boot splash (pyflare theme, animated)
-    ↓
-systemd (PID 1) — unit activation
-    ↓
-GDM3 display manager
-    ↓
-GNOME Shell session
-    ↓
-Autostart services (PyFlare Engine, AI Assistant daemon)
-    ↓
-User desktop
-```
-
----
-
-## Build Architecture
-
-See [BUILD_PIPELINE.md](BUILD_PIPELINE.md) for the complete build pipeline reference.
-
-The primary build entry point is `build.py`, which is a 39 KB Python orchestration script providing:
-
-- Ubuntu base ISO download with mirror fallback
-- ISO extraction (`iso_extracted/`)
-- chroot environment setup
-- Package installation via APT
-- Branding overlay injection
-- squashfs generation
-- ISO remastering with GRUB/EFI
-
----
-
-## Application Framework Architecture
-
-PyFlare bundles 11 application stubs under `applications/`:
-
-```
-applications/
-├── ai-assistant/      — On-device AI chat (Ollama backend)
-├── appsuite/          — AppSuite Jarvis IDE integration
-├── browser/           — Privacy-focused web browser
-├── engine/            — PyFlare Engine service
-├── files/             — AI file manager
-├── launcher/          — Application launcher
-├── package-manager/   — Unified APT/Flatpak/Snap UI
-├── plugin-manager/    — Plugin management UI
-├── settings/          — System settings panel
-├── store/             — Application marketplace
-└── terminal/          — GPU-accelerated terminal with AI completions
-```
-
-These are currently stubs providing launchers, desktop files, and configuration skeletons. Full GTK4 implementations are planned for PyFlare OS v1.1.0 (Flare).
-
----
-
-## AI Integration Architecture
-
-The AI layer of PyFlare OS is provided by two components working together:
-
-1. **Ollama** — local AI model runtime, installed at the OS level via `config/packages.yaml` custom installs. Provides an OpenAI-compatible HTTP API at `localhost:11434`.
-2. **AppSuite Jarvis** — the orchestration engine (`AppSuite_JarvisV1/`) that wraps Ollama and multiple LLM providers (NVIDIA NIM, OpenAI) with a multi-agent DAG execution system.
-
-See [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md) for the complete AI subsystem reference.
-
----
-
-## Design Principles
-
-| Principle | Application |
-|---|---|
-| **Single Source of Truth** | `config/branding.yaml` drives all product identity — names, URLs, colors, versions |
-| **Procedural Asset Generation** | All visual assets are code-generated, not hand-crafted. Reproducible via `branding_generator` |
-| **Separation of Concerns** | Build logic, branding, filesystem, packages, and installer are independent subsystems |
-| **Validation First** | Every build stage is validated by dedicated validators before downstream stages run |
-| **Linux Standards Compliance** | All paths follow XDG Base Directory Specification and FHS |
-| **Dual Boot Target** | Both legacy BIOS and modern UEFI are supported in every build |
-
----
-
-## Related Documents
-
-| Document | Purpose |
-|---|---|
-| [SYSTEM_OVERVIEW.md](SYSTEM_OVERVIEW.md) | Non-technical system overview |
-| [BUILD_PIPELINE.md](BUILD_PIPELINE.md) | Detailed build pipeline reference |
-| [BOOT_PROCESS.md](BOOT_PROCESS.md) | Boot sequence from BIOS to desktop |
-| [BRANDING.md](BRANDING.md) | Visual identity system |
-| [FILESYSTEM.md](FILESYSTEM.md) | Filesystem overlay structure |
-| [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md) | AI subsystem and Jarvis engine |
-| [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md) | Plugin architecture |
-| [INSTALLER.md](INSTALLER.md) | Calamares installer configuration |
+1. [BETA_ROADMAP.md](BETA_ROADMAP.md) — Phased milestone schedule and deliverables.
+2. [BETA_STATUS.md](BETA_STATUS.md) — Authoritative engineering status and release gate audit.
+3. [BETA_ACCEPTANCE_CRITERIA.md](BETA_ACCEPTANCE_CRITERIA.md) — Acceptance criteria for all 7 release gates.
+4. [BETA_TEST_MATRIX.md](BETA_TEST_MATRIX.md) — Test suites, hardware tiers, and automated inventory.
+5. [BETA_RELEASE_CHECKLIST.md](BETA_RELEASE_CHECKLIST.md) — Pre-release verification gates.
+6. [BETA_CHANGELOG.md](BETA_CHANGELOG.md) — Detailed version and sprint history.
+7. [BETA_ISSUES.md](BETA_ISSUES.md) — Actionable engineering issues backlog.
